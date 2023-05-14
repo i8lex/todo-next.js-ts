@@ -1,23 +1,23 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import db from '../../../lib/db';
+import {postRegistrationHandler} from "../../../handlers/auth/registrationHandler"
 
-export default async function registrationHandler(req: NextApiRequest, res: NextApiResponse) {
+export default async function registrationHandlers(req: NextApiRequest, res: NextApiResponse) {
     const { method } = req;
 
     switch (method) {
         case 'GET':
+
+            break;
+
+        case 'POST':
             try {
-                const conn = await db.connect();
-                const data = await conn.collection('collection-name').find().toArray();
-                res.status(200).json({ data });
+                await db.connect();
+                await postRegistrationHandler(req, res);
             } catch (error) {
                 console.log(error);
                 res.status(500).json({ message: 'Internal server error' });
             }
-            break;
-
-        case 'POST':
-            // ...
             break;
 
         case 'PUT':
