@@ -1,6 +1,6 @@
 import * as jwt from 'jsonwebtoken';
 import pkg from "bcryptjs";
-import {User} from "../../lib/models/users"
+import {UserModel} from "../../lib/models/userModel"
 
 export const loginHandler = async (request, reply) => {
 
@@ -9,7 +9,7 @@ export const loginHandler = async (request, reply) => {
 
     const { email, password } = request.body;
 
-    const user = await User.findOne({ email });
+    const user = await UserModel.findOne({ email });
 
     if (!user) {
         return reply.status(401).send({ error: "Wrong email or password" });

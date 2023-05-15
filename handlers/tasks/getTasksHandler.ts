@@ -1,6 +1,6 @@
 import * as jwt from 'jsonwebtoken';
 import { hashSync, compareSync } from 'bcryptjs';
-import {Task} from "../../lib/models/tasks"
+import {Task} from "../../lib/models/taskModel"
 
 export const getTaskHandler = async (req, res) => {
     const {verify} = jwt.default

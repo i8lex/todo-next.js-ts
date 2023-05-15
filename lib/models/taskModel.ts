@@ -1,4 +1,17 @@
-import mongoose from "mongoose";
+import mongoose, { Document, Schema } from 'mongoose';
+
+export type Images = {
+    [key: string]: string;
+};
+
+export type TaskType = {
+    title: string;
+    description: string;
+    images: Images[];
+    done: boolean;
+    created: Date;
+    deadline: Date;
+};
 
 const TaskSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
@@ -21,4 +34,5 @@ const TaskSchema = new mongoose.Schema({
     deadline: { type: Date },
 });
 
-export const Task = mongoose.model("Task", TaskSchema);
+export const Task = mongoose.models.Task || mongoose.model<TaskType>('Task', TaskSchema);
+

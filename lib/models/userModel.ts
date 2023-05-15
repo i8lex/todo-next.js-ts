@@ -1,5 +1,15 @@
 import mongoose from "mongoose";
 
+
+export type UserType = {
+    name: string;
+    email: string;
+    password:string;
+    confirmationCode: string;
+    isconfirmed: boolean;
+    created: Date;
+}
+
 const UserSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -36,4 +46,5 @@ const UserSchema = new mongoose.Schema({
     created: { type: Date, default: Date.now },
 });
 
-export const User = mongoose.model("User", UserSchema);
+export const User = mongoose.models.User || mongoose.model<UserType>("User", UserSchema);
+

@@ -1,4 +1,4 @@
-import { User } from "../../lib/models/users";
+import { UserModel } from "../../lib/models/userModel";
 import { transporter } from "../../config";
 import * as jwt from "jsonwebtoken";
 import Handlebars from "handlebars";
@@ -30,7 +30,7 @@ export const repeatConfirmEmailHandler = async (request, reply) => {
         reply.send({ error: err.message });
     }
     try {
-        const updateStatus = await User.updateOne(
+        const updateStatus = await UserModel.updateOne(
             { email: email },
             { confirmationCode: token }
         );

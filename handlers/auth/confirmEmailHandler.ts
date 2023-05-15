@@ -1,4 +1,4 @@
-import { User } from "../../lib/models/users";
+import { UserModel } from "../../lib/models/userModel";
 
 import * as jwt from "jsonwebtoken";
 
@@ -10,7 +10,7 @@ export const confirmEmailHandler = async (request, reply) => {
     try {
         const { confirm } = request.query;
         const { email } = await verify(confirm, process.env.SECRET_WORD);
-        const updateStatus = await User.updateOne(
+        const updateStatus = await UserModel.updateOne(
             { email: email },
             { isconfirmed: true }
         );

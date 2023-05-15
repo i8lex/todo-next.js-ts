@@ -1,26 +1,27 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import db from '../../../lib/db';
-import {getTaskHandler} from "../../../handlers/tasks/getTasksHandler";
+import {uploadImageHandler} from "../../../handlers/images/uploadImageHandler";
 
-export default async function tasksHandlers(req: NextApiRequest, res: NextApiResponse) {
+export default async function authHandlers(req: NextApiRequest, res: NextApiResponse) {
     const { method } = req;
 
-
+    await db.connect();
 
     switch (method) {
 
         case 'GET':
+
+            break;
+
+        case 'POST':
             try {
-                await db.connect();
-                await getTaskHandler(req, res);
+
+                await uploadImageHandler(req, res);
+
             } catch (error) {
                 console.log(error);
                 res.status(500).json({ message: 'Internal server error' });
             }
-            break;
-
-        case 'POST':
-            // ...
             break;
 
         case 'PUT':
