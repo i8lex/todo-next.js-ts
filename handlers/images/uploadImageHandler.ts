@@ -1,107 +1,100 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import formidable, { Fields, Files } from 'formidable';
 import * as jwt from "jsonwebtoken";
-import fs from 'fs';
 import { v4 as uuidv4 } from "uuid";
-import path from 'path';
-import sharp from 'sharp';
-import mongoose from 'mongoose';
-import { promisify } from 'util';
+import fs from "fs";
+import mime from 'mime-types';
+import path from "path";
+import sharp from "sharp";
+import { Task } from "../../lib/models/taskModel";
+import { Image } from "../../lib/models/imageModel";
+import { Thumb } from "../../lib/models/thumbModel";
+import multiparty from 'multiparty';
 
-import { ImageModel } from '../../lib/models/imageModel';
-import { ThumbModel } from '../../lib/models/thumbModel';
-import { UserModel } from '../../lib/models/userModel';
-import { Task } from '../../lib/models/taskModel';
 
-const form = formidable({ multiples: true });
-
-export const config = {
-    api: {
-        bodyParser: false,
-    },
-};
-
-export const uploadImageHandler = async (request: NextApiRequest, response: NextApiResponse) => {
+export const uploadImageHandler = async (request, reply) => {
     try {
-        const { verify } = jwt;
+        const { verify } = jwt.default;
         const authHeader = request.headers.authorization;
-        const token = authHeader ? authHeader.split(' ')[1] : null;
-        const { id, email } = await verify(token as string, process.env.SECRET_WORD as string);
+        const token = authHeader ? authHeader.split(" ")[1] : null;
+        const { id, email } = await verify(token, process.env.SECRET_WORD);
+        const form = new multiparty.Form();
+
+        try {
+            form.parse(request, async (err, fields, files) => {
+                const { images: pictures } = files;
+                const { task } = fields;
+                const { images: imageArray } = await Task.findOne({ _id: task })
+                const imagePath = `./uploads/${id}/orig/`;
+                if (!fs.existsSync(imagePath)) {
+                    fs.mkdirSync(imagePath, { recursive: true });
+                }
+                const thumbPath = `./uploads/${id}/thumb/`;
+                if (!fs.existsSync(thumbPath)) {
+                    fs.mkdirSync(thumbPath, { recursive: true });
+                }
+                for (const image of pictures)  {
+                    console.log(image)
+                    const { path: tempFile , originalFilename } = image;
+                    const fullMimeType: mime = mime.lookup(originalFilename);
+                    const mimeType: string = fullMimeType.replace(/^.+\//, ".");
+                    const imageSaveTo = path.join(
+                        imagePath,
+                        `${email}_${uuidv4()}${mimeType}`
+                    );
+                    const thumbSaveTo = path.join(
+                        thumbPath,
+                        `${email}_${uuidv4()}_thumb${mimeType}`
+                    );
+                    const imageBuffer: Buffer = fs.readFileSync(tempFile);
+                    const thumbBuffer: Buffer = await sharp(imageBuffer)
+                        .resize(100, 100, { fit: "cover" })
+                        .toBuffer();
+
+                    // fs.writeFileSync(imageSaveTo, imageBuffer);
+                    // fs.writeFileSync(thumbSaveTo, thumbBuffer);
+
+                    const addImage = new Image({
+                        user: id,
+                        task: task,
+                        filename: originalFilename,
+                        mimetype: mimeType,
+                        size: imageBuffer.length,
+                        image: imageBuffer,
+                        path: imageSaveTo,
+                    });
+
+                    const addThumb = new Thumb({
+                        user: id,
+                        task: task,
+                        image: addImage._id,
+                        filename: originalFilename,
+                        size: thumbBuffer.length,
+                        thumb: thumbBuffer,
+                        mimetype: mimeType,
+                        thumbPath: thumbSaveTo,
+                    });
+                    await addImage.save();
+                    await addThumb.save();
+
+                    await Image.updateOne(
+                        { _id: addImage._id },
+                        { $set: { thumb: addThumb._id } }
+                    );
+
+                    imageArray.push(addImage._id);
+
+                    fs.unlinkSync(tempFile);
+                }
 
 
-        const parseForm = promisify(form.parse.bind(form));
-        const { fields, files } = await parseForm(request);
-
-        const { task } = fields;
-        const { images: fileArray } = files;
-
-        console.log(task)
-        console.log(fileArray)
-
-
-        const imagePath = `./uploads/${id}/orig/`;
-        if (!fs.existsSync(imagePath)) {
-            fs.mkdirSync(imagePath, { recursive: true });
-        }
-
-        const thumbPath = `./uploads/${id}/thumb/`;
-        if (!fs.existsSync(thumbPath)) {
-            fs.mkdirSync(thumbPath, { recursive: true });
-        }
-
-        const images = await Task.findOne({ _id: task }).populate('images');
-
-        for (const file of fileArray) {
-            const mimetype = file.type.replace(/^.+\//, '.');
-            const imageSaveTo = path.join(
-                imagePath,
-                `${email}_${uuidv4()}${mimetype}`
-            );
-            const thumbSaveTo = path.join(
-                thumbPath,
-                `${email}_${uuidv4()}_thumb${mimetype}`
-            );
-
-            const thumbBuffer = await sharp(file.path)
-                .resize(100, 100, { fit: 'cover' })
-                .toBuffer();
-
-            fs.writeFileSync(imageSaveTo, fs.readFileSync(file.path));
-            fs.writeFileSync(thumbSaveTo, thumbBuffer);
-
-            const addImage = new ImageModel({
-                user: id,
-                task: task,
-                filename: file.name,
-                mimetype: file.type,
-                size: file.size,
-                image: fs.readFileSync(file.path),
-                path: imageSaveTo,
+                await Task.updateOne({ _id: task }, { $set: { images: imageArray } });
             });
-
-            const addThumb = new ThumbModel({
-                user: id,
-                task: task,
-                image: addImage._id,
-                filename: file.name,
-                size: thumbBuffer.length,
-                thumb: thumbBuffer,
-                mimetype: file.type,
-                thumbPath: thumbSaveTo,
-            });
-
-            await addImage.save();
-            await addThumb.save();
-
-            await ImageModel.updateOne({ _id: addImage._id }, { $set: { thumb: addThumb._id } });
-
-            images.push(addImage);
+        } catch (error) {
+            reply.status(400).send({ message: "Images upload error" }, error);
         }
 
-        await Task.updateOne({ _id: task }, { $set: { images: images } });
-
-        response.send({ message: 'Images uploaded successfully' });
+        reply.send({ message: "Images uploaded successfully" });
     } catch (error) {
-        response.send({ message: 'Upload error' });
+        reply.status(400).send({ message: "Images upload error" }, error);
     }
 };
+

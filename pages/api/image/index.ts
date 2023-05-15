@@ -2,10 +2,16 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import db from '../../../lib/db';
 import {uploadImageHandler} from "../../../handlers/images/uploadImageHandler";
 
-export default async function authHandlers(req: NextApiRequest, res: NextApiResponse) {
+
+export const config = {
+    api: {
+        bodyParser: false,
+    },
+};
+
+export default async function imageHandlers(req, res) {
     const { method } = req;
 
-    await db.connect();
 
     switch (method) {
 
@@ -16,6 +22,7 @@ export default async function authHandlers(req: NextApiRequest, res: NextApiResp
         case 'POST':
             try {
 
+                // await db.connect()
                 await uploadImageHandler(req, res);
 
             } catch (error) {

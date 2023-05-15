@@ -14,10 +14,13 @@ if (!cached) {
 
 async function connect() {
     if (cached.conn) {
+        // console.log("cached connect to mongoDB")
         return cached.conn;
     }
 
     if (!cached.promise) {
+        // console.log(" not cached promise in mongoDB")
+
         const options = {
             useNewUrlParser: true,
             useUnifiedTopology: true,
@@ -29,6 +32,8 @@ async function connect() {
     }
 
     cached.conn = await cached.promise;
+    console.log("connected to mongoDB")
+
     return cached.conn;
 }
 

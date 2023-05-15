@@ -2,7 +2,7 @@ import pkg from "bcryptjs";
 import { transporter } from "../../config";
 import Handlebars from "handlebars";
 import * as jwt from "jsonwebtoken";
-import {UserModel} from "../../lib/models/userModel";
+import {User} from "../../lib/models/userModel";
 
 
 export const postRegistrationHandler = async (request, reply) => {
@@ -10,8 +10,8 @@ export const postRegistrationHandler = async (request, reply) => {
     const { sign } = jwt.default;
     const { name, email, password } = request.body;
 
-    const existingEmail = await UserModel.findOne({ email });
-    const existingName = await UserModel.findOne({ name });
+    const existingEmail = await User.findOne({ email });
+    const existingName = await User.findOne({ name });
 
     if (existingName) {
         return reply.status(400).send({
@@ -56,7 +56,7 @@ export const postRegistrationHandler = async (request, reply) => {
         reply.send({ error: err.message });
     }
 
-    const newUser = new UserModel({
+    const newUser = new User({
         name,
         email,
         password: hashedPassword,
