@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import db from "../../../lib/db";
 import { getImageHandler } from "../../../handlers/images/getImageHandler";
+import { authMiddleware } from "../../../middlewares/authMiddleware";
 
 export const config = {
   api: {
@@ -8,7 +9,7 @@ export const config = {
   },
 };
 
-export default async function imageHandlers(
+export default authMiddleware(async function imageHandlers(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -35,4 +36,4 @@ export default async function imageHandlers(
       res.status(405).end();
       break;
   }
-}
+});

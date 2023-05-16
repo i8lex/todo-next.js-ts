@@ -1,6 +1,7 @@
 import * as jwt from "jsonwebtoken";
 // import fs from 'fs';
 import { Thumb } from "../../lib/models/thumbModel";
+import { authMiddleware } from "../../middlewares/authMiddleware";
 
 const { verify } = jwt.default;
 
@@ -9,7 +10,6 @@ export const getThumbsHandler = async (request, reply) => {
   const token = authHeader ? authHeader.split(" ")[1] : null;
   const { id } = await verify(token, process.env.SECRET_WORD);
   const { id: taskId }: string = request.query;
-  console.log(taskId);
 
   try {
     const images = await Thumb.find({ task: taskId, user: id });

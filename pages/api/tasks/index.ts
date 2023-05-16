@@ -4,8 +4,9 @@ import { getTaskHandler } from "../../../handlers/tasks/getTasksHandler";
 import { deleteTaskHandler } from "../../../handlers/tasks/deleteTaskHandler";
 import { changeTaskHandler } from "../../../handlers/tasks/changeTaskHandler";
 import { createTaskHandler } from "../../../handlers/tasks/createTaskHandler";
+import { authMiddleware } from "../../../middlewares/authMiddleware";
 
-export default async function tasksHandlers(
+export default authMiddleware(async function tasksHandlers(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -55,4 +56,4 @@ export default async function tasksHandlers(
       res.status(405).end();
       break;
   }
-}
+});
