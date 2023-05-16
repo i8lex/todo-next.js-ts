@@ -1,46 +1,42 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import db from '../../../lib/db';
-import {uploadImageHandler} from "../../../handlers/images/uploadImageHandler";
-
+import { NextApiRequest, NextApiResponse } from "next";
+import db from "../../../lib/db";
+import { uploadImageHandler } from "../../../handlers/images/uploadImageHandler";
+import { deleteImagesHandler } from "../../../handlers/images/deleteImagesHandler";
 
 export const config = {
-    api: {
-        bodyParser: false,
-    },
+  api: {
+    bodyParser: false,
+  },
 };
 
-export default async function imageHandlers(req, res) {
-    const { method } = req;
+export default async function imageHandlers(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  await db.connect();
+  const { method } = req;
+  switch (method) {
+    case "GET":
+      break;
 
+    case "POST":
+      try {
+        await uploadImageHandler(req, res);
+      } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: "Internal server error" });
+      }
+      break;
 
-    switch (method) {
+    case "PUT":
+      // ...
+      break;
 
-        case 'GET':
+    case "DELETE":
+      break;
 
-            break;
-
-        case 'POST':
-            try {
-
-                // await db.connect()
-                await uploadImageHandler(req, res);
-
-            } catch (error) {
-                console.log(error);
-                res.status(500).json({ message: 'Internal server error' });
-            }
-            break;
-
-        case 'PUT':
-            // ...
-            break;
-
-        case 'DELETE':
-            // ...
-            break;
-
-        default:
-            res.status(405).end();
-            break;
-    }
+    default:
+      res.status(405).end();
+      break;
+  }
 }

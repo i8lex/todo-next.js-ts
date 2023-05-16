@@ -1,27 +1,28 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import db from "../../../lib/db";
-import { postRegistrationHandler } from "../../../handlers/auth/registrationHandler";
+import { getThumbsHandler } from "../../../handlers/images/getThumbsHandler";
 
-export default async function registrationHandlers(
+import { deleteImagesHandler } from "../../../handlers/images/deleteImagesHandler";
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
+export default async function imageHandlers(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   await db.connect();
-
   const { method } = req;
 
   switch (method) {
     case "GET":
+      await getThumbsHandler(req, res);
       break;
 
     case "POST":
-      try {
-        await db.connect();
-        await postRegistrationHandler(req, res);
-      } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: "Internal server error" });
-      }
       break;
 
     case "PUT":
@@ -29,7 +30,7 @@ export default async function registrationHandlers(
       break;
 
     case "DELETE":
-      // ...
+      await deleteImagesHandler(req, res);
       break;
 
     default:
