@@ -1,13 +1,13 @@
 import { configureStore, ThunkDispatch } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query/react";
-import { api } from "./auth/auth.api";
+import { authApi } from "./auth/auth.api";
 
 export const store = configureStore({
   reducer: {
-    [api.reducerPath]: api.reducer,
+    [authApi.reducerPath]: authApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(api.middleware),
+    getDefaultMiddleware().concat(authApi.middleware),
 });
 
 setupListeners(store.dispatch as ThunkDispatch<any, any, any>);

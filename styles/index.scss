@@ -1,0 +1,30 @@
+@import "stylesheet/reset.css";
+@import "stylesheet/mixins";
+@import "stylesheet/login";
+@import "stylesheet/tasks";
+@import "stylesheet/header";
+@import "stylesheet/image";
+
+
+@font-face {
+  font-family: DS-Digital;
+  src: url(./stylesheet/fonts/clock/DS-Digital-Bold-Fixed.ttf);
+}
+
+body {
+  width:100vw;
+  @include flex-column-center;
+  overflow-x: hidden;
+  //-webkit-overflow-scrolling: touch;
+}
+
+.container {
+  position: relative;
+  margin: 0 auto;
+  max-width: 1920px;
+}
+
+
+
+
+
