@@ -1,0 +1,22 @@
+@import "_mixins.scss";
+
+
+.header {
+  margin: 50px 0 50px;
+
+  &__wrapper {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    gap: 20px;
+    padding-right: 20px;
+
+  }
+  &__link {
+    @include link;
+  }
+  &__logout {
+    @include button-order;
+    margin-left: 40px;
+  }
+}

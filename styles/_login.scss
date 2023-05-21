@@ -1,0 +1,92 @@
+@import "mixins";
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+.login {
+  margin-top: 50%;
+  //max-width: 1800px;
+
+  &__wrapper {
+    max-width: 1800px;
+    margin: 0 auto;
+    display: flex;
+    gap: 50px;
+    justify-content: space-between;
+  }
+  &__title {
+    @include title;
+    text-align: center;
+  }
+  &__button {
+    @include button-order;
+
+  }
+
+  &__passwordBox {
+    position: relative;
+
+    &__btnShow,
+    &__btnHide {
+      right: 2.5rem;
+      top: 45%;
+      transform: translateY(-50%);
+      position: absolute;
+      background: none;
+      border: none;
+
+      &::after {
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        position: absolute;
+        cursor: pointer;
+        content: "\e8f4";
+        font-family: "Material Symbols Rounded";
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 20px;
+        text-align: left;
+      }
+    }
+    &__btnHide {
+      &::after {
+        content: "\e8f5";
+      }
+    }
+  }
+
+  &__modal {
+    position: relative;
+    @include flex-column-center;
+    gap: 4rem;
+
+    &__close {
+      @include icon-close-button;
+      font-size: 2rem;
+      &::after {
+        content: "\e8c6";
+      }
+    }
+
+    &__title {
+      //position: absolute;
+      margin: 30px;
+      text-align: center;
+      //top: 50%;
+      //left: 50%;
+      //transform: translateX(-50%);
+      @include titleModal;
+    }
+    &__button {
+      position: relative;
+      @include button-email;
+      &::before {
+        position: absolute;
+        left: 1rem;
+        content: "\e163";
+        font-family: "Material Icons";
+        font-size: 20px;
+        text-align: left;
+
+      }
+    }
+  }
+}
