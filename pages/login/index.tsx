@@ -1,15 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, FC } from "react";
 import { Form, Formik } from "formik";
 import { ModalAuth } from "../../components/ModalAuth";
 import * as yup from "yup";
 import { Input } from "../../components/Input";
 // import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
 import { setLoginSuccess } from "../../redux/slices/auth.slice";
-import { useLoginMutation } from "../../redux/api/auth.api";
+import { LoginBody, useLoginMutation } from "../../redux/api/auth.api";
 import { useAppDispatch } from "../../redux/hooks";
 
-const LoginPage = () => {
+const LoginPage: FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [message, setMessage] = useState("");
@@ -24,11 +23,10 @@ const LoginPage = () => {
     setMessage("");
   };
 
-  const handleSubmit = async (values) => {
+  const handleSubmit = async (values: LoginBody) => {
     try {
       const { data, error } = await login(values);
-      console.log(data);
-      console.log(error);
+
       if (error) {
         setMessage(error.data.error);
         const { confirmed } = error.data;
@@ -47,6 +45,7 @@ const LoginPage = () => {
         setOpenModal(true);
 
         if (data.token && confirmed === true) {
+          console.log(data);
           dispatch(setLoginSuccess(data.token));
           setTimeout(() => {
             // navigate("/tasks");
@@ -98,12 +97,22 @@ const LoginPage = () => {
           >
             <Form autoComplete="off">
               <h1 className="login__title">Login</h1>
-              <Input label="Email" required name="email" />
+              <Input
+                label="Email"
+                required
+                name="email"
+                id="password"
+                step={1}
+                // defaultValue=""
+              />
               <div className="login__passwordBox">
                 <Input
                   label="Password"
                   name="password"
                   type={!showPassword ? "password" : "text"}
+                  id="password"
+                  step={1}
+                  // defaultValue=""
                 />
                 <button
                   onClick={toggleShowPassword}

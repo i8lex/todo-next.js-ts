@@ -1,7 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, FC } from "react";
 import { Field, useField } from "formik";
 
-export const Input = ({
+type InputType = {
+  name: string;
+  id: string;
+  as: string;
+  label: string;
+  required: boolean;
+  type: string;
+  step: number;
+  defaultValue: string;
+};
+
+export const Input: FC<InputType> = ({
   name,
   id,
   as = "input",
@@ -62,7 +73,7 @@ export const Input = ({
         required={required}
         type={type}
         onChange={onChange}
-        onBlur={(event) => {
+        onBlur={(event: React.ChangeEvent<HTMLInputElement>) => {
           handleInputFocus();
           onBlur(event);
         }}

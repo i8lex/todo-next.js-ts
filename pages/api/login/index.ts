@@ -1,39 +1,37 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import db from '../../../lib/db';
-import {loginHandler} from "../../../handlers/auth/loginHandler";
+import { NextApiRequest, NextApiResponse } from "next";
+import db from "../../../lib/db";
+import { loginHandler } from "../../../handlers/auth/loginHandler";
 
-export default async function authHandlers(req: NextApiRequest, res: NextApiResponse) {
-    const { method } = req;
+export default async function authHandlers(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  const { method } = req;
 
-    await db.connect();
+  await db.connect();
 
-    switch (method) {
+  switch (method) {
+    case "GET":
+      break;
 
-        case 'GET':
+    case "POST":
+      try {
+        await loginHandler(req, res);
+      } catch (error) {
+        res.status(500).json({ message: "Internal server error" });
+      }
+      break;
 
-            break;
+    case "PUT":
+      // ...
+      break;
 
-        case 'POST':
-            try {
+    case "DELETE":
+      // ...
+      break;
 
-                await loginHandler(req, res);
-
-            } catch (error) {
-                console.log(error);
-                res.status(500).json({ message: 'Internal server error' });
-            }
-            break;
-
-        case 'PUT':
-            // ...
-            break;
-
-        case 'DELETE':
-            // ...
-            break;
-
-        default:
-            res.status(405).end();
-            break;
-    }
+    default:
+      res.status(405).end();
+      break;
+  }
 }

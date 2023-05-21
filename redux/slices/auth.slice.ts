@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppState } from "../store";
 
 export type ResponseAuthType = {
@@ -18,9 +18,9 @@ export const authSlice = createSlice({
   reducers: {
     setLoginSuccess: (
       state: ResponseAuthType,
-      action: PayloadAction<ResponseAuthType>
+      action: PayloadAction<string>
     ) => {
-      state.token = action.payload.token;
+      state.token = action.payload;
       state.isAuthenticated = true;
     },
   },

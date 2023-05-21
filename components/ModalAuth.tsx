@@ -1,11 +1,18 @@
-import React from "react";
+import React, { FC } from "react";
 import Modal from "react-modal";
+import { ModalAuthProps } from "../types";
 // import { repeatEmailHandler } from "./handlers/repeatEmailHandler";
 // import { useEmailRepeatMutation } from "../providers/redux/auth/authApi";
 
 Modal.setAppElement("#__next");
 
-export const ModalAuth = ({ email, open, handleClose, message, confirmed }) => {
+export const ModalAuth: FC<ModalAuthProps> = ({
+  email,
+  open,
+  handleClose,
+  message,
+  confirmed,
+}) => {
   // const [emailRepeat] = useEmailRepeatMutation();
   const repeatEmailHandler = async () => {
     try {
@@ -19,11 +26,7 @@ export const ModalAuth = ({ email, open, handleClose, message, confirmed }) => {
   };
   return (
     <Modal
-      email={email}
       isOpen={open}
-      onClose={handleClose}
-      message={message}
-      confirmed={confirmed}
       style={{
         overlay: {
           backgroundColor: "rgba(0, 0, 0, 0.6)",
@@ -49,7 +52,7 @@ export const ModalAuth = ({ email, open, handleClose, message, confirmed }) => {
         <h1 className="login__modal__title">
           {JSON.stringify(message, null, 2).replace(/["']/g, "")}
         </h1>
-        {confirmed === false ? (
+        {!confirmed ? (
           <button className="login__modal__button" onClick={repeatEmailHandler}>
             RESEND CONFIRMATION EMAIL
           </button>
