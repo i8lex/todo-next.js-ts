@@ -54,7 +54,6 @@ const LoginPage: FC = () => {
         }
       }
     } catch (err) {
-      console.log(err);
       setMessage(err.message);
       setOpenModal(true);
     }
@@ -97,13 +96,7 @@ const LoginPage: FC = () => {
           >
             <Form autoComplete="off">
               <h1 className="login__title">Login</h1>
-              <Input
-                label="Email"
-                required
-                name="email"
-                id="password"
-                step={1}
-              />
+              <Input label="Email" required name="email" id="email" step={1} />
               <div className="login__passwordBox">
                 <Input
                   label="Password"

@@ -8,9 +8,6 @@ export const authMiddleware = (
     try {
       const authHeader = req.headers.authorization;
       const token = authHeader ? authHeader.replace("Bearer ", "") : null;
-      console.log(authHeader);
-      console.log(token);
-      console.log(!token);
       if (!token || !verifyToken(token)) {
         return res.status(401).json({ message: "Unauthorized" });
       }

@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import db from "../../../lib/db";
 import { uploadImageHandler } from "../../../handlers/images/uploadImageHandler";
 import { authMiddleware } from "../../../middlewares/authMiddleware";
+import { getImageHandler } from "../../../handlers/images/getImageHandler";
 
 export const config = {
   api: {
@@ -17,13 +18,13 @@ export default authMiddleware(async function imageHandlers(
   const { method } = req;
   switch (method) {
     case "GET":
+      await getImageHandler(req, res);
       break;
 
     case "POST":
       try {
         await uploadImageHandler(req, res);
       } catch (error) {
-        console.log(error);
         res.status(500).send({ message: "Internal server error" });
       }
       break;

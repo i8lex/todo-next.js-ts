@@ -14,30 +14,31 @@
 //
 // export const Thumb = mongoose.model("Thumb");
 
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { Document, Schema } from "mongoose";
 
 export type ThumbType = {
-    user: mongoose.Types.ObjectId;
-    task: mongoose.Types.ObjectId;
-    image: mongoose.Types.ObjectId;
-    filename: string;
-    mimetype: string;
-    thumb: Buffer;
-    thumbSize: number;
-    thumbPath: string;
-    created_at: Date;
-}
+  user: mongoose.Types.ObjectId;
+  task: mongoose.Types.ObjectId;
+  image: mongoose.Types.ObjectId;
+  filename: string;
+  mimetype: string;
+  thumb: object;
+  thumbSize: number;
+  thumbPath: string;
+  created_at: Date;
+};
 
 const thumbSchema: Schema = new Schema({
-    user: { type: Schema.Types.ObjectId, ref: 'User' },
-    task: { type: Schema.Types.ObjectId, ref: 'Task' },
-    image: { type: Schema.Types.ObjectId, ref: 'Image' },
-    filename: String,
-    mimetype: String,
-    thumb: Buffer,
-    thumbSize: Number,
-    thumbPath: String,
-    created_at: { type: Date, default: Date.now },
+  user: { type: Schema.Types.ObjectId, ref: "User" },
+  task: { type: Schema.Types.ObjectId, ref: "Task" },
+  image: { type: Schema.Types.ObjectId, ref: "Image" },
+  filename: String,
+  mimetype: String,
+  thumb: Object,
+  thumbSize: Number,
+  thumbPath: String,
+  created_at: { type: Date, default: Date.now },
 });
 
-export const Thumb = mongoose.models.Thumb || mongoose.model<ThumbType>('Thumb', thumbSchema);
+export const Thumb =
+  mongoose.models.Thumb || mongoose.model<ThumbType>("Thumb", thumbSchema);

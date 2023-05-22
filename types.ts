@@ -7,3 +7,9 @@ export type ModalAuthProps = {
   confirmed: string;
   message: string;
 };
+
+export type Images = {
+  image: Image;
+};
+
+export type Image = {};

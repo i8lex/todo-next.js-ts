@@ -39,7 +39,6 @@ export const uploadImageHandler = async (
           fs.mkdirSync(thumbPath, { recursive: true });
         }
         for (const image of pictures) {
-          console.log(image);
           const { path: tempFile, originalFilename } = image;
           const fullMimeType = mime.lookup(originalFilename) as string;
           const mimeType: string = fullMimeType.replace(/^.+\//, ".");
