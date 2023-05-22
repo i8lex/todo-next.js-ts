@@ -5,13 +5,13 @@ import Link from "next/link";
 import { setLogoutSuccess } from "../redux/slices/auth.slice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 
-export const Header = () => {
+const Header = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
-  const handleLogout = () => {
-    dispatch(setLogoutSuccess);
-    router.push("/login");
+  const handleLogout = async () => {
+    dispatch(setLogoutSuccess());
+    await router.push("/login");
   };
 
   return (
@@ -42,3 +42,5 @@ export const Header = () => {
     </header>
   );
 };
+
+export default Header;

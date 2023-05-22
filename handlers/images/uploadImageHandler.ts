@@ -19,7 +19,11 @@ export const uploadImageHandler = async (
     const authHeader = request.headers.authorization;
     const token = authHeader ? authHeader.split(" ")[1] : null;
     const { id, email } = await verify(token, process.env.SECRET_WORD);
-    const form = new multiparty.Form();
+
+    const form = new multiparty.Form({
+      maxFilesSize: 10 * 1024 * 1024, // 10 MB
+      maxFieldsSize: 10 * 1024 * 1024, // 10 MB
+    });
 
     try {
       form.parse(request, async (err, fields, files) => {
@@ -87,7 +91,7 @@ export const uploadImageHandler = async (
           );
 
           imageArray.push(addImage._id);
-
+          console.log(imageArray);
           fs.unlinkSync(tempFile);
         }
 

@@ -26,7 +26,8 @@ const LoginPage: FC = () => {
   const handleSubmit = async (values: LoginBody) => {
     try {
       const { data, error } = await login(values);
-
+      console.log(data.token);
+      console.log(data.confirmed);
       if (error) {
         setMessage(error.data.error);
         const { confirmed } = error.data;
@@ -39,14 +40,13 @@ const LoginPage: FC = () => {
           setTimeout(() => handleClose(), 3000);
         }
       } else {
-        const { message, confirmed } = data;
-        setMessage(message);
-        setConfirmed(confirmed);
+        const { message: responseMessage } = data;
+        setMessage(responseMessage);
         setOpenModal(true);
 
-        if (data.token && confirmed === true) {
-          console.log(data);
+        if (data.token && data.confirmed) {
           dispatch(setLoginSuccess(data.token));
+          // dispatch(setLoginSuccess({ token: data.token }));
           setTimeout(() => {
             router.push("/tasks");
             handleClose();

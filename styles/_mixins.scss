@@ -2,6 +2,10 @@ $font-size: 30px;
 $font-weight: 400;
 $line-height: 30px;
 
+@mixin test {
+  font-weight: 700;
+}
+
 @mixin flex-column-center {
   display: flex;
   flex-direction: column;

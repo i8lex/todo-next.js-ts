@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { LoginBody } from "./auth.api";
 
 const prepareHeaders = (headers, { getState }) => {
   const token = getState().auth.token;
@@ -19,20 +20,12 @@ export const imageApi = createApi({
 
   endpoints: (build) => ({
     getImage: build.query({
-      query: (id) => ({ url: `image?id=${id}` }),
-      providesTags: (result, error, id) => [{ type: "Image", id }],
+      query: (id: string) => ({ url: `image?id=${id}` }),
+      providesTags: (result: void, error, id: string) => [
+        { type: "Image", id },
+      ],
       responseType: "arraybuffer",
     }),
-    // getImage: build.query({
-    //   query: (id) => `image/${id}`,
-    //   providesTags: (result) =>
-    //     result
-    //       ? [
-    //           ...result.map(({ id }) => ({ type: "Image", id })),
-    //           { type: "Image", id: "LIST" },
-    //         ]
-    //       : [{ type: "Image", id: "LIST" }],
-    // }),
     getThumbs: build.query({
       query: (id) => `image/${id}`,
       providesTags: (result) =>
@@ -43,7 +36,7 @@ export const imageApi = createApi({
             ]
           : [{ type: "Image", id: "LIST" }],
     }),
-    addImage: build.mutation({
+    addImage: build.mutation<void, any>({
       query: (body) => ({
         url: "image",
         method: "POST",

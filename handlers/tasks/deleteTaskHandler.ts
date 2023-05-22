@@ -1,7 +1,7 @@
 import * as jwt from "jsonwebtoken";
 import { Task } from "../../lib/models/taskModel";
-import { ImageModel } from "../../lib/models/imageModel";
-import { ThumbModel } from "../../lib/models/thumbModel";
+import { Image } from "../../lib/models/imageModel";
+import { Thumb } from "../../lib/models/thumbModel";
 
 export const deleteTaskHandler = async (request, reply) => {
   const { verify } = jwt.default;
@@ -20,11 +20,11 @@ export const deleteTaskHandler = async (request, reply) => {
       _id: { $in: ids.split(",") },
     });
 
-    const deletedImages = await ImageModel.deleteMany({
+    const deletedImages = await Image.deleteMany({
       task: { $in: ids.split(",") },
     });
 
-    const deletedThumbs = await ThumbModel.deleteMany({
+    const deletedThumbs = await Thumb.deleteMany({
       task: { $in: ids.split(",") },
     });
 

@@ -1,27 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { useDropzone } from "react-dropzone";
+import { useDropzone, DropzoneOptions } from "react-dropzone";
 import { useAddImageMutation } from "../redux/api/images.api";
-import { useDispatch } from "react-redux";
 import { setModalThumbsNeedRefetch } from "../redux/slices/images.slice";
+import { useAppDispatch } from "../redux/hooks";
 
 export const ImageUploader = ({ _id, setIsGetImages }) => {
   const [isUploadSuccess, setIsUploadIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const {
     isDragAccept,
     acceptedFiles,
     fileRejections,
     getRootProps,
     getInputProps,
-  } = useDropzone({
+  } = useDropzone<DropzoneOptions>({
     accept: {
       "image/jpeg": [".jpg", ".jpeg"],
       "image/png": [".png"],
     },
     maxFiles: 4,
-    maxSize: 4 * 1024 * 1024,
+    maxSize: 6 * 1024 * 1024,
     onDrop: (acceptedFiles) => {
       uploadImages(acceptedFiles);
     },
@@ -36,17 +36,12 @@ export const ImageUploader = ({ _id, setIsGetImages }) => {
   const uploadImages = async (files) => {
     try {
       const body = new FormData();
-
       files.forEach((file) => {
         body.append("images", file);
       });
 
       body.append("task", _id);
-
-      console.log(files);
-      console.log(acceptedFiles);
       console.log(body);
-
       if (!fileRejections.length && !!files.length) {
         await addImage(body);
         dispatch(setModalThumbsNeedRefetch(true));
@@ -108,9 +103,9 @@ export const ImageUploader = ({ _id, setIsGetImages }) => {
               <img
                 className="image__loadingBox__tempThumbs"
                 alt={file.name}
-                src={URL.createObjectURL(file)}
+                src={URL.createObjectURL(file as Blob)}
                 onLoad={() => {
-                  URL.revokeObjectURL(file);
+                  URL.revokeObjectURL(file as string);
                 }}
               />
             </div>
