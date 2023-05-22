@@ -23,10 +23,14 @@ export const authSlice = createSlice({
       state.token = action.payload;
       state.isAuthenticated = true;
     },
+    setLogoutSuccess: (state: ResponseAuthType) => {
+      state.token = null;
+      state.isAuthenticated = false;
+    },
   },
 });
 
-export const { setLoginSuccess } = authSlice.actions;
+export const { setLoginSuccess, setLogoutSuccess } = authSlice.actions;
 
 export const selectAuthData = (state: AppState) => state.auth;
 

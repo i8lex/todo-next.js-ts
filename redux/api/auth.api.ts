@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 type RegistrationResponse = {
   message: string;
 };
-type RegistrationBody = {
+export type RegistrationBody = {
   name: string;
   email: string;
   password: string;
@@ -14,71 +14,47 @@ export type LoginBody = {
   password: string;
 };
 
-// const baseQuery: BaseQueryFn<any, any> = fetchBaseQuery({
-//   baseUrl: "http://localhost:3001/api",
-// });
-
-// export const authApi = createApi({
-//   reducerPath: "authApi",
-//   tagTypes: ["Authentications", "Error"],
-//   baseQuery: fetchBaseQuery({
-//     baseUrl: "http://localhost:3000/api",
-//   }),
-//   endpoints: (build) => ({
-//     registration: build.mutation<RegistrationResponse, RegistrationBody>({
-//       query: (body) => ({
-//         url: "/registration",
-//         method: "POST",
-//         body,
-//       }),
-//     }),
-//     login: build.mutation<void, LoginBody>({
-//       query: (body) => ({
-//         url: "/login",
-//         method: "POST",
-//         body,
-//       }),
-//     }),
-//   }),
-// });
-//
-// export const { useLoginMutation, useRegistrationMutation } = authApi;
+type EmailRepeatBody = {
+  email: string;
+};
 
 export const authApi = createApi({
   reducerPath: "authApi",
   tagTypes: ["Authentications", "Error"],
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3000/api/" }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: "http://localhost:3000/api",
+  }),
   endpoints: (build) => ({
-    registration: build.mutation({
+    registration: build.mutation<RegistrationResponse, RegistrationBody>({
       query: (body) => ({
         url: "/registration",
         method: "POST",
         body,
       }),
     }),
-    login: build.mutation({
+    login: build.mutation<void, LoginBody>({
       query: (body) => ({
         url: "/login",
         method: "POST",
         body,
       }),
     }),
-    emailRepeat: build.mutation({
+    emailRepeat: build.mutation<void, EmailRepeatBody>({
       query: (body) => ({
         url: "/email",
         method: "PUT",
         body,
       }),
     }),
-    emailConfirm: build.query({
+    emailConfirm: build.query<void, string>({
       query: (confirmId) => `/email/?confirm=${confirmId}`,
     }),
   }),
 });
 
 export const {
-  useRegistrationMutation,
   useLoginMutation,
-  useEmailRepeatMutation,
+  useRegistrationMutation,
   useEmailConfirmQuery,
+  useEmailRepeatMutation,
 } = authApi;

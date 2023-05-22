@@ -3,7 +3,7 @@ import { Form, Formik } from "formik";
 import { ModalAuth } from "../../components/ModalAuth";
 import * as yup from "yup";
 import { Input } from "../../components/Input";
-// import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/router";
 import { setLoginSuccess } from "../../redux/slices/auth.slice";
 import { LoginBody, useLoginMutation } from "../../redux/api/auth.api";
 import { useAppDispatch } from "../../redux/hooks";
@@ -14,7 +14,7 @@ const LoginPage: FC = () => {
   const [message, setMessage] = useState("");
   const [email, setEmail] = useState("");
   const [confirmed, setConfirmed] = useState("");
-  // const navigate = useNavigate();
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const [login] = useLoginMutation();
 
@@ -48,7 +48,7 @@ const LoginPage: FC = () => {
           console.log(data);
           dispatch(setLoginSuccess(data.token));
           setTimeout(() => {
-            // navigate("/tasks");
+            router.push("/tasks");
             handleClose();
           }, 3000);
         }
@@ -78,7 +78,7 @@ const LoginPage: FC = () => {
 
           <Formik
             initialValues={{ email: "", password: "" }}
-            onSubmit={(values) => handleSubmit(values)}
+            onSubmit={(values) => handleSubmit(values as LoginBody)}
             validationSchema={yup.object().shape({
               email: yup
                 .string()
@@ -103,7 +103,6 @@ const LoginPage: FC = () => {
                 name="email"
                 id="password"
                 step={1}
-                // defaultValue=""
               />
               <div className="login__passwordBox">
                 <Input
@@ -112,7 +111,6 @@ const LoginPage: FC = () => {
                   type={!showPassword ? "password" : "text"}
                   id="password"
                   step={1}
-                  // defaultValue=""
                 />
                 <button
                   onClick={toggleShowPassword}

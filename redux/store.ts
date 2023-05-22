@@ -12,6 +12,7 @@ import {
   REGISTER,
 } from "redux-persist";
 import { authSlice } from "./slices/auth.slice";
+import { createWrapper } from "next-redux-wrapper";
 
 const authPersistConfig = {
   key: "authApi",
@@ -36,7 +37,7 @@ export function makeStore() {
 }
 
 export const store = makeStore();
-
+export const wrapper = createWrapper(makeStore);
 export type AppState = ReturnType<typeof store.getState>;
 
 export type AppDispatch = typeof store.dispatch;
