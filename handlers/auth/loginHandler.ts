@@ -32,6 +32,7 @@ export const loginHandler = async (
             expiresIn: "24h",
           }
         );
+        console.log(token);
         return reply.status(200).send({
           id: user.id,
           message: `Welcome ${user.name}`,

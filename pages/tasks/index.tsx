@@ -76,7 +76,7 @@ const TasksPage = () => {
                         setDeleteConfirmModal({
                           isOpen: true,
                           handleConfirm: async () => {
-                            await deleteTask(`?ids=${checkedTasks}`);
+                            await deleteTask(`${checkedTasks}`);
                             dispatch(clearTasks([]));
                           },
                         })

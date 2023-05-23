@@ -8,8 +8,7 @@ export const deleteTaskHandler = async (request, reply) => {
   const authHeader = request.headers.authorization;
   const token = authHeader ? authHeader.split(" ")[1] : null;
   const { userId } = await verify(token, process.env.SECRET_WORD);
-  const { ids } = request.query;
-
+  const { id: ids } = request.query;
   try {
     if (Object.keys(ids.split(",")).length === 0) {
       const tasks = await Task.find({ user: userId });

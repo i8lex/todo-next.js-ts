@@ -15,7 +15,6 @@ export default authMiddleware(async function tasksHandlers(
   switch (method) {
     case "GET":
       try {
-        await getTaskHandler(req, res);
       } catch (error) {
         console.log(error);
         res.status(500).json({ message: "Internal server error" });
@@ -24,7 +23,6 @@ export default authMiddleware(async function tasksHandlers(
 
     case "POST":
       try {
-        await createTaskHandler(req, res);
       } catch (error) {
         console.log(error);
         res.status(500).json({ message: "Internal server error" });
@@ -34,6 +32,7 @@ export default authMiddleware(async function tasksHandlers(
 
     case "PUT":
       try {
+        await changeTaskHandler(req, res);
       } catch (error) {
         console.log(error);
         res.status(500).json({ message: "Internal server error" });
@@ -43,6 +42,7 @@ export default authMiddleware(async function tasksHandlers(
 
     case "DELETE":
       try {
+        await deleteTaskHandler(req, res);
       } catch (error) {
         console.log(error);
         res.status(500).json({ message: "Internal server error" });
