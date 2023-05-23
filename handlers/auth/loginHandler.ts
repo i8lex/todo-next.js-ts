@@ -13,17 +13,16 @@ export const loginHandler = async (
   const { email, password } = request.body;
 
   const user = await User.findOne({ email });
-
   if (!user) {
     return reply.status(401).send({ error: "Wrong email or password" });
   } else {
     const isPasswordCorrect = await compare(password, user.password);
 
     if (isPasswordCorrect) {
-      if (!user.isconfirmed) {
+      if (!user.isConfirmed) {
         return reply.status(401).send({
           error: "Please activate you're account",
-          confirmed: user.isconfirmed,
+          confirmed: user.isConfirmed,
         });
       } else {
         const token = await sign(
@@ -36,7 +35,7 @@ export const loginHandler = async (
         return reply.status(200).send({
           id: user.id,
           message: `Welcome ${user.name}`,
-          confirmed: user.isconfirmed,
+          confirmed: user.isConfirmed,
           token: token,
         });
         // .setCookie("my-cookie", "cookie-value", {

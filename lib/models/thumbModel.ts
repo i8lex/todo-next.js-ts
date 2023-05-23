@@ -40,4 +40,5 @@ const thumbSchema: Schema = new Schema({
   created_at: { type: Date, default: Date.now },
 });
 
-export const Thumb = mongoose.models.Thumb;
+export const Thumb =
+  mongoose.models.Thumb || mongoose.model<ThumbType>("Thumb", thumbSchema);
