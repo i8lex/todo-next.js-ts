@@ -73,13 +73,14 @@ const TasksPage = () => {
                       className="tasks__buttonDelete"
                       type="button"
                       onClick={() =>
-                        setDeleteConfirmModal({
+                        setDeleteConfirmModal((prevState: any) => ({
+                          ...prevState,
                           isOpen: true,
                           handleConfirm: async () => {
-                            await deleteTask(`${checkedTasks}`);
+                            await deleteTask(checkedTasks);
                             dispatch(clearTasks([]));
                           },
-                        })
+                        }))
                       }
                     >
                       Delete checked
