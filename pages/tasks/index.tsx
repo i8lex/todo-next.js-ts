@@ -24,7 +24,7 @@ const TasksPage = () => {
     title: "",
   });
   const dispatch = useAppDispatch();
-  const checkedTasks = useAppSelector((state) => state.tasks);
+  const { tasks: checkedTasks } = useAppSelector((state) => state.tasks);
 
   const [editModal, setEditModal] = useState({
     isOpen: false,
@@ -68,7 +68,7 @@ const TasksPage = () => {
                   <button className="tasks__buttonCreate" type="submit">
                     Create
                   </button>
-                  {!!checkedTasks.length && (
+                  {checkedTasks.length ? (
                     <button
                       className="tasks__buttonDelete"
                       type="button"
@@ -77,14 +77,14 @@ const TasksPage = () => {
                           isOpen: true,
                           handleConfirm: async () => {
                             await deleteTask(`?ids=${checkedTasks}`);
-                            dispatch(clearTasks());
+                            dispatch(clearTasks([]));
                           },
                         })
                       }
                     >
                       Delete checked
                     </button>
-                  )}
+                  ) : null}
                 </div>
               </Form>
             </Formik>

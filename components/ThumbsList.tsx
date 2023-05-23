@@ -70,7 +70,7 @@ export const ThumbsList = ({ _id, images }) => {
                 <img
                   alt={filename}
                   className="tasks__item__thumb"
-                  src={`data:${mimetype};base64,${thumb.toString("base64")}`}
+                  src={`data:${mimetype};base64,${thumb.toString()}`}
                 />
               </li>
             );

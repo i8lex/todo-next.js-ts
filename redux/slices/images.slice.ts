@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState = {
   image: {
@@ -16,10 +16,10 @@ const imageSlice = createSlice({
   name: "image",
   initialState,
   reducers: {
-    setThumbsNeedRefetch: (state, action) => {
+    setThumbsNeedRefetch: (state, action: PayloadAction<boolean>) => {
       state.thumbsNeedRefetch = action.payload;
     },
-    setModalThumbsNeedRefetch: (state, action) => {
+    setModalThumbsNeedRefetch: (state, action: PayloadAction<boolean>) => {
       state.modalThumbsNeedRefetch = action.payload;
     },
     setImage: (state, action) => {

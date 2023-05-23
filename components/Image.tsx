@@ -20,7 +20,7 @@ export const Image = () => {
     return (
       <div className="image__imageBox">
         <img
-          src={`data:${mimetype};base64,${thumb.toString("base64")}`}
+          src={`data:${mimetype};base64,${thumb.toString()}`}
           alt={filename}
           className="image__imageBox__img"
         />
@@ -34,7 +34,7 @@ export const Image = () => {
   return (
     <div className="image__imageBox">
       <img
-        src={`data:${image.mimetype};base64,${image.image.toString("base64")}`}
+        src={`data:${image.mimetype};base64,${image.image.toString()}`}
         alt={image.filename}
         className="image__imageBox__img"
       />
