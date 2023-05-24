@@ -22,16 +22,17 @@ const TasksPage = () => {
   const [deleteConfirmModal, setDeleteConfirmModal] = useState({
     isOpen: false,
     title: "",
+    handleConfirm: () => {},
   });
-  const dispatch = useAppDispatch();
-  const { tasks: checkedTasks } = useAppSelector((state) => state.tasks);
-
   const [editModal, setEditModal] = useState({
     isOpen: false,
     title: "",
     data: {},
     handleConfirm: () => {},
   });
+
+  const dispatch = useAppDispatch();
+  const { tasks: checkedTasks } = useAppSelector((state) => state.tasks);
 
   if (isLoading) {
     return <h1>...LOADING...</h1>;

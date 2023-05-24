@@ -83,7 +83,7 @@ export const TasksList = ({
                   isOpen: true,
                   title: title,
                   handleConfirm: async () => {
-                    await deleteTask(`?ids=${_id}`);
+                    await deleteTask(_id);
                   },
                 })
               }
