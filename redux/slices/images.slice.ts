@@ -7,7 +7,7 @@ type Image = {
   filename: string | null;
 };
 
-type ImageStateType = {
+export type ImageStateType = {
   image: Image;
   thumbsNeedRefetch: boolean;
   modalThumbsNeedRefetch: boolean;
@@ -56,7 +56,7 @@ const imageSlice = createSlice({
         );
       }
     },
-    clearCheckedImages: (state) => {
+    clearCheckedImages: (state: ImageStateType) => {
       return {
         ...state,
         checkedImages: [],
