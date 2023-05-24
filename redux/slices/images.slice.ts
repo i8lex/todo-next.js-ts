@@ -1,6 +1,20 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-const initialState = {
+type Image = {
+  imageId: string | null;
+  mimetype: string | null;
+  thumb: string | null;
+  filename: string | null;
+};
+
+type ImageStateType = {
+  image: Image;
+  thumbsNeedRefetch: boolean;
+  modalThumbsNeedRefetch: boolean;
+  checkedImages: string[];
+};
+
+const initialState: ImageStateType = {
   image: {
     imageId: null,
     mimetype: null,
@@ -16,16 +30,22 @@ const imageSlice = createSlice({
   name: "image",
   initialState,
   reducers: {
-    setThumbsNeedRefetch: (state, action: PayloadAction<boolean>) => {
+    setThumbsNeedRefetch: (
+      state: ImageStateType,
+      action: PayloadAction<boolean>
+    ) => {
       state.thumbsNeedRefetch = action.payload;
     },
-    setModalThumbsNeedRefetch: (state, action: PayloadAction<boolean>) => {
+    setModalThumbsNeedRefetch: (
+      state: ImageStateType,
+      action: PayloadAction<boolean>
+    ) => {
       state.modalThumbsNeedRefetch = action.payload;
     },
-    setImage: (state, action) => {
+    setImage: (state: ImageStateType, action) => {
       state.image = action.payload;
     },
-    setCheckedImages: (state, action) => {
+    setCheckedImages: (state: ImageStateType, action) => {
       const { imageId, isChecked } = action.payload;
 
       if (isChecked) {
