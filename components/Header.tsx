@@ -10,7 +10,7 @@ const Header = () => {
   const router = useRouter();
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const handleLogout = async () => {
-    dispatch(setLogoutSuccess());
+    dispatch(setLogoutSuccess({ isAuthenticated: false, token: null }));
     await router.push("/login");
   };
 
