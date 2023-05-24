@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-type TasksState = {
+type TasksStateType = {
   tasks: string[];
 };
 
-const initialState: TasksState = {
+const initialState: TasksStateType = {
   tasks: [],
 };
 
@@ -13,7 +13,7 @@ const tasksSlice = createSlice({
   initialState,
   reducers: {
     toggleTask: (
-      state,
+      state: TasksStateType,
       action: PayloadAction<{ itemId: string; isChecked: boolean }>
     ) => {
       const { itemId, isChecked } = action.payload;
@@ -27,7 +27,7 @@ const tasksSlice = createSlice({
         }
       }
     },
-    clearTasks: (state) => {
+    clearTasks: (state: TasksStateType) => {
       state.tasks = [];
     },
   },
