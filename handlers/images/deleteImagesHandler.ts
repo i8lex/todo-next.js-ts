@@ -8,7 +8,6 @@ export const deleteImagesHandler = async (request, reply) => {
   const token = authHeader ? authHeader.split(" ")[1] : null;
   const { userId } = await verify(token, process.env.SECRET_WORD);
   const { id: ids } = request.query;
-  console.log(ids);
 
   try {
     if (Object.keys(ids.split(",")).length === 0) {
