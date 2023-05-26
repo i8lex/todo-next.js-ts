@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 import { Form, Formik } from "formik";
-import { Input } from "../../components/Input";
+import { Input } from "@/components/Input";
 import {
   useGetTasksQuery,
   useAddTaskMutation,
   useDeleteTaskMutation,
   usePathTaskMutation,
-} from "../../redux/api/tasks.api";
-import { ModalDeleteConfirm } from "../../components/ModalDeleteConfirm";
-import { form } from "../../constants/form";
-import { ModalEditProject } from "../../components/ModalEditProject";
-import { TasksList } from "../../components/TasksList";
-import { clearTasks } from "../../redux/slices/tasks.slice";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+} from "@/redux/api/tasks.api";
+import { ModalDeleteConfirm } from "@/components/ModalDeleteConfirm";
+import { form } from "@/constants/form";
+import { ModalEditProject } from "@/components/ModalEditProject";
+import { TasksList } from "@/components/TasksList";
+import { clearTasks } from "@/redux/slices/tasks.slice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 
 const TasksPage = () => {
   const { data = [], isLoading } = useGetTasksQuery();
@@ -38,6 +38,7 @@ const TasksPage = () => {
     return <h1>...LOADING...</h1>;
   }
 
+
   return (
     <section className="tasks">
       <div className="container">
@@ -58,12 +59,24 @@ const TasksPage = () => {
             >
               <Form className="tasks__form">
                 <h4 className="tasks__create">Create project</h4>
-                <Input name="title" label="Title" required />
+                <Input
+                    name="title"
+                    label="Title"
+                    required={true}
+                    id="createTaskTitle"
+                    as="input"
+                    type="text"
+                    step={1}
+                    defaultValue=""/>
                 <Input
                   name="description"
                   as="textarea"
                   label="Description"
-                  required
+                  required={false}
+                  id="createTaskDescription"
+                  type="text"
+                  defaultValue=""
+                  step={1}
                 />
                 <div className="tasks__buttonBox">
                   <button className="tasks__buttonCreate" type="submit">
@@ -79,7 +92,7 @@ const TasksPage = () => {
                           isOpen: true,
                           handleConfirm: async () => {
                             await deleteTask(checkedTasks);
-                            dispatch(clearTasks([]));
+                            dispatch(clearTasks());
                           },
                         }))
                       }
