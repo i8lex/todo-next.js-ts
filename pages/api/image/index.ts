@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import db from "../../../lib/db";
-import { getImageHandler } from "../../../handlers/images/getImageHandler";
-import { authMiddleware } from "../../../middlewares/authMiddleware";
-import { uploadImageHandler } from "../../../handlers/images/uploadImageHandler";
+import { getImageHandler } from "@/handlers/images/getImageHandler";
+import { authMiddleware } from "@/middlewares/authMiddleware";
+import { uploadImageHandler } from "@/handlers/images/uploadImageHandler";
 
 export const config = {
   api: {

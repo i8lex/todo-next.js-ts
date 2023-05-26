@@ -36,15 +36,18 @@ export const ImageUploader: FC<ImageUploaderProps> = ({ _id, setIsGetImages }) =
   const [addImage, { isLoading, isSuccess }] = useAddImageMutation()
 
 
-  const uploadImages = async (files: Images) => {
+  const uploadImages = async (files: File[]) => {
     try {
-      const body = new FormData();
+      const body: FormData = new FormData();
+      console.log(files)
+
       files.forEach((file) => {
         body.append("images", file);
       });
 
       body.append("task", _id);
       console.log(body);
+
       if (!fileRejections.length && !!files.length) {
         await addImage(body);
         dispatch(setModalThumbsNeedRefetch(true));
@@ -56,6 +59,34 @@ export const ImageUploader: FC<ImageUploaderProps> = ({ _id, setIsGetImages }) =
       console.log(error);
     }
   };
+
+  // const uploadImages = async (files: File[]) => {
+  //   try {
+  //     const body: FormData = new FormData();
+  //     files.forEach((file) => {
+  //       body.append("images", file);
+  //     });
+  //
+  //     body.append("task", _id);
+  //
+  //     const imageArray = Array.from(body.getAll("images"));
+  //     const payload = { images: imageArray, task: _id };
+  //
+  //     console.log(payload);
+  //
+  //     if (!fileRejections.length && !!files.length) {
+  //       await addImage(payload);
+  //       dispatch(setModalThumbsNeedRefetch(true));
+  //       setIsGetImages(true);
+  //     }
+  //
+  //     // setIsGetImages(true);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+
 
   // if (!fileRejections.length) {
   //   setIsGetImages(false);
