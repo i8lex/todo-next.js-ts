@@ -1,21 +1,26 @@
-import React, { useEffect, useState } from "react";
-import { useGetThumbsQuery } from "../redux/api/images.api";
+import React, {FC, useEffect, useState} from "react";
+import { useGetThumbsQuery } from "@/redux/api/images.api";
 import { ModalThumbsList } from "./ModalThumbsList";
 import { ImageUploader } from "./ImageUploader";
 import {
   setImage,
   setModalThumbsNeedRefetch,
   setThumbsNeedRefetch,
-} from "../redux/slices/images.slice";
-import { useAppDispatch, useAppSelector } from "../redux/hooks";
+} from "@/redux/slices/images.slice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import {Images} from "@/types";
 
-export const ThumbsList = ({ _id, images }) => {
+type ThumbListProps = {
+  _id: string
+  images: Images[]
+}
+
+export const ThumbsList: FC<ThumbListProps> = ({ _id, images }) => {
   const dispatch = useAppDispatch();
   const [isThumbsOpen, setIsThumbsOpen] = useState(false);
   const [isGetImages, setIsGetImages] = useState(false);
   const { data = [], refetch, isLoading } = useGetThumbsQuery(_id);
   const { modalThumbsNeedRefetch } = useAppSelector((state) => state.image);
-
   useEffect(() => {
     if (isGetImages && !!images.length) {
       refetch();
@@ -39,9 +44,9 @@ export const ThumbsList = ({ _id, images }) => {
     setIsThumbsOpen(!isThumbsOpen);
   };
 
-  const handleFileSelect = (files) => {
-    console.log(files);
-  };
+  // const handleFileSelect = (files) => {
+  //   console.log(files);
+  // };
 
   return (
     <>
@@ -49,7 +54,6 @@ export const ThumbsList = ({ _id, images }) => {
         <div className="image__uploadBoxSmall">
           <ImageUploader
             setIsGetImages={setIsGetImages}
-            onFileSelect={handleFileSelect}
             _id={_id}
           />
         </div>

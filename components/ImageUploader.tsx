@@ -1,10 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, {FC, useEffect, useState} from "react";
 import { useDropzone, DropzoneOptions } from "react-dropzone";
-import { useAddImageMutation } from "../redux/api/images.api";
-import { setModalThumbsNeedRefetch } from "../redux/slices/images.slice";
-import { useAppDispatch } from "../redux/hooks";
+import { useAddImageMutation } from "@/redux/api/images.api";
+import { setModalThumbsNeedRefetch } from "@/redux/slices/images.slice";
+import { useAppDispatch } from "@/redux/hooks";
+import {Image, Images} from "@/types";
 
-export const ImageUploader = ({ _id, setIsGetImages }) => {
+type ImageUploaderProps = {
+  _id: string
+  setIsGetImages: React.Dispatch<React.SetStateAction<boolean>>;
+
+}
+export const ImageUploader: FC<ImageUploaderProps> = ({ _id, setIsGetImages }) => {
   const [isUploadSuccess, setIsUploadIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
 
@@ -15,7 +21,7 @@ export const ImageUploader = ({ _id, setIsGetImages }) => {
     fileRejections,
     getRootProps,
     getInputProps,
-  } = useDropzone<DropzoneOptions>({
+  } = useDropzone({
     accept: {
       "image/jpeg": [".jpg", ".jpeg"],
       "image/png": [".png"],
@@ -27,13 +33,10 @@ export const ImageUploader = ({ _id, setIsGetImages }) => {
     },
   });
 
-  const [addImage, { isLoading, isSuccess }] = useAddImageMutation({
-    onError: (error) => {
-      console.error(error);
-    },
-  });
+  const [addImage, { isLoading, isSuccess }] = useAddImageMutation()
 
-  const uploadImages = async (files) => {
+
+  const uploadImages = async (files: Images) => {
     try {
       const body = new FormData();
       files.forEach((file) => {

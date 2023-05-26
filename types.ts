@@ -8,8 +8,43 @@ export type ModalAuthProps = {
   message: string;
 };
 
-export type Images = {
-  image: Image;
+export type Images =  Image[]
+
+export type Image = {
+  _id: string
+  user: string
+  task: string
+  image: string
+  filename: string
+  mimetype: string
+  thumb: string
+  thumbPath: string
+  created_at: string
+  __v: number
 };
 
-export type Image = {};
+export type AuthState = {
+  auth: {
+    token: string;
+  }
+}
+
+export type Tasks = Task[];
+
+export type Task = {
+  _id: string;
+  user: string;
+  title: string;
+  description: string;
+  done: boolean;
+  created: string;
+  __v: number;
+  deadline?: string;
+  images: string[];
+};
+
+export type AddTask = {
+  title: string;
+  description?: string;
+  deadline?: string;
+};

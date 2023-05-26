@@ -1,29 +1,7 @@
 import {BaseQueryApi, createApi, fetchBaseQuery, TagDescription} from "@reduxjs/toolkit/query/react";
+import {AddTask, AuthState, Tasks} from "@/types";
 
-export type Tasks = Task[];
 
-export type Task = {
-  _id: string;
-  user: string;
-  title: string;
-  description: string;
-  done: boolean;
-  created: string;
-  __v: number;
-  deadline?: string;
-  images: string[];
-};
-
-export type AddTask = {
-  title: string;
-  description?: string;
-  deadline?: string;
-};
-type AuthState = {
-  auth: {
-    token: string;
-  }
-}
 const prepareHeaders = (headers: Headers, { getState }: Pick<BaseQueryApi, "getState" | "extra" | "endpoint" | "type" | "forced">) => {
   const token = (getState() as AuthState).auth.token;
   if (token) {
