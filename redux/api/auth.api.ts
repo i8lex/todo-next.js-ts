@@ -3,6 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 type RegistrationResponse = {
   message: string;
 };
+
 export type RegistrationBody = {
   name: string;
   email: string;

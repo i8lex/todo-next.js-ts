@@ -1,8 +1,6 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import {BaseQueryApi, createApi, fetchBaseQuery, TagDescription} from "@reduxjs/toolkit/query/react";
 
-export type Tasks = {
-  Task: Task[];
-};
+export type Tasks = Task[];
 
 export type Task = {
   _id: string;
@@ -21,35 +19,41 @@ export type AddTask = {
   description?: string;
   deadline?: string;
 };
-
-const prepareHeaders = (headers, { getState }) => {
-  const token = getState().auth.token;
+type AuthState = {
+  auth: {
+    token: string;
+  }
+}
+const prepareHeaders = (headers: Headers, { getState }: Pick<BaseQueryApi, "getState" | "extra" | "endpoint" | "type" | "forced">) => {
+  const token = (getState() as AuthState).auth.token;
   if (token) {
     headers.set("Authorization", `Bearer ${token}`);
   }
-
   return headers;
 };
 
 export const tasksApi = createApi({
   reducerPath: "tasksApi",
-  tagTypes: ["Tasks"],
+  tagTypes: ["Tasks", "Task"],
   baseQuery: fetchBaseQuery({
     baseUrl: "http://localhost:3000/api/",
     prepareHeaders,
   }),
 
   endpoints: (build) => ({
-    getTasks: build.query<Tasks, null>({
+    getTasks: build.query<Tasks, void>({
       query: () => "tasks",
-      providesTags: (result) =>
-        result
-          ? [
-              ...result.map(({ id }) => ({ type: "Tasks", id })),
-              { type: "Tasks", id: "LIST" },
-            ]
-          : [{ type: "Tasks", id: "LIST" }],
+      providesTags: (result: Tasks | undefined): (TagDescription<"Tasks"> | TagDescription<"Task">)[] =>
+          result
+              ? [
+                ...result.map(({ _id }) => ({ type: "Task" as const, _id })),
+                { type: "Tasks" as const, id: "LIST" },
+              ]
+              : [{ type: "Tasks" as const, id: "LIST" }],
     }),
+
+
+
     addTask: build.mutation<void, AddTask>({
       query: (body) => ({
         url: "tasks",
@@ -58,7 +62,7 @@ export const tasksApi = createApi({
       }),
       invalidatesTags: [{ type: "Tasks", id: "LIST" }],
     }),
-    pathTask: build.mutation<void, AddTask>({
+    pathTask: build.mutation<void, { id: string; body: AddTask }>({
       query: ({ id, body }) => ({
         url: `tasks/${id}`,
         method: "PUT",
