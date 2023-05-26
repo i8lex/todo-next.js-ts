@@ -4,6 +4,11 @@ import { clearCheckedImages, setImage } from "../redux/slices/images.slice";
 import { Image } from "./Image";
 import { ImageUploader } from "./ImageUploader";
 import ImagesCheckbox from "./ImagesCheckbox";
+import {
+  PencilSquareIcon,
+  TrashIcon,
+  PowerIcon,
+} from "@heroicons/react/20/solid";
 import { useDeleteImageMutation } from "../redux/api/images.api";
 import { ModalDeleteConfirm } from "./ModalDeleteConfirm";
 import { usePathTaskMutation } from "../redux/api/tasks.api";
@@ -115,47 +120,49 @@ export const ModalThumbsList = ({
         ) : (
           <Image />
         )}
+        <div className="flex flex-col gap-4">
+          <button
+            // className="image__close"
+            type="button"
+            onClick={() => {
+              dispatch(setImage({}));
+              modalThumbsHandler();
+              dispatch(clearCheckedImages());
+              setIsGetImages(false);
+              setIsButtonModifyActive(false);
+            }}
+          >
+            <PowerIcon className="h-6 w-6" />
+          </button>
+          <button
+            className={buttonModifyClassName}
+            type="button"
+            onClick={buttonModifyHandle}
+          >
+            <PencilSquareIcon className="h-6 w-6" />
+          </button>
+          <button
+            // className="image__deleteBtn"
+            type="button"
+            onClick={() =>
+              setDeleteConfirmModal({
+                isOpen: true,
+                handleConfirm: async () => {
+                  await deleteImage(checkedImages);
+                  await deleteImagesFromTaskFieldHandle(
+                    checkedImages,
+                    images,
+                    taskId
+                  );
+                  dispatch(clearCheckedImages());
+                },
+              })
+            }
+          >
+            <TrashIcon className="h-6 w-6" />
+          </button>
+        </div>
 
-        <button
-          className="image__close"
-          type="button"
-          onClick={() => {
-            dispatch(setImage({}));
-            modalThumbsHandler();
-            dispatch(clearCheckedImages());
-            setIsGetImages(false);
-            setIsButtonModifyActive(false);
-          }}
-        >
-          <></>
-        </button>
-        <button
-          className={buttonModifyClassName}
-          type="button"
-          onClick={buttonModifyHandle}
-        >
-          <></>
-        </button>
-        <button
-          className="image__deleteBtn"
-          type="button"
-          onClick={() =>
-            setDeleteConfirmModal({
-              isOpen: true,
-              handleConfirm: async () => {
-                await deleteImage(`?ids=${checkedImages}`);
-                await deleteImagesFromTaskFieldHandle(
-                  checkedImages,
-                  images,
-                  taskId
-                );
-                dispatch(clearCheckedImages());
-              },
-            })
-          }
-        >
-          <></>
-        </button>
         <ModalDeleteConfirm
           isOpen={deleteConfirmModal.isOpen}
           handleClose={() => {

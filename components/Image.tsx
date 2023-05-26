@@ -1,5 +1,4 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import { useGetImageQuery } from "../redux/api/images.api";
 import { useAppSelector } from "../redux/hooks";
 
