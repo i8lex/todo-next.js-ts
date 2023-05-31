@@ -9,7 +9,7 @@ type InputType = {
   required: boolean;
   type: string;
   step: number;
-  defaultValue: string;
+  defaultValue?: string;
 };
 
 export const Input: FC<InputType> = ({

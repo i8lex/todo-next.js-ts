@@ -67,7 +67,7 @@ const TasksPage = () => {
                     as="input"
                     type="text"
                     step={1}
-                    defaultValue=""/>
+                    />
                 <Input
                   name="description"
                   as="textarea"
@@ -75,7 +75,6 @@ const TasksPage = () => {
                   required={false}
                   id="createTaskDescription"
                   type="text"
-                  defaultValue=""
                   step={1}
                 />
                 <div className="tasks__buttonBox">
