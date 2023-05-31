@@ -1,15 +1,26 @@
 import React, {FC, useEffect, useState} from "react";
-import { useDropzone, DropzoneOptions } from "react-dropzone";
+import { useDropzone } from "react-dropzone";
 import { useAddImageMutation } from "@/redux/api/images.api";
 import { setModalThumbsNeedRefetch } from "@/redux/slices/images.slice";
 import { useAppDispatch } from "@/redux/hooks";
-import {Image, Images} from "@/types";
+// import {Image, Images} from "@/types";
 
 type ImageUploaderProps = {
   _id: string
   setIsGetImages: React.Dispatch<React.SetStateAction<boolean>>;
-
 }
+
+
+// type Image ={
+//   path: string;
+//   lastModified: number;
+//   lastModifiedDate: Date;
+//   name: string;
+//   size: number;
+//   type: string;
+//   webkitRelativePath: string;
+// }
+
 export const ImageUploader: FC<ImageUploaderProps> = ({ _id, setIsGetImages }) => {
   const [isUploadSuccess, setIsUploadIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -48,7 +59,10 @@ export const ImageUploader: FC<ImageUploaderProps> = ({ _id, setIsGetImages }) =
       body.append("task", _id);
       console.log(body);
 
-      if (!fileRejections.length && !!files.length) {
+
+      if (!fileRejections.length && files.length) {
+        console.log("done")
+        // @ts-ignore
         await addImage(body);
         dispatch(setModalThumbsNeedRefetch(true));
         setIsGetImages(true);
@@ -64,23 +78,22 @@ export const ImageUploader: FC<ImageUploaderProps> = ({ _id, setIsGetImages }) =
   //   try {
   //     const body: FormData = new FormData();
   //     files.forEach((file) => {
-  //       body.append("images", file);
+  //       body.append("files", file);
   //     });
   //
   //     body.append("task", _id);
   //
-  //     const imageArray = Array.from(body.getAll("images"));
-  //     const payload = { images: imageArray, task: _id };
+  //     const imageArray = Array.from(body.getAll("files"));
+  //     const payload = { files: imageArray, task: _id };
   //
   //     console.log(payload);
   //
-  //     if (!fileRejections.length && !!files.length) {
+  //     if (!fileRejections.length && files.length) {
   //       await addImage(payload);
   //       dispatch(setModalThumbsNeedRefetch(true));
   //       setIsGetImages(true);
   //     }
   //
-  //     // setIsGetImages(true);
   //   } catch (error) {
   //     console.log(error);
   //   }
@@ -94,7 +107,7 @@ export const ImageUploader: FC<ImageUploaderProps> = ({ _id, setIsGetImages }) =
   // }
 
   useEffect(() => {
-    let timer;
+    let timer: NodeJS.Timeout ;
     if (isSuccess) {
       setIsUploadIsSuccess(isSuccess);
       timer = setTimeout(() => {
@@ -106,7 +119,7 @@ export const ImageUploader: FC<ImageUploaderProps> = ({ _id, setIsGetImages }) =
   }, [isSuccess]);
 
   useEffect(() => {
-    let timer;
+    let timer: NodeJS.Timeout;
     if (!!fileRejections.length) {
       setIsError(true);
       setIsGetImages(false);
@@ -139,7 +152,7 @@ export const ImageUploader: FC<ImageUploaderProps> = ({ _id, setIsGetImages }) =
                 alt={file.name}
                 src={URL.createObjectURL(file as Blob)}
                 onLoad={() => {
-                  URL.revokeObjectURL(file as string);
+                  URL.revokeObjectURL(file as unknown as string);
                 }}
               />
             </div>
