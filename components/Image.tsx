@@ -1,6 +1,6 @@
 import React from "react";
-import { useGetImageQuery } from "../redux/api/images.api";
-import { useAppSelector } from "../redux/hooks";
+import { useGetImageQuery } from "@/redux/api/images.api";
+import { useAppSelector } from "@/redux/hooks";
 
 export const Image = () => {
   const { imageId, mimetype, thumb, filename } = useAppSelector(
@@ -12,7 +12,7 @@ export const Image = () => {
     isError,
   } = useGetImageQuery(imageId, {
     skip: !imageId,
-    enabled: !!imageId,
+    // enabled: imageId,
   });
   console.log(image);
   if (isLoading) {

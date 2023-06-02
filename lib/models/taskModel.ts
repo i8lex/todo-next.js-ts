@@ -27,7 +27,7 @@ const TaskSchema = new mongoose.Schema({
     default: false,
   },
   created: { type: Date, default: Date.now },
-  deadline: { type: Date },
+  deadline: { type: Date, default: new Date(0) },
 });
 
 export const Task =

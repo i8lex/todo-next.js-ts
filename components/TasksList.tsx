@@ -1,55 +1,63 @@
-import React from "react";
+import React, { FC } from "react";
 import { format, parseISO } from "date-fns";
 import { Timer } from "./Timer";
-import TasksCheckbox from "./TasksCheckbox";
+import TasksCheckBox from "./TasksCheckBox";
 // import { useGetThumbsQuery } from "../providers/redux/images/imageApi";
 import { ThumbsList } from "./ThumbsList";
+import { DeleteConfirmModal, EditModal, Task } from "@/types";
 
-export const TasksList = ({
-  _id,
-  title,
-  description,
-  created,
-  deadline,
+type TasksListProps = {
+  task: Task;
+  setDeleteConfirmModal: React.Dispatch<
+    React.SetStateAction<DeleteConfirmModal>
+  >;
+  setEditModal: React.Dispatch<React.SetStateAction<EditModal>>;
+  deleteTask: (params: string) => Promise<void>;
+  pathTask: (params: { id: string; body: any }) => Promise<void>;
+};
+
+export const TasksList: FC<TasksListProps> = ({
+  task,
   setDeleteConfirmModal,
   setEditModal,
   deleteTask,
   pathTask,
-  images,
 }) => {
   return (
     <li className="tasks__itemBox">
       <div className="tasks__item">
         <div className="tasks__item__container">
-          <h4 className="tasks__item__title">{title}</h4>
-          <p className="tasks__item__description">{description}</p>
+          <h4 className="tasks__item__title">{task.title}</h4>
+          <p className="tasks__item__description">{task.description}</p>
           <div className="tasks__item__dateBox">
             <div>
               <p className="tasks__item__dateText">Created at:</p>
               <p className="tasks__item__date">
-                {format(parseISO(created), "d MMM yyyy")}
+                {task.created && format(parseISO(task.created), "d MMM yyyy")}
               </p>
               <p className="tasks__item__date">
-                {format(parseISO(created), "HH:mm:ss")}
+                {task.created && format(parseISO(task.created), "HH:mm:ss")}
               </p>
             </div>
             <div>
               <p className="tasks__item__dateText">Deadline at:</p>
-              {deadline !== "Not set" ? (
+              {task.deadline !== "1970-01-01T00:00:00.000Z" ? (
                 <>
                   <p className="tasks__item__date">
-                    {format(parseISO(deadline), "d MMM yyyy")}
+                    {task.deadline &&
+                      format(parseISO(task.deadline), "d MMM yyyy")}
                   </p>
                   <p className="tasks__item__date">
-                    {format(parseISO(deadline), "HH:mm:ss")}
+                    {task.deadline &&
+                      format(parseISO(task.deadline), "HH:mm:ss")}
                   </p>
                 </>
               ) : (
-                <p className="tasks__item__date">{deadline}</p>
+                <p className="tasks__item__date">Not set</p>
               )}
             </div>
 
-            <Timer deadline={deadline} />
+            <Timer deadline={task.deadline} />
           </div>
           <div className="tasks__item__iconBox">
             <button
@@ -57,10 +65,16 @@ export const TasksList = ({
               onClick={() => {
                 setEditModal({
                   isOpen: true,
-                  data: { title, description, deadline },
-                  handleConfirm: async (values) => {
+                  data: {
+                    title: task.title,
+                    description: task.description,
+                    deadline: task.deadline,
+                  },
+                  handleConfirm: async (values: void) => {
                     try {
-                      await pathTask({ id: _id, body: values });
+                      if (task._id) {
+                        await pathTask({ id: task._id, body: values });
+                      }
 
                       setEditModal((prevState) => ({
                         ...prevState,
@@ -68,7 +82,7 @@ export const TasksList = ({
                       }));
                     } catch (error) {}
                   },
-                  title: `Update ${title}`,
+                  title: `Update ${task.title}`,
                 });
               }}
             >
@@ -81,9 +95,11 @@ export const TasksList = ({
               onClick={() =>
                 setDeleteConfirmModal({
                   isOpen: true,
-                  title: title,
+                  title: task.title,
                   handleConfirm: async () => {
-                    await deleteTask(_id);
+                    if (task._id) {
+                      await deleteTask(task._id);
+                    }
                   },
                 })
               }
@@ -91,10 +107,12 @@ export const TasksList = ({
               <></>
             </button>
 
-            <TasksCheckbox taskId={_id} />
+            {task._id && <TasksCheckBox taskId={task._id} />}
           </div>
         </div>
-        <ThumbsList _id={_id} images={images} />
+        {task._id && task.images && (
+          <ThumbsList _id={task._id} images={task.images} />
+        )}
       </div>
     </li>
   );

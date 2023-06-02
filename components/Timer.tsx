@@ -66,7 +66,7 @@ export const Timer = ({ deadline }) => {
   return (
     <div>
       <p className="tasks__item__dateText">Remaining time:</p>
-      {deadline !== "Not set" ? (
+      {deadline !== "1970-01-01T00:00:00.000Z" ? (
         <>
           {days >= 1 ? (
             <p className="tasks__item__date">{remainingTime}</p>
