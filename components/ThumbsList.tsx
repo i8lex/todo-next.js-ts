@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useState} from "react";
+import React, { FC, useEffect, useState } from "react";
 import { useGetThumbsQuery } from "@/redux/api/images.api";
 import { ModalThumbsList } from "./ModalThumbsList";
 import { ImageUploader } from "./ImageUploader";
@@ -8,12 +8,11 @@ import {
   setThumbsNeedRefetch,
 } from "@/redux/slices/images.slice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import {Images} from "@/types";
 
 type ThumbListProps = {
-  _id: string
-  images: Images[]
-}
+  _id: string;
+  images: string[];
+};
 
 export const ThumbsList: FC<ThumbListProps> = ({ _id, images }) => {
   const dispatch = useAppDispatch();
@@ -52,10 +51,7 @@ export const ThumbsList: FC<ThumbListProps> = ({ _id, images }) => {
     <>
       {!isGetImages && !images.length ? (
         <div className="image__uploadBoxSmall">
-          <ImageUploader
-            setIsGetImages={setIsGetImages}
-            _id={_id}
-          />
+          <ImageUploader setIsGetImages={setIsGetImages} _id={_id} />
         </div>
       ) : (
         <ul className="tasks__item__thumbsWrapper">
@@ -83,7 +79,14 @@ export const ThumbsList: FC<ThumbListProps> = ({ _id, images }) => {
             className="tasks__item__thumbsMore"
             onClick={() => {
               modalThumbsHandler();
-              dispatch(setImage({}));
+              dispatch(
+                setImage({
+                  imageId: null,
+                  mimetype: null,
+                  thumb: null,
+                  filename: null,
+                })
+              );
             }}
           >
             <></>

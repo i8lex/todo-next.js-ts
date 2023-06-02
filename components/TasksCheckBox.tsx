@@ -1,11 +1,14 @@
-import React, { useState } from "react";
-import { toggleTask } from "../redux/slices/tasks.slice";
-import { useAppDispatch } from "../redux/hooks";
+import React, { FC, useState } from "react";
+import { toggleTask } from "@/redux/slices/tasks.slice";
+import { useAppDispatch } from "@/redux/hooks";
 
-const TasksCheckbox = ({ taskId }) => {
+type TasksCheckboxType = {
+  taskId: string;
+};
+const TasksCheckBox: FC<TasksCheckboxType> = ({ taskId }) => {
   const dispatch = useAppDispatch();
   const [checkBoxStyle, setCheckBoxStyle] = useState("tasks__checkBox");
-  const handleCheckboxChange = (event) => {
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const isChecked = event.target.checked;
     dispatch(toggleTask({ itemId: taskId, isChecked }));
     if (isChecked) {
@@ -24,4 +27,4 @@ const TasksCheckbox = ({ taskId }) => {
   );
 };
 
-export default TasksCheckbox;
+export default TasksCheckBox;

@@ -13,17 +13,19 @@ import { ModalEditProject } from "@/components/ModalEditProject";
 import { TasksList } from "@/components/TasksList";
 import { clearTasks } from "@/redux/slices/tasks.slice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { DeleteConfirmModal } from "@/types";
 
 const TasksPage = () => {
-  const { data = [], isLoading } = useGetTasksQuery();
+  const { data: tasks = [], isLoading } = useGetTasksQuery();
   const [addTask] = useAddTaskMutation();
   const [deleteTask] = useDeleteTaskMutation();
   const [pathTask] = usePathTaskMutation();
-  const [deleteConfirmModal, setDeleteConfirmModal] = useState({
-    isOpen: false,
-    title: "",
-    handleConfirm: () => {},
-  });
+  const [deleteConfirmModal, setDeleteConfirmModal] =
+    useState<DeleteConfirmModal>({
+      isOpen: false,
+      title: "",
+      handleConfirm: () => {},
+    });
   const [editModal, setEditModal] = useState({
     isOpen: false,
     title: "",
@@ -37,7 +39,6 @@ const TasksPage = () => {
   if (isLoading) {
     return <h1>...LOADING...</h1>;
   }
-
 
   return (
     <section className="tasks">
@@ -60,14 +61,14 @@ const TasksPage = () => {
               <Form className="tasks__form">
                 <h4 className="tasks__create">Create project</h4>
                 <Input
-                    name="title"
-                    label="Title"
-                    required={true}
-                    id="createTaskTitle"
-                    as="input"
-                    type="text"
-                    step={1}
-                    />
+                  name="title"
+                  label="Title"
+                  required={true}
+                  id="createTaskTitle"
+                  as="input"
+                  type="text"
+                  step={1}
+                />
                 <Input
                   name="description"
                   as="textarea"
@@ -104,31 +105,17 @@ const TasksPage = () => {
             </Formik>
           </div>
           <ul className="tasks__list">
-            {data.map(
-              ({ _id, title, description, created, deadline, images }) => {
-                if (!deadline) {
-                  deadline = "Not set";
-                }
-                if (!images) {
-                  images = [];
-                }
-                return (
-                  <TasksList
-                    key={_id}
-                    _id={_id}
-                    created={created}
-                    deadline={deadline}
-                    description={description}
-                    title={title}
-                    setDeleteConfirmModal={setDeleteConfirmModal}
-                    setEditModal={setEditModal}
-                    deleteTask={deleteTask}
-                    pathTask={pathTask}
-                    images={images}
-                  />
-                );
-              }
-            )}
+            {tasks.map((task) => {
+              return (
+                <TasksList
+                  task={task}
+                  setDeleteConfirmModal={setDeleteConfirmModal}
+                  setEditModal={setEditModal}
+                  deleteTask={deleteTask}
+                  pathTask={pathTask}
+                />
+              );
+            })}
           </ul>
         </div>
       </div>

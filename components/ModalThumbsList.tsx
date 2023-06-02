@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import Modal from "react-modal";
-import { clearCheckedImages, setImage } from "../redux/slices/images.slice";
+import { clearCheckedImages, setImage } from "@/redux/slices/images.slice";
 import { Image } from "./Image";
 import { ImageUploader } from "./ImageUploader";
 import ImagesCheckbox from "./ImagesCheckbox";
@@ -9,15 +9,31 @@ import {
   TrashIcon,
   PowerIcon,
 } from "@heroicons/react/20/solid";
-import { useDeleteImageMutation } from "../redux/api/images.api";
+import { useDeleteImageMutation } from "@/redux/api/images.api";
 import { ModalDeleteConfirm } from "./ModalDeleteConfirm";
-import { usePathTaskMutation } from "../redux/api/tasks.api";
-import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import { usePathTaskMutation } from "@/redux/api/tasks.api";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { Images } from "@/types";
 
 Modal.setAppElement("#__next");
 
-export const ModalThumbsList = ({
-  data: thumb,
+type ModalThumbsListProps = {
+  data: Images;
+  isThumbsOpen: boolean;
+  modalThumbsHandler: any;
+  setIsGetImages: React.Dispatch<React.SetStateAction<boolean>>;
+  _id: string;
+  images: string[];
+};
+
+type DeleteConfirmModal = {
+  isOpen: boolean;
+  title: string;
+  handleConfirm: () => Promise<void>;
+};
+
+export const ModalThumbsList: FC<ModalThumbsListProps> = ({
+  data: thumbs,
   isThumbsOpen,
   modalThumbsHandler,
   setIsGetImages,
@@ -25,10 +41,12 @@ export const ModalThumbsList = ({
   images,
 }) => {
   const [deleteImage] = useDeleteImageMutation();
-  const [deleteConfirmModal, setDeleteConfirmModal] = useState({
-    isOpen: false,
-    title: "",
-  });
+  const [deleteConfirmModal, setDeleteConfirmModal] =
+    useState<DeleteConfirmModal>({
+      isOpen: false,
+      title: "",
+      handleConfirm: async () => {},
+    });
   const [isButtonModifyActive, setIsButtonModifyActive] = useState(false);
   const [buttonModifyClassName, setButtonModifyClassName] =
     useState("image__modify");
@@ -43,9 +61,9 @@ export const ModalThumbsList = ({
   };
 
   const deleteImagesFromTaskFieldHandle = async (
-    checkedImages,
-    imagesIds,
-    taskId
+    checkedImages: string[],
+    imagesIds: string[],
+    taskId: string
   ) => {
     const filteredImages = imagesIds.filter(
       (item) => !checkedImages.includes(item)
@@ -65,7 +83,14 @@ export const ModalThumbsList = ({
     <Modal
       isOpen={isThumbsOpen}
       onRequestClose={() => {
-        dispatch(setImage({}));
+        dispatch(
+          setImage({
+            imageId: null,
+            mimetype: null,
+            thumb: null,
+            filename: null,
+          })
+        );
         modalThumbsHandler();
         dispatch(clearCheckedImages());
         setIsGetImages(false);
@@ -88,27 +113,45 @@ export const ModalThumbsList = ({
       <div className="image">
         <ul className="image__wrapper">
           <li
-            onClick={() => dispatch(setImage({}))}
+            onClick={() =>
+              dispatch(
+                setImage({
+                  imageId: null,
+                  mimetype: null,
+                  thumb: null,
+                  filename: null,
+                })
+              )
+            }
             className="image__thumbsBox"
           >
             <div className="image__thumbsBox__toUpload">
               <></>
             </div>
           </li>
-          {thumb.map(({ thumb, mimetype, _id, filename, image }) => {
+          {thumbs.map((thumb) => {
             return (
-              <li key={_id} className="image__thumbsBox">
+              <li key={thumb._id} className="image__thumbsBox">
                 <img
                   className="image__thumbsBox__thumb"
-                  src={`data:${mimetype};base64,${thumb.toString("base64")}`}
-                  alt={filename}
+                  src={`data:${
+                    thumb.mimetype
+                  };base64,${thumb.thumb.toString()}`}
+                  alt={thumb.filename}
                   onClick={() =>
                     dispatch(
-                      setImage({ imageId: image, mimetype, thumb, filename })
+                      setImage({
+                        imageId: thumb._id,
+                        mimetype: thumb.mimetype,
+                        thumb: thumb.thumb,
+                        filename: thumb.filename,
+                      })
                     )
                   }
                 />
-                {isButtonModifyActive && <ImagesCheckbox imageId={image} />}
+                {isButtonModifyActive && (
+                  <ImagesCheckbox imageId={thumb.image} />
+                )}
               </li>
             );
           })}
@@ -122,10 +165,16 @@ export const ModalThumbsList = ({
         )}
         <div className="flex flex-col gap-4">
           <button
-            // className="image__close"
             type="button"
             onClick={() => {
-              dispatch(setImage({}));
+              dispatch(
+                setImage({
+                  imageId: null,
+                  mimetype: null,
+                  thumb: null,
+                  filename: null,
+                })
+              );
               modalThumbsHandler();
               dispatch(clearCheckedImages());
               setIsGetImages(false);
@@ -142,11 +191,11 @@ export const ModalThumbsList = ({
             <PencilSquareIcon className="h-6 w-6" />
           </button>
           <button
-            // className="image__deleteBtn"
             type="button"
             onClick={() =>
               setDeleteConfirmModal({
                 isOpen: true,
+                title: "Delete Confirm",
                 handleConfirm: async () => {
                   await deleteImage(checkedImages);
                   await deleteImagesFromTaskFieldHandle(
@@ -166,12 +215,10 @@ export const ModalThumbsList = ({
         <ModalDeleteConfirm
           isOpen={deleteConfirmModal.isOpen}
           handleClose={() => {
-            setDeleteConfirmModal((prevState) => {
-              return {
-                ...prevState,
-                isOpen: false,
-              };
-            });
+            setDeleteConfirmModal((prevState) => ({
+              ...prevState,
+              isOpen: false,
+            }));
           }}
           handleConfirm={deleteConfirmModal.handleConfirm}
         />
