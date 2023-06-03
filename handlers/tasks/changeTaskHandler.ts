@@ -1,8 +1,11 @@
 import * as jwt from "jsonwebtoken";
 import { Task } from "@/lib/models/taskModel";
-import {NextApiRequest, NextApiResponse} from "next";
+import { NextApiRequest, NextApiResponse } from "next";
 
-export const changeTaskHandler = async (request: NextApiRequest, reply: NextApiResponse) => {
+export const changeTaskHandler = async (
+  request: NextApiRequest,
+  reply: NextApiResponse
+) => {
   // @ts-ignore
   const { verify } = jwt.default;
   const authHeader = request.headers.authorization;
@@ -10,7 +13,6 @@ export const changeTaskHandler = async (request: NextApiRequest, reply: NextApiR
   const { id } = await verify(token, process.env.SECRET_WORD);
 
   const { id: taskId } = request.query;
-  console.log(taskId);
 
   const updates = request.body;
   try {
@@ -19,7 +21,7 @@ export const changeTaskHandler = async (request: NextApiRequest, reply: NextApiR
       { $set: updates }
     );
 
-    if (updatedTask.nModified === 0) {
+    if (updatedTask.modifiedCount === 0) {
       return reply.status(404).send("Task not found");
     }
 

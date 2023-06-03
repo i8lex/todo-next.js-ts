@@ -8,11 +8,18 @@ export type RegistrationBody = {
   name: string;
   email: string;
   password: string;
+  passwordConfirm?: string;
 };
 
 export type LoginBody = {
   email: string;
   password: string;
+};
+
+export type LoginResponse = {
+  token: string;
+  message: string;
+  confirmed: boolean;
 };
 
 type EmailRepeatBody = {
@@ -33,7 +40,7 @@ export const authApi = createApi({
         body,
       }),
     }),
-    login: build.mutation<void, LoginBody>({
+    login: build.mutation<LoginResponse, LoginBody>({
       query: (body) => ({
         url: "/login",
         method: "POST",

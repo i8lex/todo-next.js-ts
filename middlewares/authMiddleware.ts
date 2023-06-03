@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { verifyToken } from "../utils/tokenUtils";
+import { verifyToken } from "@/utils/tokenUtils";
 
 export const authMiddleware = (
   handler: (req: NextApiRequest, res: NextApiResponse) => Promise<void>

@@ -1,6 +1,6 @@
 import * as jwt from "jsonwebtoken";
 import pkg from "bcryptjs";
-import { User } from "../../lib/models/userModel";
+import { User } from "@/lib/models/userModel";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export const loginHandler = async (
@@ -25,14 +25,13 @@ export const loginHandler = async (
           confirmed: user.isConfirmed,
         });
       } else {
-        const token = await sign(
+        const token = sign(
           { email: user.email, id: user.id },
           process.env.SECRET_WORD as string,
           {
             expiresIn: "24h",
           }
         );
-        console.log(token);
         return reply.status(200).send({
           id: user.id,
           message: `Welcome ${user.name}`,

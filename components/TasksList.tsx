@@ -59,7 +59,7 @@ export const TasksList: FC<TasksListProps> = ({
               )}
             </div>
 
-            <Timer deadline={task.deadline} />
+            {task.deadline ? <Timer deadline={task.deadline} /> : null}
           </div>
           <div className="tasks__item__iconBox">
             <button

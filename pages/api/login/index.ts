@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import db from "../../../lib/db";
-import { loginHandler } from "../../../handlers/auth/loginHandler";
+import { loginHandler } from "@/handlers/auth/loginHandler";
 
 export default async function authHandlers(
   req: NextApiRequest,

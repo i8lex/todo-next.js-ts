@@ -3,12 +3,12 @@ import { Field, useField } from "formik";
 
 type InputType = {
   name: string;
-  id: string;
-  as: string;
+  id?: string;
+  as?: string;
   label: string;
-  required: boolean;
-  type: string;
-  step: number;
+  required?: boolean;
+  type?: string;
+  step?: number;
   defaultValue?: string;
 };
 

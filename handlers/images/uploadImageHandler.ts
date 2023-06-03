@@ -16,25 +16,25 @@ const upload = multer({
   },
 });
 
-export const uploadImageHandler = async (req: Request, res: Response) => {
+export const uploadImageHandler = async (request: Request, reply: Response) => {
   try {
     // @ts-ignore
     const { verify } = jwt.default;
-    const authHeader = req.headers.authorization;
+    const authHeader = request.headers.authorization;
     const token = authHeader ? authHeader.split(" ")[1] : null;
     const { id, email } = await verify(token, process.env.SECRET_WORD);
 
-    upload.array("images")(req, res, async (err) => {
+    upload.array("images")(request, reply, async (err) => {
       if (err) {
-        return res.status(400).json({ error: "Error uploading files" });
+        return reply.status(400).json({ error: "Error uploading files" });
       }
-      const task = req.body.task as string;
+      const task = request.body.task as string;
       const taskData: TaskType | null = await Task.findOne({ _id: task });
       if (!taskData) {
-        return res.status(404).send({ message: "Task not found" });
+        return reply.status(404).send({ message: "Task not found" });
       }
       const { images: imagesList } = taskData;
-      const images = req.files as Express.Multer.File[];
+      const images = request.files as Express.Multer.File[];
 
       // const uploadDir = "uploads";
       // const imagePath = path.join(uploadDir, id, "orig");
@@ -95,11 +95,9 @@ export const uploadImageHandler = async (req: Request, res: Response) => {
       }
 
       await Task.updateOne({ _id: task }, { $set: { images: imagesList } });
-      console.log("success");
-      res.status(200).json({ message: "Files upload successful" });
+      reply.status(200).json({ message: "Files upload successful" });
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({ error: "Internal server error" });
+    return reply.status(500).json({ error: "Internal server error" });
   }
 };

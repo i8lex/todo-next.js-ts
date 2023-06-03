@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import Modal from "react-modal";
-import { ModalAuthProps } from "../types";
-import { useEmailRepeatMutation } from "../redux/api/auth.api";
+import { ModalAuthProps } from "@/types";
+import { useEmailRepeatMutation } from "@/redux/api/auth.api";
 
 Modal.setAppElement("#__next");
 
@@ -16,11 +16,13 @@ export const ModalAuth: FC<ModalAuthProps> = ({
   const repeatEmailHandler = async () => {
     try {
       const value = { email: email };
-      console.log(value);
+
+      // @ts-ignore
       await emailRepeat(value);
+      // @ts-ignore
       handleClose();
     } catch (err) {
-      console.log(err);
+      console.log("error repeat send email");
     }
   };
   return (

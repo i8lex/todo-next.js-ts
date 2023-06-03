@@ -1,12 +1,12 @@
 import React, { useState, FC } from "react";
 import { Form, Formik } from "formik";
-import { ModalAuth } from "../../components/ModalAuth";
+import { ModalAuth } from "@/components/ModalAuth";
 import * as yup from "yup";
-import { Input } from "../../components/Input";
+import { Input } from "@/components/Input";
 import { useRouter } from "next/router";
-import { setLoginSuccess } from "../../redux/slices/auth.slice";
-import { LoginBody, useLoginMutation } from "../../redux/api/auth.api";
-import { useAppDispatch } from "../../redux/hooks";
+import { setLoginSuccess } from "@/redux/slices/auth.slice";
+import { LoginBody, useLoginMutation } from "@/redux/api/auth.api";
+import { useAppDispatch } from "@/redux/hooks";
 
 const LoginPage: FC = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -25,11 +25,12 @@ const LoginPage: FC = () => {
 
   const handleSubmit = async (values: LoginBody) => {
     try {
-      const { data, error } = await login(values);
-      console.log(data.token);
-      console.log(data.confirmed);
-      if (error) {
+      const response = await login(values);
+      if ("error" in response) {
+        const { error } = response;
+        // @ts-ignore
         setMessage(error.data.error);
+        // @ts-ignore
         const { confirmed } = error.data;
         setConfirmed(confirmed);
         if (!confirmed && confirmed !== undefined) {
@@ -39,22 +40,23 @@ const LoginPage: FC = () => {
           setOpenModal(true);
           setTimeout(() => handleClose(), 3000);
         }
-      } else {
+      }
+      if ("data" in response) {
+        const { data } = response;
         const { message: responseMessage } = data;
         setMessage(responseMessage);
         setOpenModal(true);
 
         if (data.token && data.confirmed) {
           dispatch(setLoginSuccess(data.token));
-          // dispatch(setLoginSuccess({ token: data.token }));
           setTimeout(() => {
             router.push("/tasks");
             handleClose();
           }, 3000);
         }
       }
-    } catch (err) {
-      setMessage(err.message);
+    } catch (error) {
+      setMessage("Something goes wrong");
       setOpenModal(true);
     }
   };
