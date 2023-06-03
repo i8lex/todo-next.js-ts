@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, FC } from "react";
 import {
   formatDistanceToNowStrict,
   parseISO,
   differenceInMilliseconds,
 } from "date-fns";
 
-export const Timer = ({ deadline }) => {
+type TimerProps = {
+  deadline: string;
+};
+
+export const Timer: FC<TimerProps> = ({ deadline }) => {
   const [remainingTime, setRemainingTime] = useState<number | null | string>(
     null
   );
@@ -17,7 +21,7 @@ export const Timer = ({ deadline }) => {
     const intervalId = setInterval(() => {
       setAnimation(animation === " " ? ":" : " ");
     }, 1000);
-    return () => clearInterval(intervalId as number);
+    return () => clearInterval(intervalId);
   }, [animation]);
 
   useEffect(() => {
@@ -27,13 +31,13 @@ export const Timer = ({ deadline }) => {
         const now = new Date();
         const remainingTimeInMs = differenceInMilliseconds(deadlineDate, now);
         if (remainingTimeInMs < 0) {
-          clearInterval(intervalId as number);
+          clearInterval(intervalId);
           setRemainingTimeClock(0);
         } else {
           setRemainingTimeClock(remainingTimeInMs);
         }
       }, 1000);
-      return () => clearInterval(intervalId as number);
+      return () => clearInterval(intervalId);
     }
   }, [deadline]);
 
@@ -42,26 +46,26 @@ export const Timer = ({ deadline }) => {
       const deadlineDate = parseISO(deadline);
       const intervalId = setInterval(() => {
         const now = new Date();
-        const remainingTimeInMs = deadlineDate - now;
+        const remainingTimeInMs = deadlineDate.getTime() - now.getTime();
         if (remainingTimeInMs < 0) {
-          clearInterval(intervalId as number);
+          clearInterval(intervalId);
           setRemainingTime(0);
         } else {
           const remainingTime = formatDistanceToNowStrict(deadlineDate, {
             addSuffix: true,
-            includeSeconds: true,
+            // includeSeconds: true,
           });
           setRemainingTime(remainingTime);
         }
       }, 1000);
-      return () => clearInterval(intervalId as number);
+      return () => clearInterval(intervalId);
     }
   }, [deadline]);
 
-  const seconds = Math.floor((remainingTimeClock / 1000) % 60);
-  const minutes = Math.floor((remainingTimeClock / (1000 * 60)) % 60);
-  const hours = Math.floor((remainingTimeClock / (1000 * 60 * 60)) % 24);
-  const days = Math.floor(remainingTimeClock / (1000 * 60 * 60 * 24));
+  const seconds = Math.floor(((remainingTimeClock ?? 0) / 1000) % 60);
+  const minutes = Math.floor(((remainingTimeClock ?? 0) / (1000 * 60)) % 60);
+  const hours = Math.floor(((remainingTimeClock ?? 0) / (1000 * 60 * 60)) % 24);
+  const days = Math.floor((remainingTimeClock ?? 0) / (1000 * 60 * 60 * 24));
 
   return (
     <div>
@@ -72,7 +76,7 @@ export const Timer = ({ deadline }) => {
             <p className="tasks__item__date">{remainingTime}</p>
           ) : (
             <>
-              {remainingTime <= 0 ? (
+              {typeof remainingTime === "number" && remainingTime <= 0 ? (
                 <p className="tasks__item__timeUp">TIME IS UP!!!</p>
               ) : (
                 <div className="tasks__item__clockBox">
