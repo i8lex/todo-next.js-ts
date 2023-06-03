@@ -12,9 +12,7 @@ export const Image = () => {
     isError,
   } = useGetImageQuery(imageId, {
     skip: !imageId,
-    // enabled: imageId,
   });
-  console.log(image);
   if (isLoading) {
     return (
       <div className="image__imageBox">
@@ -32,11 +30,13 @@ export const Image = () => {
 
   return (
     <div className="image__imageBox">
-      <img
-        src={`data:${image.mimetype};base64,${image.image.toString()}`}
-        alt={image.filename}
-        className="image__imageBox__img"
-      />
+      {image ? (
+        <img
+          src={`data:${image.mimetype};base64,${image.image.toString()}`}
+          alt={image.filename}
+          className="image__imageBox__img"
+        />
+      ) : null}
     </div>
   );
 };

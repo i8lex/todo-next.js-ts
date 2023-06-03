@@ -138,16 +138,16 @@ export const ModalThumbsList: FC<ModalThumbsListProps> = ({
                     thumb.mimetype
                   };base64,${thumb.thumb.toString()}`}
                   alt={thumb.filename}
-                  onClick={() =>
+                  onClick={() => {
                     dispatch(
                       setImage({
-                        imageId: thumb._id,
+                        imageId: thumb.image,
                         mimetype: thumb.mimetype,
                         thumb: thumb.thumb,
                         filename: thumb.filename,
                       })
-                    )
-                  }
+                    );
+                  }}
                 />
                 {isButtonModifyActive && (
                   <ImagesCheckbox imageId={thumb.image} />

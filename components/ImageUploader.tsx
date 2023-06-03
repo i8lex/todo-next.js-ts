@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useState} from "react";
+import React, { FC, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useAddImageMutation } from "@/redux/api/images.api";
 import { setModalThumbsNeedRefetch } from "@/redux/slices/images.slice";
@@ -6,10 +6,9 @@ import { useAppDispatch } from "@/redux/hooks";
 // import {Image, Images} from "@/types";
 
 type ImageUploaderProps = {
-  _id: string
+  _id: string;
   setIsGetImages: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
+};
 
 // type Image ={
 //   path: string;
@@ -21,7 +20,10 @@ type ImageUploaderProps = {
 //   webkitRelativePath: string;
 // }
 
-export const ImageUploader: FC<ImageUploaderProps> = ({ _id, setIsGetImages }) => {
+export const ImageUploader: FC<ImageUploaderProps> = ({
+  _id,
+  setIsGetImages,
+}) => {
   const [isUploadSuccess, setIsUploadIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
 
@@ -44,24 +46,19 @@ export const ImageUploader: FC<ImageUploaderProps> = ({ _id, setIsGetImages }) =
     },
   });
 
-  const [addImage, { isLoading, isSuccess }] = useAddImageMutation()
-
+  const [addImage, { isLoading, isSuccess }] = useAddImageMutation();
 
   const uploadImages = async (files: File[]) => {
     try {
       const body: FormData = new FormData();
-      console.log(files)
 
       files.forEach((file) => {
         body.append("images", file);
       });
 
       body.append("task", _id);
-      console.log(body);
-
 
       if (!fileRejections.length && files.length) {
-        console.log("done")
         // @ts-ignore
         await addImage(body);
         dispatch(setModalThumbsNeedRefetch(true));
@@ -99,15 +96,13 @@ export const ImageUploader: FC<ImageUploaderProps> = ({ _id, setIsGetImages }) =
   //   }
   // };
 
-
-
   // if (!fileRejections.length) {
   //   setIsGetImages(false);
   //   console.log("OK");
   // }
 
   useEffect(() => {
-    let timer: NodeJS.Timeout ;
+    let timer: NodeJS.Timeout;
     if (isSuccess) {
       setIsUploadIsSuccess(isSuccess);
       timer = setTimeout(() => {

@@ -55,22 +55,29 @@ export const ThumbsList: FC<ThumbListProps> = ({ _id, images }) => {
         </div>
       ) : (
         <ul className="tasks__item__thumbsWrapper">
-          {data.slice(0, 3).map(({ thumb, mimetype, _id, image, filename }) => {
+          {data.slice(0, 3).map((thumb) => {
             return (
               <li
                 className="tasks__item__thumbBox"
-                key={_id}
+                key={thumb._id}
                 onClick={() => {
                   dispatch(
-                    setImage({ imageId: image, mimetype, thumb, filename })
+                    setImage({
+                      imageId: thumb.image,
+                      mimetype: thumb.mimetype,
+                      thumb: thumb.thumb,
+                      filename: thumb.filename,
+                    })
                   );
                   modalThumbsHandler();
                 }}
               >
                 <img
-                  alt={filename}
+                  alt={thumb.filename}
                   className="tasks__item__thumb"
-                  src={`data:${mimetype};base64,${thumb.toString()}`}
+                  src={`data:${
+                    thumb.mimetype
+                  };base64,${thumb.thumb.toString()}`}
                 />
               </li>
             );

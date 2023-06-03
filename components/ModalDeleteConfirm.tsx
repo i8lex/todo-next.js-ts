@@ -1,7 +1,14 @@
-import React from "react";
+import React, { FC } from "react";
 import Modal from "react-modal";
 
-export const ModalDeleteConfirm = ({
+type ModalDeleteConfirmProps = {
+  title?: string;
+  isOpen: boolean;
+  handleClose: () => void;
+  handleConfirm: () => void;
+};
+
+export const ModalDeleteConfirm: FC<ModalDeleteConfirmProps> = ({
   title,
   isOpen,
   handleClose,
@@ -23,7 +30,7 @@ export const ModalDeleteConfirm = ({
         },
       }}
       isOpen={isOpen}
-      onClose={handleClose}
+      onRequestClose={handleClose}
     >
       <div className="tasks__delete">
         <div className="tasks__delete__textBox">
