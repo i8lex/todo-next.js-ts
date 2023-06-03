@@ -5,7 +5,6 @@ import {
   useGetTasksQuery,
   useAddTaskMutation,
   useDeleteTaskMutation,
-  usePathTaskMutation,
 } from "@/redux/api/tasks.api";
 import { ModalDeleteConfirm } from "@/components/ModalDeleteConfirm";
 import { form } from "@/constants/form";
@@ -13,20 +12,20 @@ import { ModalEditProject } from "@/components/ModalEditProject";
 import { TasksList } from "@/components/TasksList";
 import { clearTasks } from "@/redux/slices/tasks.slice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { DeleteConfirmModal } from "@/types";
+import { DeleteConfirmModal, EditModal } from "@/types";
 
 const TasksPage = () => {
   const { data: tasks = [], isLoading } = useGetTasksQuery();
   const [addTask] = useAddTaskMutation();
   const [deleteTask] = useDeleteTaskMutation();
-  const [pathTask] = usePathTaskMutation();
+
   const [deleteConfirmModal, setDeleteConfirmModal] =
     useState<DeleteConfirmModal>({
       isOpen: false,
       title: "",
       handleConfirm: () => {},
     });
-  const [editModal, setEditModal] = useState({
+  const [editModal, setEditModal] = useState<EditModal>({
     isOpen: false,
     title: "",
     data: {},
@@ -108,11 +107,10 @@ const TasksPage = () => {
             {tasks.map((task) => {
               return (
                 <TasksList
+                  key={task._id}
                   task={task}
                   setDeleteConfirmModal={setDeleteConfirmModal}
                   setEditModal={setEditModal}
-                  deleteTask={deleteTask}
-                  pathTask={pathTask}
                 />
               );
             })}

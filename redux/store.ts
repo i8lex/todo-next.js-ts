@@ -52,6 +52,7 @@ export const store = makeStore();
 
 export const wrapper = createWrapper(makeStore);
 
+// @ts-ignore
 export type AppState = ReturnType<typeof rootReducer>;
 
 export type AppDispatch = typeof store.dispatch;

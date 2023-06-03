@@ -21,12 +21,13 @@ import "@/styles/globals.css";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { createWrapper } from "next-redux-wrapper";
-import { store } from "../redux/store";
+import { store } from "@/redux/store";
 import { persistStore } from "redux-persist";
-import React from "react";
+import React, {FC} from "react";
 import Header from "../components/Header";
+import {AppProps} from "next/app";
 
-const App = ({ Component, pageProps }) => {
+const App: FC<AppProps> = ({ Component, pageProps }) => {
   const persistor = persistStore(store);
 
   return (

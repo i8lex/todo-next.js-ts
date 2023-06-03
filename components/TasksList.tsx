@@ -4,7 +4,11 @@ import { Timer } from "./Timer";
 import TasksCheckBox from "./TasksCheckBox";
 // import { useGetThumbsQuery } from "../providers/redux/images/imageApi";
 import { ThumbsList } from "./ThumbsList";
-import { DeleteConfirmModal, EditModal, Task } from "@/types";
+import { AddTask, DeleteConfirmModal, EditModal, Task } from "@/types";
+import {
+  useDeleteTaskMutation,
+  usePathTaskMutation,
+} from "@/redux/api/tasks.api";
 
 type TasksListProps = {
   task: Task;
@@ -12,17 +16,15 @@ type TasksListProps = {
     React.SetStateAction<DeleteConfirmModal>
   >;
   setEditModal: React.Dispatch<React.SetStateAction<EditModal>>;
-  deleteTask: (params: string) => Promise<void>;
-  pathTask: (params: { id: string; body: any }) => Promise<void>;
 };
 
 export const TasksList: FC<TasksListProps> = ({
   task,
   setDeleteConfirmModal,
   setEditModal,
-  deleteTask,
-  pathTask,
 }) => {
+  const [deleteTask] = useDeleteTaskMutation();
+  const [pathTask] = usePathTaskMutation();
   return (
     <li className="tasks__itemBox">
       <div className="tasks__item">
@@ -70,7 +72,7 @@ export const TasksList: FC<TasksListProps> = ({
                     description: task.description,
                     deadline: task.deadline,
                   },
-                  handleConfirm: async (values: void) => {
+                  handleConfirm: async (values: AddTask) => {
                     try {
                       if (task._id) {
                         await pathTask({ id: task._id, body: values });
