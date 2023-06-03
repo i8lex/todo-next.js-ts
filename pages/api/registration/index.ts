@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import db from "../../../lib/db";
-import { postRegistrationHandler } from "../../../handlers/auth/registrationHandler";
+import { postRegistrationHandler } from "@/handlers/auth/registrationHandler";
 
 export default async function registrationHandlers(
   req: NextApiRequest,

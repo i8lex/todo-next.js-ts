@@ -5,7 +5,6 @@ import { ImageUploader } from "./ImageUploader";
 import {
   setImage,
   setModalThumbsNeedRefetch,
-  setThumbsNeedRefetch,
 } from "@/redux/slices/images.slice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 

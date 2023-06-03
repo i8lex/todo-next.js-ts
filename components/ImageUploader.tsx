@@ -28,23 +28,18 @@ export const ImageUploader: FC<ImageUploaderProps> = ({
   const [isError, setIsError] = useState(false);
 
   const dispatch = useAppDispatch();
-  const {
-    isDragAccept,
-    acceptedFiles,
-    fileRejections,
-    getRootProps,
-    getInputProps,
-  } = useDropzone({
-    accept: {
-      "image/jpeg": [".jpg", ".jpeg"],
-      "image/png": [".png"],
-    },
-    maxFiles: 4,
-    maxSize: 6 * 1024 * 1024,
-    onDrop: (acceptedFiles) => {
-      uploadImages(acceptedFiles);
-    },
-  });
+  const { acceptedFiles, fileRejections, getRootProps, getInputProps } =
+    useDropzone({
+      accept: {
+        "image/jpeg": [".jpg", ".jpeg"],
+        "image/png": [".png"],
+      },
+      maxFiles: 4,
+      maxSize: 6 * 1024 * 1024,
+      onDrop: (acceptedFiles) => {
+        uploadImages(acceptedFiles).then();
+      },
+    });
 
   const [addImage, { isLoading, isSuccess }] = useAddImageMutation();
 

@@ -2,15 +2,15 @@ import React from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
-import { setLogoutSuccess } from "../redux/slices/auth.slice";
-import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import { setLogoutSuccess } from "@/redux/slices/auth.slice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 
 const Header = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const handleLogout = async () => {
-    dispatch(setLogoutSuccess({ isAuthenticated: false, token: null }));
+    dispatch(setLogoutSuccess());
     await router.push("/login");
   };
 

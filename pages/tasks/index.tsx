@@ -12,7 +12,7 @@ import { ModalEditProject } from "@/components/ModalEditProject";
 import { TasksList } from "@/components/TasksList";
 import { clearTasks } from "@/redux/slices/tasks.slice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { DeleteConfirmModal, EditModal } from "@/types";
+import { DeleteConfirmModal, EditModal, Task } from "@/types";
 
 const TasksPage = () => {
   const { data: tasks = [], isLoading } = useGetTasksQuery();
@@ -39,6 +39,9 @@ const TasksPage = () => {
     return <h1>...LOADING...</h1>;
   }
 
+  // @ts-ignore
+  // @ts-ignore
+  // @ts-ignore
   return (
     <section className="tasks">
       <div className="container">
@@ -104,7 +107,7 @@ const TasksPage = () => {
             </Formik>
           </div>
           <ul className="tasks__list">
-            {tasks.map((task, index) => {
+            {tasks.map((task) => {
               return (
                 <TasksList
                   key={task._id}
@@ -133,7 +136,7 @@ const TasksPage = () => {
       <ModalEditProject
         isOpen={editModal.isOpen}
         title={editModal.title}
-        data={editModal.data}
+        data={editModal.data as Task}
         handleClose={() => {
           setEditModal((prevState) => ({ ...prevState, isOpen: false }));
         }}

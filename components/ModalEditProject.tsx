@@ -1,12 +1,21 @@
-import React from "react";
+import React, { FC } from "react";
 import Modal from "react-modal";
 import { Formik, Form } from "formik";
-import { form } from "../constants/form";
+import { form } from "@/constants/form";
 import { Input } from "./Input";
+import { AddTask, Task } from "@/types";
 
 Modal.setAppElement("#__next");
 
-export const ModalEditProject = ({
+type ModalEditProjectProps = {
+  title: string;
+  isOpen: boolean;
+  handleClose: () => void;
+  handleConfirm: (() => void) | ((values: AddTask) => Promise<void>);
+  data: Task;
+};
+
+export const ModalEditProject: FC<ModalEditProjectProps> = ({
   title,
   isOpen,
   handleClose,
@@ -23,7 +32,7 @@ export const ModalEditProject = ({
   return (
     <Modal
       isOpen={isOpen}
-      onClose={handleClose}
+      onRequestClose={handleClose}
       contentLabel={title}
       style={{
         overlay: {
@@ -53,12 +62,7 @@ export const ModalEditProject = ({
           <Form>
             <Input label="Title" required name="title" />
             <Input label="Description" as="textarea" name="description" />
-            <Input
-              label="Deadline"
-              type="datetime-local"
-              step="1"
-              name="deadline"
-            />
+            <Input label="Deadline" type="datetime-local" name="deadline" />
             <div style={{ textAlign: "right" }}>
               <button type="submit" className="tasks__button">
                 Yes

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Form, Formik } from "formik";
-import { ModalAuth } from "../../components/ModalAuth";
+import { ModalAuth } from "@/components/ModalAuth";
 import * as yup from "yup";
-import { Input } from "../../components/Input";
+import { Input } from "@/components/Input";
 import { useRouter } from "next/router";
-import { useRegistrationMutation } from "../../redux/api/auth.api";
+import { useRegistrationMutation } from "@/redux/api/auth.api";
 
 const RegistrationPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -17,24 +17,23 @@ const RegistrationPage = () => {
     setOpenModal(false);
   };
 
+  // @ts-ignore
   const handleSubmit = async (values) => {
-    // console.log(data);
-    // console.log(error.data.error);
     try {
-      const { data, error } = await registration(values);
-      const { error: message } = error.data;
-      if (error) {
-        setMessage(message);
+      const response = await registration(values);
 
+      if ("error" in response) {
+        const error = response.error;
+        // @ts-ignore
+        const errorMessage = error.data.error;
+        setMessage(errorMessage);
         setOpenModal(true);
-
         return setTimeout(() => handleClose(), 3000);
       } else {
-        const { message } = data;
-        setMessage(message);
-
+        const data = response.data;
+        const successMessage = data.message;
+        setMessage(successMessage);
         setOpenModal(true);
-
         return setTimeout(() => router.push("/login"), 3000);
       }
     } catch (error) {
@@ -72,7 +71,6 @@ const RegistrationPage = () => {
                 .label("Password")
                 .min(8)
                 .max(30)
-                // .oneOf([yup.ref("passwordConfirm")], "Passwords must match")
                 .required(),
               passwordConfirm: yup
                 .string()

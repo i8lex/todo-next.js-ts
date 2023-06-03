@@ -12,20 +12,21 @@ export const config = {
 };
 
 export default authMiddleware(async function imageHandlers(
-  req: NextApiRequest,
-  res: NextApiResponse
+  request: NextApiRequest,
+  reply: NextApiResponse
 ) {
   await db.connect();
 
-  const { method } = req;
+  const { method } = request;
 
   switch (method) {
     case "GET":
-      await getImageHandler(req, res);
+      await getImageHandler(request, reply);
       break;
 
     case "POST":
-      await uploadImageHandler(req, res);
+      // @ts-ignore
+      await uploadImageHandler(request, reply);
       break;
 
     case "PUT":
@@ -36,7 +37,7 @@ export default authMiddleware(async function imageHandlers(
       break;
 
     default:
-      res.status(405).end();
+      reply.status(405).end();
       break;
   }
 });

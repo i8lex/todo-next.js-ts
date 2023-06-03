@@ -1,15 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import db from "../../../lib/db";
-import { getThumbsHandler } from "../../../handlers/images/getThumbsHandler";
+import { getThumbsHandler } from "@/handlers/images/getThumbsHandler";
 
-import { deleteImagesHandler } from "../../../handlers/images/deleteImagesHandler";
-import { authMiddleware } from "../../../middlewares/authMiddleware";
-
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+import { deleteImagesHandler } from "@/handlers/images/deleteImagesHandler";
+import { authMiddleware } from "@/middlewares/authMiddleware";
 
 export default authMiddleware(async function imageHandlers(
   req: NextApiRequest,

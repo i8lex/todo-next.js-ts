@@ -1,12 +1,10 @@
-import { useState } from "react";
-
 export type ModalAuthProps = {
-  className: string;
-  email: string;
+  className?: string;
+  email?: string;
   open: boolean;
   onClose: () => void;
-  handleClose: () => void;
-  confirmed: string;
+  handleClose?: () => void;
+  confirmed?: string;
   message: string;
 };
 
@@ -55,7 +53,8 @@ export type EditModal = {
   isOpen: boolean;
   title: string;
   data: Image | Task | {};
-  handleConfirm: (values: AddTask) => void;
+  handleConfirm: (() => void) | (() => Promise<void>);
+  handleClose?: () => void;
 };
 
 export type DeleteConfirmModal = {
