@@ -1,13 +1,17 @@
-import React, { useState } from "react";
-import { setCheckedImages } from "../redux/slices/images.slice";
-import { useAppDispatch } from "../redux/hooks";
+import React, { ChangeEvent, FC, useState } from "react";
+import { toggleImagesList } from "@/redux/slices/images.slice";
+import { useAppDispatch } from "@/redux/hooks";
 
-const ImagesCheckbox = ({ imageId }) => {
+type ImagesCheckboxProps = {
+  imageId: string;
+};
+const ImagesCheckbox: FC<ImagesCheckboxProps> = ({ imageId }) => {
   const dispatch = useAppDispatch();
   const [checkBoxStyle, setCheckBoxStyle] = useState("tasks__checkBox");
-  const handleCheckboxChange = (event) => {
+
+  const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
     const isChecked = event.target.checked;
-    dispatch(setCheckedImages({ imageId: imageId, isChecked }));
+    dispatch(toggleImagesList({ imageId: imageId, isChecked }));
     if (isChecked) {
       setCheckBoxStyle("tasks__checkBoxChecked");
     } else {

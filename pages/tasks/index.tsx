@@ -104,7 +104,7 @@ const TasksPage = () => {
             </Formik>
           </div>
           <ul className="tasks__list">
-            {tasks.map((task) => {
+            {tasks.map((task, index) => {
               return (
                 <TasksList
                   key={task._id}
