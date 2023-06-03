@@ -1,7 +1,9 @@
 import * as jwt from "jsonwebtoken";
-import { Task } from "../../lib/models/taskModel";
+import { Task } from "@/lib/models/taskModel";
+import {NextApiRequest, NextApiResponse} from "next";
 
-export const changeTaskHandler = async (request, reply) => {
+export const changeTaskHandler = async (request: NextApiRequest, reply: NextApiResponse) => {
+  // @ts-ignore
   const { verify } = jwt.default;
   const authHeader = request.headers.authorization;
   const token = authHeader ? authHeader.split(" ")[1] : null;

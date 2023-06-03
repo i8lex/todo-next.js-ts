@@ -54,8 +54,8 @@ export type AddTask = {
 export type EditModal = {
   isOpen: boolean;
   title: string;
-  data: Image | Task;
-  handleConfirm: () => void;
+  data: Image | Task | {};
+  handleConfirm: (values: AddTask) => Promise<void>;
 };
 
 export type DeleteConfirmModal = {
