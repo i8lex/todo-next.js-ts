@@ -17,10 +17,11 @@ export const ThumbsList: FC<ThumbListProps> = ({ _id, images }) => {
   const dispatch = useAppDispatch();
   const [isThumbsOpen, setIsThumbsOpen] = useState(false);
   const [isGetImages, setIsGetImages] = useState(false);
-  const { data = [], refetch, isLoading } = useGetThumbsQuery(_id);
+  const { data: thumbs = [], refetch, isLoading } = useGetThumbsQuery(_id);
   const { modalThumbsNeedRefetch } = useAppSelector((state) => state.image);
+
   useEffect(() => {
-    if (isGetImages && !!images.length) {
+    if (isGetImages && images.length) {
       refetch();
     }
   }, [images, refetch]);
@@ -54,7 +55,7 @@ export const ThumbsList: FC<ThumbListProps> = ({ _id, images }) => {
         </div>
       ) : (
         <ul className="tasks__item__thumbsWrapper">
-          {data.slice(0, 3).map((thumb) => {
+          {thumbs.slice(0, 3).map((thumb) => {
             return (
               <li
                 className="tasks__item__thumbBox"
@@ -101,7 +102,7 @@ export const ThumbsList: FC<ThumbListProps> = ({ _id, images }) => {
       )}
       <ModalThumbsList
         images={images}
-        data={data}
+        thumbs={thumbs}
         isThumbsOpen={isThumbsOpen}
         modalThumbsHandler={modalThumbsHandler}
         setIsGetImages={setIsGetImages}

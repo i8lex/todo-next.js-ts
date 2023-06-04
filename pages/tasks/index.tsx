@@ -39,9 +39,6 @@ const TasksPage = () => {
     return <h1>...LOADING...</h1>;
   }
 
-  // @ts-ignore
-  // @ts-ignore
-  // @ts-ignore
   return (
     <section className="tasks">
       <div className="container">
