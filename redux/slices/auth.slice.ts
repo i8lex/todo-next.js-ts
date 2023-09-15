@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AppState } from "../store";
 
 export type ResponseAuthType = {
   token: string | null;
@@ -32,6 +31,6 @@ export const authSlice = createSlice({
 
 export const { setLoginSuccess, setLogoutSuccess } = authSlice.actions;
 
-export const selectAuthData = (state: AppState) => state.auth;
+// export const authReducer = authSlice.reducer;
 
-export const authReducer = authSlice.reducer;
+export default authSlice.reducer;

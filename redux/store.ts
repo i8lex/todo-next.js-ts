@@ -1,41 +1,34 @@
-import { configureStore } from "@reduxjs/toolkit";
 import { authApi } from "./api/auth.api";
-import storage from "redux-persist/lib/storage";
 import {
-  persistStore,
-  persistReducer,
   FLUSH,
-  REHYDRATE,
   PAUSE,
   PERSIST,
   PURGE,
   REGISTER,
+  REHYDRATE,
 } from "redux-persist";
-import { authReducer, authSlice } from "./slices/auth.slice";
-import { createWrapper, HYDRATE } from "next-redux-wrapper";
-import tasksReducer from "./slices/tasks.slice";
-import imageReducer from "./slices/images.slice";
 import { tasksApi } from "./api/tasks.api";
 import { imageApi } from "./api/images.api";
 
-const authPersistConfig = {
-  key: "authApi",
-  storage,
-  whitelist: ["token", "isAuthenticated"],
+import { configureStore } from "@reduxjs/toolkit";
+import { createWrapper, HYDRATE } from "next-redux-wrapper";
+
+import combinedReducer from "@/redux/rootReducer";
+
+const reducer: typeof combinedReducer = (state, action) => {
+  if (action.type === HYDRATE) {
+    return {
+      ...state,
+      ...action.payload,
+    };
+  } else {
+    return combinedReducer(state, action);
+  }
 };
 
-const rootReducer = {
-  tasks: tasksReducer,
-  image: imageReducer,
-  auth: persistReducer(authPersistConfig, authReducer),
-  [authApi.reducerPath]: authApi.reducer,
-  [tasksApi.reducerPath]: tasksApi.reducer,
-  [imageApi.reducerPath]: imageApi.reducer,
-};
-
-export const makeStore = () => {
-  const store = configureStore({
-    reducer: rootReducer,
+export const makeStore = () =>
+  configureStore({
+    reducer,
     middleware: (getDefaultMiddleware) => [
       ...getDefaultMiddleware({
         serializableCheck: {
@@ -45,16 +38,15 @@ export const makeStore = () => {
     ],
   });
 
-  return store;
-};
+type Store = ReturnType<typeof makeStore>;
 
-export const store = makeStore();
+export type AppDispatch = Store["dispatch"];
+export type RootState = ReturnType<Store["getState"]>;
+// export type AppThunk<ReturnType = void> = ThunkAction<
+//   ReturnType,
+//   RootState,
+//   unknown,
+//   Action<string>
+// >;
 
 export const wrapper = createWrapper(makeStore);
-
-// @ts-ignore
-export type AppState = ReturnType<typeof rootReducer>;
-
-export type AppDispatch = typeof store.dispatch;
-
-export const persistor = persistStore(makeStore());
