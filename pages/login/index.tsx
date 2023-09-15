@@ -7,6 +7,8 @@ import { useRouter } from "next/router";
 import { setLoginSuccess } from "@/redux/slices/auth.slice";
 import { LoginBody, useLoginMutation } from "@/redux/api/auth.api";
 import { useAppDispatch } from "@/redux/hooks";
+import EyeIcon from "@/public/IconsSet/eye.svg";
+import EyeOffIcon from "@/public/IconsSet/eye-off.svg";
 
 const LoginPage: FC = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -98,8 +100,17 @@ const LoginPage: FC = () => {
           >
             <Form autoComplete="off">
               <h1 className="login__title">Login</h1>
-              <Input label="Email" required name="email" id="email" step={1} />
-              <div className="login__passwordBox">
+              <div className="mb-6">
+                <Input
+                  label="Email"
+                  required
+                  name="email"
+                  id="email"
+                  step={1}
+                />
+              </div>
+
+              <div className="login__passwordBox relative">
                 <Input
                   label="Password"
                   name="password"
@@ -107,17 +118,23 @@ const LoginPage: FC = () => {
                   id="password"
                   step={1}
                 />
-                <button
+                <div
+                  className="w-4 h-4 text-gray-80 absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer"
                   onClick={toggleShowPassword}
-                  type="button"
-                  className={
-                    !showPassword
-                      ? "login__passwordBox__btnShow"
-                      : "login__passwordBox__btnHide"
-                  }
                 >
-                  <></>
-                </button>
+                  {!showPassword ? <EyeIcon /> : <EyeOffIcon />}
+                </div>
+                {/*<button*/}
+                {/*  onClick={toggleShowPassword}*/}
+                {/*  type="button"*/}
+                {/*  className={*/}
+                {/*    !showPassword*/}
+                {/*      ? "login__passwordBox__btnShow"*/}
+                {/*      : "login__passwordBox__btnHide"*/}
+                {/*  }*/}
+                {/*>*/}
+                {/*  <></>*/}
+                {/*</button>*/}
               </div>
               <button className="login__button" type="submit">
                 Login
