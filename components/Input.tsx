@@ -1,5 +1,6 @@
 import React, { useState, useEffect, FC } from "react";
 import { Field, useField } from "formik";
+import clsx from "clsx";
 
 type InputType = {
   name: string;
@@ -24,51 +25,20 @@ export const Input: FC<InputType> = ({
 }) => {
   const [{ onChange, onBlur, value }, { touched, error }] = useField(name);
   const isErrorShown = touched && !!error;
-  const [labelClassName, setLabelClassName] = useState("tasks__form__label");
   const [isInputFocused, setIsInputFocused] = useState(false);
 
-  useEffect(() => {
-    if (!value && isInputFocused) {
-      if (!isErrorShown) {
-        return setLabelClassName("tasks__form__label tasks__form__labelMove");
-      }
-      if (isErrorShown) {
-        return setLabelClassName(
-          "tasks__form__labelError tasks__form__labelErrorMove"
-        );
-      }
-    }
-    if (!value) {
-      if (!isErrorShown) {
-        return setLabelClassName("tasks__form__label");
-      }
-      if (isErrorShown) {
-        return setLabelClassName("tasks__form__labelError");
-      }
-    }
-    if (value) {
-      if (!isErrorShown) {
-        return setLabelClassName("tasks__form__label tasks__form__labelMove");
-      }
-      if (isErrorShown) {
-        return setLabelClassName(
-          "tasks__form__labelError tasks__form__labelErrorMove"
-        );
-      }
-    }
-  }, [value, isErrorShown, isInputFocused]);
   const handleInputFocus = () => {
     setIsInputFocused(!isInputFocused);
   };
-  const inputClassName = !isErrorShown
-    ? "tasks__form__input"
-    : "tasks__form__inputError";
 
   return (
-    <div className="tasks__form__inputBox">
+    <div className="relative">
       <Field
         id={id}
-        className={inputClassName}
+        className={clsx(
+          !isErrorShown ? "border-gray-80" : "border-error-80",
+          "py-3 shadow-md text-dark-100 shadow-dark-60 px-1 min-w-[430px] indent-6 text-parS w-full border bg-none rounded-lg placeholder:text-parS placeholder:font-normal focus:border-orange-40 focus:ring-orange-40 focus:ring-1 focus:outline-none autofill:text-pars"
+        )}
         as={as}
         required={required}
         type={type}
@@ -84,13 +54,27 @@ export const Input: FC<InputType> = ({
         defaultValue={defaultValue}
       />
       {label && (
-        <label className={labelClassName} htmlFor={name}>
+        <label
+          className={clsx(
+            isInputFocused && !value
+              ? "top-[50%]"
+              : !value
+              ? "top-[50%]"
+              : "-top-[7px] left-[3px] -translate-y-0 translate-x-0 scale-[0.8]",
+            !isErrorShown ? "text-gray-80" : "text-errorText",
+            "absolute  leading-[0] bg-white left-8  -translate-y-1/2 scale-100 text-parS transition-top transition-left transition-transform duration-300 ease-in-out"
+          )}
+          htmlFor={name}
+        >
           {label}
         </label>
       )}
-      <div className="task__form__errorBox">
-        {isErrorShown && <div className="tasks__form__error">{error}</div>}
-      </div>
+
+      {isErrorShown ? (
+        <div className="absolute -bottom-5 text-errorText text-quot right-2 ">
+          {error}
+        </div>
+      ) : null}
     </div>
   );
 };
