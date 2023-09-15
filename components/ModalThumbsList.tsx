@@ -18,7 +18,7 @@ import { Images } from "@/types";
 Modal.setAppElement("#__next");
 
 type ModalThumbsListProps = {
-  data: Images;
+  thumbs: Images;
   isThumbsOpen: boolean;
   modalThumbsHandler: any;
   setIsGetImages: React.Dispatch<React.SetStateAction<boolean>>;
@@ -33,7 +33,7 @@ type DeleteConfirmModal = {
 };
 
 export const ModalThumbsList: FC<ModalThumbsListProps> = ({
-  data: thumbs,
+  thumbs,
   isThumbsOpen,
   modalThumbsHandler,
   setIsGetImages,
@@ -93,7 +93,10 @@ export const ModalThumbsList: FC<ModalThumbsListProps> = ({
         );
         modalThumbsHandler();
         dispatch(clearCheckedImages());
-        setIsGetImages(false);
+        setTimeout(() => {
+          setIsGetImages(true);
+        }, 100);
+
         setIsButtonModifyActive(false);
       }}
       style={{
