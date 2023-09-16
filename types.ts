@@ -1,10 +1,17 @@
+import React from 'react';
+
+export type LayoutProps = {
+  children: React.ReactNode;
+  page: string;
+};
+
 export type ModalAuthProps = {
   className?: string;
   email?: string;
   open: boolean;
   onClose: () => void;
   handleClose?: () => void;
-  confirmed?: string;
+  confirmed?: boolean;
   message: string;
 };
 

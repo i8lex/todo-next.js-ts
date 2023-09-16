@@ -1,9 +1,9 @@
-import React from "react";
-import { useRouter } from "next/router";
-import Link from "next/link";
+import React from 'react';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
 
-import { setLogoutSuccess } from "@/redux/slices/auth.slice";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { setLogoutSuccess } from '@/redux/slices/auth.slice';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 
 const Header = () => {
   const dispatch = useAppDispatch();
@@ -11,7 +11,7 @@ const Header = () => {
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const handleLogout = async () => {
     dispatch(setLogoutSuccess());
-    await router.push("/login");
+    await router.push('/login');
   };
 
   return (
@@ -29,7 +29,7 @@ const Header = () => {
             </>
           ) : (
             <>
-              <Link className="header__link" href="/registration">
+              <Link className="header__link" href="/register">
                 Registration
               </Link>
               <Link className="header__link" href="/login">

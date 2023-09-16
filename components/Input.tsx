@@ -1,8 +1,8 @@
-import React, { useState, useEffect, FC } from "react";
-import { Field, useField } from "formik";
-import clsx from "clsx";
+import React, { useState, useEffect, FC } from 'react';
+import { Field, useField } from 'formik';
+import clsx from 'clsx';
 
-type InputType = {
+type InputProps = {
   name: string;
   id?: string;
   as?: string;
@@ -11,15 +11,17 @@ type InputType = {
   type?: string;
   step?: number;
   defaultValue?: string;
+  className?: string;
 };
 
-export const Input: FC<InputType> = ({
+export const Input: FC<InputProps> = ({
+  className,
   name,
   id,
-  as = "input",
-  label = "",
+  as = 'input',
+  label = '',
   required = false,
-  type = "text",
+  type = 'text',
   step,
   defaultValue,
 }) => {
@@ -32,12 +34,13 @@ export const Input: FC<InputType> = ({
   };
 
   return (
-    <div className="relative">
+    <div className="relative w-full">
       <Field
         id={id}
         className={clsx(
-          !isErrorShown ? "border-gray-80" : "border-error-80",
-          "py-3 shadow-md text-dark-100 shadow-dark-60 px-1 min-w-[430px] indent-6 text-parS w-full border bg-none rounded-lg placeholder:text-parS placeholder:font-normal focus:border-orange-40 focus:ring-orange-40 focus:ring-1 focus:outline-none autofill:text-pars"
+          className,
+          !isErrorShown ? 'border-gray-80' : 'border-error-80',
+          'py-3 h-10 shadow-md text-dark-100 shadow-dark-60 px-1 w-full tablet:w-[390px] indent-6 text-parS border bg-none rounded-lg placeholder:text-parS placeholder:font-normal focus:border-orange-40 focus:ring-orange-40 focus:ring-1 focus:outline-none autofill:text-pars',
         )}
         as={as}
         required={required}
@@ -57,12 +60,12 @@ export const Input: FC<InputType> = ({
         <label
           className={clsx(
             isInputFocused && !value
-              ? "top-[50%]"
+              ? 'top-[50%]'
               : !value
-              ? "top-[50%]"
-              : "-top-[7px] left-[3px] -translate-y-0 translate-x-0 scale-[0.8]",
-            !isErrorShown ? "text-gray-80" : "text-errorText",
-            "absolute  leading-[0] bg-white left-8  -translate-y-1/2 scale-100 text-parS transition-top transition-left transition-transform duration-300 ease-in-out"
+              ? 'top-[50%]'
+              : '-top-[7px] left-[3px] -translate-y-0 translate-x-0 scale-[0.8]',
+            !isErrorShown ? 'text-gray-80' : 'text-errorText',
+            'absolute  leading-[0] cursor-text bg-white left-8  -translate-y-1/2 scale-100 text-parS transition-top transition-left transition-transform duration-300 ease-in-out',
           )}
           htmlFor={name}
         >
