@@ -1,19 +1,19 @@
-import { User } from "@/lib/models/userModel";
-import { transporter } from "@/config";
-import * as jwt from "jsonwebtoken";
-import Handlebars from "handlebars";
-import { NextApiRequest, NextApiResponse } from "next";
+import { User } from '@/lib/models/userModel';
+import { transporter } from '@/config';
+import * as jwt from 'jsonwebtoken';
+import Handlebars from 'handlebars';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export const repeatConfirmEmailHandler = async (
   request: NextApiRequest,
-  reply: NextApiResponse
+  reply: NextApiResponse,
 ) => {
   // @ts-ignore
   const { sign } = jwt.default;
   const { email } = request.body;
 
   const token = await sign({ email }, process.env.SECRET_WORD, {
-    expiresIn: "15m",
+    expiresIn: '15m',
   });
 
   const source = `<a href="{{url}}">Click to confirm</a>`;
@@ -24,9 +24,9 @@ export const repeatConfirmEmailHandler = async (
     const html = template(data);
 
     await transporter.sendMail({
-      from: "noreply-authtodomail@gmail.com",
+      from: 'noreply-authtodomail@gmail.com',
       to: email,
-      subject: "Todo registration",
+      subject: 'Todo register',
       html: html,
     });
   } catch (error) {
@@ -35,17 +35,17 @@ export const repeatConfirmEmailHandler = async (
   try {
     const updateStatus = await User.updateOne(
       { email: email },
-      { confirmationCode: token }
+      { confirmationCode: token },
     );
 
     if (updateStatus.modifiedCount === 0) {
-      return reply.status(404).send("User not found");
+      return reply.status(404).send('User not found');
     }
   } catch (err) {
     reply.status(500).send(err);
   }
   reply.send({
-    message: "Successfully send",
+    message: 'Successfully send',
     email,
   });
 };

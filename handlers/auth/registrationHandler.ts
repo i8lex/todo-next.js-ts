@@ -1,13 +1,13 @@
-import pkg from "bcryptjs";
-import { transporter } from "@/config";
-import Handlebars from "handlebars";
-import * as jwt from "jsonwebtoken";
-import { User } from "@/lib/models/userModel";
-import { NextApiRequest, NextApiResponse } from "next";
+import pkg from 'bcryptjs';
+import { transporter } from '@/config';
+import Handlebars from 'handlebars';
+import * as jwt from 'jsonwebtoken';
+import { User } from '@/lib/models/userModel';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export const postRegistrationHandler = async (
   request: NextApiRequest,
-  reply: NextApiResponse
+  reply: NextApiResponse,
 ) => {
   const { hash } = pkg;
   // @ts-ignore
@@ -19,28 +19,28 @@ export const postRegistrationHandler = async (
 
   if (existingName) {
     return reply.status(400).send({
-      error: "User with this name already exists",
-      field: "name",
+      error: 'User with this name already exists',
+      field: 'name',
     });
   }
   if (existingEmail) {
     return reply.status(400).send({
-      error: "User with this email already exists",
-      field: "email",
+      error: 'User with this email already exists',
+      field: 'email',
     });
   }
   if (!/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/.test(password)) {
     return reply.status(400).send({
       error:
-        "Password must contain at least one lowercase letter, one uppercase letter, one number and must be at least 8 characters long",
-      field: "password",
+        'Password must contain at least one lowercase letter, one uppercase letter, one number and must be at least 8 characters long',
+      field: 'password',
     });
   }
 
   const hashedPassword = await hash(password, 10);
 
   const token = await sign({ email }, process.env.SECRET_WORD, {
-    expiresIn: "15m",
+    expiresIn: '15m',
   });
 
   const source = `<a href="{{url}}">Click to confirm</a>`;
@@ -51,9 +51,9 @@ export const postRegistrationHandler = async (
     const html = template(data);
 
     await transporter.sendMail({
-      from: "noreply-authtodomail@gmail.com",
+      from: 'noreply-authtodomail@gmail.com',
       to: email,
-      subject: "Todo registration",
+      subject: 'Todo register',
       html: html,
     });
   } catch (error) {
@@ -68,5 +68,5 @@ export const postRegistrationHandler = async (
   });
 
   await newUser.save();
-  return reply.status(201).send({ message: "User successful created" });
+  return reply.status(201).send({ message: 'User successful created' });
 };

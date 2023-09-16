@@ -1,9 +1,9 @@
-import React, { FC } from "react";
-import Modal from "react-modal";
-import { ModalAuthProps } from "@/types";
-import { useEmailRepeatMutation } from "@/redux/api/auth.api";
+import React, { FC } from 'react';
+import Modal from 'react-modal';
+import { ModalAuthProps } from '@/types';
+import { useEmailRepeatMutation } from '@/redux/api/auth.api';
 
-Modal.setAppElement("#__next");
+Modal.setAppElement('#__next');
 
 export const ModalAuth: FC<ModalAuthProps> = ({
   email,
@@ -12,6 +12,7 @@ export const ModalAuth: FC<ModalAuthProps> = ({
   message,
   confirmed,
 }) => {
+  console.log(confirmed);
   const [emailRepeat] = useEmailRepeatMutation();
   const repeatEmailHandler = async () => {
     try {
@@ -22,7 +23,7 @@ export const ModalAuth: FC<ModalAuthProps> = ({
       // @ts-ignore
       handleClose();
     } catch (err) {
-      console.log("error repeat send email");
+      console.log('error repeat send email');
     }
   };
   return (
@@ -30,15 +31,15 @@ export const ModalAuth: FC<ModalAuthProps> = ({
       isOpen={open}
       style={{
         overlay: {
-          backgroundColor: "rgba(0, 0, 0, 0.6)",
+          backgroundColor: 'rgba(0, 0, 0, 0.6)',
         },
         content: {
-          maxWidth: "600px",
-          maxHeight: "300px",
-          margin: "0 auto",
-          border: "none",
-          borderRadius: "10px",
-          padding: "20px",
+          maxWidth: '600px',
+          maxHeight: '300px',
+          margin: '0 auto',
+          border: 'none',
+          borderRadius: '10px',
+          padding: '20px',
         },
       }}
     >
@@ -51,14 +52,12 @@ export const ModalAuth: FC<ModalAuthProps> = ({
           <></>
         </button>
         <h1 className="login__modal__title">
-          {JSON.stringify(message, null, 2).replace(/["']/g, "")}
+          {JSON.stringify(message, null, 2).replace(/["']/g, '')}
         </h1>
-        {!confirmed ? (
+        {confirmed || confirmed === undefined ? null : (
           <button className="login__modal__button" onClick={repeatEmailHandler}>
             RESEND CONFIRMATION EMAIL
           </button>
-        ) : (
-          <></>
         )}
       </div>
     </Modal>

@@ -1,4 +1,4 @@
-@import "reset.css";
+//@import "reset.css";
 @import "mixins";
 @import "login";
 @import "tasks";
@@ -12,8 +12,8 @@
 }
 
 body {
-  width:100vw;
-  @include flex-column-center;
+  width:100%;
+  //@include flex-column-center;
   //overflow-x: hidden;
   //-webkit-overflow-scrolling: touch;
 }

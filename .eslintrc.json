@@ -1,3 +1,45 @@
 {
-  "extends": "next/core-web-vitals"
+  "plugins": ["@typescript-eslint", "simple-import-sort"],
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
+  ],
+  "rules": {
+    "@typescript-eslint/no-unused-vars": "error",
+    "@typescript-eslint/no-explicit-any": "error",
+    "@typescript-eslint/no-var-requires": 0,
+    "import/no-default-export": "error",
+    "@typescript-eslint/consistent-type-imports": "warn",
+    "@typescript-eslint/ban-ts-comment": 0
+  },
+  "overrides": [
+    // Next.js needs default exports for pages and API points
+    {
+      "files": ["./pages/**/*", "./pages/api/**/*"],
+      "rules": {
+        "import/no-default-export": "off"
+      }
+    },
+    {
+      "files": ["*.js", "*.jsx", "*.ts", "*.tsx"],
+      "rules": {
+        "simple-import-sort/imports": [
+          "warn",
+          {
+            "groups": [
+              ["^next", "^@next"],
+              ["^node:"],
+              ["^react", "^@?\\w"],
+              ["^\\u0000"],
+              ["^"],
+              ["^\\."],
+              ["^.+\\u0000$"],
+              ["^.+\\.?(css)$"]
+            ]
+          }
+        ]
+      }
+    }
+  ]
 }
