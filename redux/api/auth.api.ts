@@ -1,4 +1,6 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import * as process from 'process';
+import { SignInResponse } from 'next-auth/react';
 
 type RegistrationResponse = {
   message: string;
@@ -25,32 +27,31 @@ export type LoginResponse = {
 type EmailRepeatBody = {
   email: string;
 };
-
 export const authApi = createApi({
-  reducerPath: "authApi",
-  tagTypes: ["Authentications", "Error"],
+  reducerPath: 'authApi',
+  tagTypes: ['Authentications', 'Error'],
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:3000/api",
+    baseUrl: process.env.BASE_API_URL || process.env.NEXT_PUBLIC_BASE_API_URL,
   }),
   endpoints: (build) => ({
     registration: build.mutation<RegistrationResponse, RegistrationBody>({
       query: (body) => ({
-        url: "/registration",
-        method: "POST",
+        url: '/registration',
+        method: 'POST',
         body,
       }),
     }),
     login: build.mutation<LoginResponse, LoginBody>({
       query: (body) => ({
-        url: "/login",
-        method: "POST",
-        body,
+        url: '/auth/login',
+        method: 'POST',
+        body: JSON.stringify(body),
       }),
     }),
     emailRepeat: build.mutation<void, EmailRepeatBody>({
       query: (body) => ({
-        url: "/email",
-        method: "PUT",
+        url: '/email',
+        method: 'PUT',
         body,
       }),
     }),

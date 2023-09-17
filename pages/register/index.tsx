@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Form, Formik } from 'formik';
-import { ModalAuth } from '@/components/ModalAuth';
+import { ModalAuth } from '@/components/auth/modal/ModalAuth';
 import * as yup from 'yup';
 import { Input } from '@/components/Input';
 import { useRouter } from 'next/router';
@@ -9,6 +9,7 @@ import { AuthorizationLayout } from '@/components/layouts/authorization/Layout';
 import { Button } from '@/components/ui/Button';
 import EyeIcon from '@/public/IconsSet/eye.svg';
 import EyeOffIcon from '@/public/IconsSet/eye-off.svg';
+import { PopUpModal } from '@/components/modal/PopUpModal';
 
 const RegistrationPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -49,7 +50,8 @@ const RegistrationPage = () => {
   };
   return (
     <AuthorizationLayout page={'register'}>
-      <ModalAuth open={openModal} onClose={handleClose} message={message} />
+      {/*<PopUpModal type={} showPopUpModal={true} setShowPopUpModal={setOpenModal} titleText={''} messageText={''} buttonText={}/>*/}
+      <ModalAuth open={openModal} handleClose={handleClose} message={message} />
 
       <Formik
         initialValues={{

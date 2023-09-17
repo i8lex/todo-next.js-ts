@@ -5,6 +5,12 @@ export type LayoutProps = {
   page: string;
 };
 
+export type Page = {
+  className: string;
+  children: React.ReactNode;
+  currentPage?: string;
+};
+
 export type Images = Image[];
 
 export type Image = {

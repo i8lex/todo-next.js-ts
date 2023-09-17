@@ -1,26 +1,22 @@
 import React, { useState, FC } from 'react';
 import { Form, Formik } from 'formik';
-import { ModalAuth } from '@/components/ModalAuth';
+import { ModalAuth } from '@/components/auth/modal/ModalAuth';
 import * as yup from 'yup';
 import { Input } from '@/components/Input';
 import { useRouter } from 'next/router';
-import { setLoginSuccess } from '@/redux/slices/auth.slice';
-import { LoginBody, useLoginMutation } from '@/redux/api/auth.api';
-import { useAppDispatch } from '@/redux/hooks';
+import { LoginBody } from '@/redux/api/auth.api';
 import EyeIcon from '@/public/IconsSet/eye.svg';
 import EyeOffIcon from '@/public/IconsSet/eye-off.svg';
 import { Button } from '@/components/ui/Button';
 import { AuthorizationLayout } from '@/components/layouts/authorization/Layout';
+import { signIn } from 'next-auth/react';
 
 const LoginPage: FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [message, setMessage] = useState('');
-  const [email, setEmail] = useState('');
   const [confirmed, setConfirmed] = useState<boolean | undefined>(undefined);
   const router = useRouter();
-  const dispatch = useAppDispatch();
-  const [login] = useLoginMutation();
 
   const handleClose = () => {
     setOpenModal(false);
@@ -29,36 +25,27 @@ const LoginPage: FC = () => {
 
   const handleSubmit = async (values: LoginBody) => {
     try {
-      const response = await login(values);
-      if ('error' in response) {
-        const { error } = response;
-        // @ts-ignore
-        setMessage(error.data.error);
-        // @ts-ignore
-        setConfirmed(error.data.confirmed);
-        if (!confirmed && confirmed !== undefined) {
-          setEmail(values.email);
-          return setOpenModal(true);
+      await signIn('credentials', {
+        email: values.email,
+        password: values.password,
+        redirect: false,
+      }).then((response) => {
+        if (response?.error) {
+          const { error } = response;
+          setMessage(error);
+          if (error === "Please activate you're account") {
+            setConfirmed(false);
+          }
         } else {
-          setOpenModal(true);
-          setTimeout(() => handleClose(), 3000);
-        }
-      }
-      if ('data' in response) {
-        const { data } = response;
-        const { message: responseMessage } = data;
-        setMessage(data.message);
-        setConfirmed(data.confirmed);
-        setOpenModal(true);
-
-        if (data.token && data.confirmed) {
-          dispatch(setLoginSuccess(data.token));
+          setConfirmed(true);
+          setMessage('Welcome back!');
           setTimeout(() => {
             router.push('/tasks');
             handleClose();
           }, 3000);
         }
-      }
+        setOpenModal(true);
+      });
     } catch (error) {
       setMessage('Something goes wrong');
       setOpenModal(true);
@@ -70,10 +57,7 @@ const LoginPage: FC = () => {
   return (
     <AuthorizationLayout page={'login'}>
       <ModalAuth
-        className="login__modalAuth"
-        email={email}
         open={openModal}
-        onClose={handleClose}
         handleClose={handleClose}
         confirmed={confirmed}
         message={message}
