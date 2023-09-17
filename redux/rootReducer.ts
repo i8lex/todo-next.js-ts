@@ -1,12 +1,12 @@
-import { combineReducers } from "@reduxjs/toolkit";
-import taskSlice from "./slices/tasks.slice";
-import { tasksApi } from "./api/tasks.api";
-import { persistReducer } from "redux-persist";
-import authSlice from "./slices/auth.slice";
-import { authApi } from "./api/auth.api";
-import imagesSlice from "./slices/images.slice";
-import { imageApi } from "@/redux/api/images.api";
-import createWebStorage from "redux-persist/lib/storage/createWebStorage";
+import { combineReducers } from '@reduxjs/toolkit';
+import taskSlice from './slices/tasks.slice';
+import { tasksApi } from './api/tasks.api';
+import { persistReducer, persistStore } from 'redux-persist';
+import authSlice from './slices/auth.slice';
+import { authApi } from './api/auth.api';
+import imagesSlice from './slices/images.slice';
+import { imageApi } from '@/redux/api/images.api';
+import createWebStorage from 'redux-persist/lib/storage/createWebStorage';
 
 const createNoopStorage = () => {
   return {
@@ -23,14 +23,14 @@ const createNoopStorage = () => {
 };
 
 const storage =
-  typeof window !== "undefined"
-    ? createWebStorage("local")
+  typeof window !== 'undefined'
+    ? createWebStorage('local')
     : createNoopStorage();
 
 const authPersistConfig = {
-  key: "authApi",
+  key: 'authApi',
   storage,
-  whitelist: ["token", "isAuthenticated"],
+  whitelist: ['token', 'isAuthenticated'],
 };
 
 const combinedReducer = combineReducers({

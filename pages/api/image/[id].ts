@@ -1,31 +1,31 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import db from "../../../lib/db";
-import { getThumbsHandler } from "@/handlers/images/getThumbsHandler";
+import { NextApiRequest, NextApiResponse } from 'next';
+import db from '../../../lib/db';
+import { getThumbsHandler } from '@/handlers/images/getThumbsHandler';
 
-import { deleteImagesHandler } from "@/handlers/images/deleteImagesHandler";
-import { authMiddleware } from "@/middlewares/authMiddleware";
+import { deleteImagesHandler } from '@/handlers/images/deleteImagesHandler';
+import { authMiddleware } from '@/middlewares/authMiddleware';
 
 export default authMiddleware(async function imageHandlers(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
-  await db.connect();
+  await db();
   const { method } = req;
 
   switch (method) {
-    case "GET":
+    case 'GET':
       await getThumbsHandler(req, res);
       break;
 
-    case "POST":
+    case 'POST':
       // ...
       break;
 
-    case "PUT":
+    case 'PUT':
       // ...
       break;
 
-    case "DELETE":
+    case 'DELETE':
       await deleteImagesHandler(req, res);
       break;
 

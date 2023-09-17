@@ -1,28 +1,32 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import {
   BaseQueryApi,
   TagDescription,
-} from "@reduxjs/toolkit/dist/query/react";
-import { AuthState, Images, Image } from "@/types";
+} from '@reduxjs/toolkit/dist/query/react';
+import { AuthState, Images, Image } from '@/types';
+import { getSession } from 'next-auth/react';
 
-const prepareHeaders = (
+const prepareHeaders = async (
   headers: Headers,
   {
     getState,
-  }: Pick<BaseQueryApi, "getState" | "extra" | "endpoint" | "type" | "forced">
+  }: Pick<BaseQueryApi, 'getState' | 'extra' | 'endpoint' | 'type' | 'forced'>,
 ) => {
-  const token = (getState() as AuthState).auth.token;
+  // const token = (getState() as AuthState).auth.token;
+  const session = await getSession();
+  // @ts-ignore
+  const token = session?.user?.token;
   if (token) {
-    headers.set("Authorization", `Bearer ${token}`);
+    headers.set('Authorization', `Bearer ${token}`);
   }
   return headers;
 };
 
 export const imageApi = createApi({
-  reducerPath: "imageApi",
-  tagTypes: ["Images", "Image"],
+  reducerPath: 'imageApi',
+  tagTypes: ['Images', 'Image'],
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:3000/api/",
+    baseUrl: process.env.BASE_API_URL || process.env.NEXT_PUBLIC_BASE_API_URL,
     prepareHeaders,
   }),
 
@@ -30,39 +34,39 @@ export const imageApi = createApi({
     getImage: build.query({
       query: (id: string) => ({ url: `image?id=${id}` }),
       providesTags: (result: Image | undefined, error, id: string) => [
-        { type: "Image", id },
+        { type: 'Image', id },
       ],
     }),
     getThumbs: build.query({
       query: (id: string) => `image/${id}`,
       providesTags: (
-        result: Images | undefined
-      ): (TagDescription<"Images"> | TagDescription<"Image">)[] =>
+        result: Images | undefined,
+      ): (TagDescription<'Images'> | TagDescription<'Image'>)[] =>
         result
           ? [
               ...(result as Images).map(({ _id }) => ({
-                type: "Image" as const,
+                type: 'Image' as const,
                 _id,
               })),
-              { type: "Image" as const, id: "LIST" },
+              { type: 'Image' as const, id: 'LIST' },
             ]
-          : [{ type: "Image" as const, id: "LIST" }],
+          : [{ type: 'Image' as const, id: 'LIST' }],
     }),
     addImage: build.mutation<void, Images>({
       query: (body) => ({
-        url: "image",
-        method: "POST",
+        url: 'image',
+        method: 'POST',
         body,
       }),
-      invalidatesTags: [{ type: "Image", id: "LIST" }],
+      invalidatesTags: [{ type: 'Image', id: 'LIST' }],
     }),
 
     deleteImage: build.mutation({
       query: (id) => ({
         url: `image/${id}`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
-      invalidatesTags: [{ type: "Image", id: "LIST" }],
+      invalidatesTags: [{ type: 'Image', id: 'LIST' }],
     }),
   }),
 });

@@ -1,11 +1,12 @@
-import * as jwt from "jsonwebtoken";
-import pkg from "bcryptjs";
-import { User } from "@/lib/models/userModel";
-import { NextApiRequest, NextApiResponse } from "next";
+import * as jwt from 'jsonwebtoken';
+import pkg from 'bcryptjs';
+import { User } from '@/lib/models/userModel';
+import { NextApiRequest, NextApiResponse } from 'next';
+import db from '@/lib/db';
 
 export const loginHandler = async (
   request: NextApiRequest,
-  reply: NextApiResponse
+  reply: NextApiResponse,
 ) => {
   const { compare } = pkg;
   const { sign } = jwt;
@@ -14,10 +15,9 @@ export const loginHandler = async (
 
   const user = await User.findOne({ email });
   if (!user) {
-    return reply.status(401).send({ error: "Wrong email or password" });
+    return reply.status(401).send({ error: 'Wrong email or password' });
   } else {
     const isPasswordCorrect = await compare(password, user.password);
-
     if (isPasswordCorrect) {
       if (!user.isConfirmed) {
         return reply.status(401).send({
@@ -29,8 +29,8 @@ export const loginHandler = async (
           { email: user.email, id: user.id },
           process.env.SECRET_WORD as string,
           {
-            expiresIn: "24h",
-          }
+            expiresIn: '24h',
+          },
         );
         return reply.status(200).send({
           id: user.id,
@@ -49,5 +49,5 @@ export const loginHandler = async (
     }
   }
 
-  return reply.status(401).send({ error: "Wrong email or password" });
+  return reply.status(401).send({ error: 'Wrong email or password' });
 };
