@@ -5,16 +5,6 @@ export type LayoutProps = {
   page: string;
 };
 
-export type ModalAuthProps = {
-  className?: string;
-  email?: string;
-  open: boolean;
-  onClose: () => void;
-  handleClose?: () => void;
-  confirmed?: boolean;
-  message: string;
-};
-
 export type Images = Image[];
 
 export type Image = {
