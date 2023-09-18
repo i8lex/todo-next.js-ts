@@ -3,7 +3,7 @@ import {
   BaseQueryApi,
   TagDescription,
 } from '@reduxjs/toolkit/dist/query/react';
-import { AuthState, Images, Image } from '@/types';
+import { Image } from '@/types';
 import { getSession } from 'next-auth/react';
 
 const prepareHeaders = async (
@@ -40,11 +40,11 @@ export const imageApi = createApi({
     getThumbs: build.query({
       query: (id: string) => `image/${id}`,
       providesTags: (
-        result: Images | undefined,
+        result: Image[] | undefined,
       ): (TagDescription<'Images'> | TagDescription<'Image'>)[] =>
         result
           ? [
-              ...(result as Images).map(({ _id }) => ({
+              ...(result as Image[]).map(({ _id }: { _id: string }) => ({
                 type: 'Image' as const,
                 _id,
               })),
@@ -52,7 +52,7 @@ export const imageApi = createApi({
             ]
           : [{ type: 'Image' as const, id: 'LIST' }],
     }),
-    addImage: build.mutation<void, Images>({
+    addImage: build.mutation<void, Image[]>({
       query: (body) => ({
         url: 'image',
         method: 'POST',

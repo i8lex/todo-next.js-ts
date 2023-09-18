@@ -1,31 +1,31 @@
-import * as jwt from "jsonwebtoken";
-import { Task } from "@/lib/models/taskModel";
-import { NextApiRequest, NextApiResponse } from "next";
+import * as jwt from 'jsonwebtoken';
+import { Event } from '@/lib/models/eventModel';
+import { NextApiRequest, NextApiResponse } from 'next';
 
-export const createTaskHandler = async (
+export const createEventHandler = async (
   request: NextApiRequest,
-  reply: NextApiResponse
+  reply: NextApiResponse,
 ) => {
   // @ts-ignore
   const { verify } = jwt.default;
   const { title, description } = request.body;
   const authHeader = request.headers.authorization;
-  const token = authHeader ? authHeader.split(" ")[1] : null;
+  const token = authHeader ? authHeader.split(' ')[1] : null;
   const { id } = await verify(token, process.env.SECRET_WORD);
 
-  const newTask = new Task({
+  const newEvent = new Event({
     user: id,
     title: title,
     description: description,
   });
 
   try {
-    await newTask.save();
+    await newEvent.save();
   } catch (err) {
     console.log(err);
   }
 
   return reply
     .status(200)
-    .send({ message: "Task successful created", newTask });
+    .send({ message: 'Event successful created', newEvent });
 };

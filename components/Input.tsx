@@ -39,8 +39,11 @@ export const Input: FC<InputProps> = ({
         id={id}
         className={clsx(
           className,
+          as === 'textarea'
+            ? 'tablet:h-[390px] h-[120px] overflow-y-scroll resize-none px-2 '
+            : 'px-1',
           !isErrorShown ? 'border-gray-80' : 'border-error-80',
-          'py-3 h-10 shadow-md text-dark-100 shadow-dark-60 px-1 w-full tablet:w-[390px] indent-6 text-parS border bg-none rounded-lg placeholder:text-parS placeholder:font-normal focus:border-orange-40 focus:ring-orange-40 focus:ring-1 focus:outline-none autofill:text-pars',
+          'py-3 h-10 shadow-md text-dark-100 shadow-dark-60 w-full laptop:w-[390px]  indent-6 text-parS border bg-none rounded-lg placeholder:text-parS placeholder:font-normal focus:border-orange-40 focus:ring-orange-40 focus:ring-1 focus:outline-none autofill:text-pars',
         )}
         as={as}
         required={required}
@@ -60,9 +63,9 @@ export const Input: FC<InputProps> = ({
         <label
           className={clsx(
             isInputFocused && !value
-              ? 'top-[50%]'
+              ? 'top-[22px]'
               : !value
-              ? 'top-[50%]'
+              ? 'top-[22px]'
               : '-top-[7px] left-[3px] -translate-y-0 translate-x-0 scale-[0.8]',
             !isErrorShown ? 'text-gray-80' : 'text-errorText',
             'absolute  leading-[0] cursor-text bg-white left-8  -translate-y-1/2 scale-100 text-parS transition-top transition-left transition-transform duration-300 ease-in-out',

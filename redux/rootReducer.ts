@@ -1,6 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import taskSlice from './slices/tasks.slice';
-import { tasksApi } from './api/tasks.api';
+import eventsSlice from './slices/events.slice';
+import { eventsApi } from './api/events.api';
 import { persistReducer, persistStore } from 'redux-persist';
 import authSlice from './slices/auth.slice';
 import { authApi } from './api/auth.api';
@@ -34,11 +34,11 @@ const authPersistConfig = {
 };
 
 const combinedReducer = combineReducers({
-  tasks: taskSlice,
+  events: eventsSlice,
   image: imagesSlice,
   auth: persistReducer(authPersistConfig, authSlice),
   [authApi.reducerPath]: authApi.reducer,
-  [tasksApi.reducerPath]: tasksApi.reducer,
+  [eventsApi.reducerPath]: eventsApi.reducer,
   [imageApi.reducerPath]: imageApi.reducer,
 });
 

@@ -1,10 +1,11 @@
-import React, { FC, useEffect, useState } from "react";
-import { useDropzone } from "react-dropzone";
-import { useAddImageMutation } from "@/redux/api/images.api";
-import { setModalThumbsNeedRefetch } from "@/redux/slices/images.slice";
-import { useAppDispatch } from "@/redux/hooks";
+import React, { FC, useEffect, useState } from 'react';
+import { useDropzone } from 'react-dropzone';
+import { useAddImageMutation } from '@/redux/api/images.api';
+import { setModalThumbsNeedRefetch } from '@/redux/slices/images.slice';
+import { useAppDispatch } from '@/redux/hooks';
 // import {Image, Images} from "@/types";
-
+import UploadIcon from '@/public/IconsSet/upload-cloud-02.svg';
+import { Spinner } from '@/components/ui/Spinner';
 type ImageUploaderProps = {
   _id: string;
   setIsGetImages: React.Dispatch<React.SetStateAction<boolean>>;
@@ -31,8 +32,8 @@ export const ImageUploader: FC<ImageUploaderProps> = ({
   const { acceptedFiles, fileRejections, getRootProps, getInputProps } =
     useDropzone({
       accept: {
-        "image/jpeg": [".jpg", ".jpeg"],
-        "image/png": [".png"],
+        'image/jpeg': ['.jpg', '.jpeg'],
+        'image/png': ['.png'],
       },
       maxFiles: 4,
       maxSize: 6 * 1024 * 1024,
@@ -48,10 +49,10 @@ export const ImageUploader: FC<ImageUploaderProps> = ({
       const body: FormData = new FormData();
 
       files.forEach((file) => {
-        body.append("images", file);
+        body.append('images', file);
       });
 
-      body.append("task", _id);
+      body.append('event', _id);
 
       if (!fileRejections.length && files.length) {
         // @ts-ignore
@@ -121,37 +122,31 @@ export const ImageUploader: FC<ImageUploaderProps> = ({
   }, [!!fileRejections.length]);
 
   return (
-    <div className="image__uploadBox" {...getRootProps()}>
+    <div
+      className="p-3 h-full flex flex-col items-center justify-center"
+      {...getRootProps()}
+    >
       <input {...getInputProps()} />
       {isError ? (
         <>
-          <p className="image__loadingBoxTitle">Error!</p>
-          <p className="image__loadingBoxTitle">
+          <p className="text-dark-100 text-center text-parM">Error!</p>
+          <p className="text-dark-100 text-center text-parM">
             You can upload 4 files, no larger than 4mb!
           </p>
         </>
       ) : isUploadSuccess ? (
-        <p className="image__uploadBoxSmall__title">Upload successful</p>
+        <p className="text-dark-100 text-center text-parM">Upload successful</p>
       ) : isLoading ? (
-        <div className="image__loadingWrapper">
-          <p className="image__loadingBoxTitle">...Uploading...</p>
-          {acceptedFiles.map((file) => (
-            <div className="image__loadingBox" key={file.name}>
-              <img
-                className="image__loadingBox__tempThumbs"
-                alt={file.name}
-                src={URL.createObjectURL(file as Blob)}
-                onLoad={() => {
-                  URL.revokeObjectURL(file as unknown as string);
-                }}
-              />
-            </div>
-          ))}
-        </div>
+        <Spinner className="fill-green-20 text-green-60" />
       ) : (
-        <p className="image__uploadBoxSmall__title">
-          You can drop your images here
-        </p>
+        <div className="flex flex-col items-center justify-center gap-3">
+          <p className="text-dark-100 text-center text-parM font-semibold">
+            You can drop images here
+          </p>
+          <div className="flex items-center justify-center flex-col w-[70px] h-[70px] border border-stroke rounded-md hover:shadow-sm hover:shadow-dark-60 hover:bg-green-10 cursor-pointer shadow-md shadow-dark-60">
+            <UploadIcon className="w-[50px] h-[50px] text-dark-100" />
+          </div>
+        </div>
       )}
     </div>
   );

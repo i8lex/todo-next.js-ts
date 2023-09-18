@@ -8,7 +8,7 @@ import {
   REGISTER,
   REHYDRATE,
 } from 'redux-persist';
-import { tasksApi } from './api/tasks.api';
+import { eventsApi } from './api/events.api';
 import { imageApi } from './api/images.api';
 
 import { configureStore, createStore } from '@reduxjs/toolkit';
@@ -35,7 +35,7 @@ export const makeStore = () =>
         serializableCheck: {
           ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
         },
-      }).concat(authApi.middleware, tasksApi.middleware, imageApi.middleware),
+      }).concat(authApi.middleware, eventsApi.middleware, imageApi.middleware),
     ],
   });
 

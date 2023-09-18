@@ -1,8 +1,8 @@
 import * as jwt from 'jsonwebtoken';
-import { Thumb } from '@/lib/models/thumbModel';
+import { Event } from '@/lib/models/eventModel';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-export const getThumbsHandler = async (
+export const changeEventHandler = async (
   request: NextApiRequest,
   reply: NextApiResponse,
 ) => {
@@ -11,18 +11,22 @@ export const getThumbsHandler = async (
   const authHeader = request.headers.authorization;
   const token = authHeader ? authHeader.split(' ')[1] : null;
   const { id } = await verify(token, process.env.SECRET_WORD);
+
   const { id: eventId } = request.query;
 
+  const updates = request.body;
   try {
-    const images = await Thumb.find({ event: eventId, user: id });
+    const updatedEvent = await Event.updateOne(
+      { _id: eventId, user: id },
+      { $set: updates },
+    );
 
-    if (!images) {
-      return reply.status(404).send({ message: 'Image not found' });
+    if (updatedEvent.modifiedCount === 0) {
+      return reply.status(404).send('Event not found');
     }
 
-    reply.send(images);
+    reply.send(updatedEvent);
   } catch (err) {
-    console.log(err);
     reply.status(500).send(err);
   }
 };

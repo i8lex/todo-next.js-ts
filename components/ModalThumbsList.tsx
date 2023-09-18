@@ -1,24 +1,24 @@
-import React, { FC, useEffect, useState } from "react";
-import Modal from "react-modal";
-import { clearCheckedImages, setImage } from "@/redux/slices/images.slice";
-import { Image } from "./Image";
-import { ImageUploader } from "./ImageUploader";
-import ImagesCheckbox from "./ImagesCheckbox";
+import React, { FC, useEffect, useState } from 'react';
+import Modal from 'react-modal';
+import { clearCheckedImages, setImage } from '@/redux/slices/images.slice';
+import { Image } from './Image';
+import { ImageUploader } from './ImageUploader';
+import ImagesCheckbox from './ImagesCheckbox';
 import {
   PencilSquareIcon,
   TrashIcon,
   PowerIcon,
-} from "@heroicons/react/20/solid";
-import { useDeleteImageMutation } from "@/redux/api/images.api";
-import { ModalDeleteConfirm } from "./ModalDeleteConfirm";
-import { usePathTaskMutation } from "@/redux/api/tasks.api";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { Images } from "@/types";
+} from '@heroicons/react/20/solid';
+import { useDeleteImageMutation } from '@/redux/api/images.api';
+import { ModalDeleteConfirm } from './ModalDeleteConfirm';
+import { usePathEventMutation } from '@/redux/api/events.api';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { Image as ImageTypes } from '@/types';
 
-Modal.setAppElement("#__next");
+Modal.setAppElement('#__next');
 
 type ModalThumbsListProps = {
-  thumbs: Images;
+  thumbs: ImageTypes[];
   isThumbsOpen: boolean;
   modalThumbsHandler: any;
   setIsGetImages: React.Dispatch<React.SetStateAction<boolean>>;
@@ -44,17 +44,17 @@ export const ModalThumbsList: FC<ModalThumbsListProps> = ({
   const [deleteConfirmModal, setDeleteConfirmModal] =
     useState<DeleteConfirmModal>({
       isOpen: false,
-      title: "",
+      title: '',
       handleConfirm: async () => {},
     });
   const [isButtonModifyActive, setIsButtonModifyActive] = useState(false);
   const [buttonModifyClassName, setButtonModifyClassName] =
-    useState("image__modify");
+    useState('image__modify');
 
   const dispatch = useAppDispatch();
   const { imageId } = useAppSelector((state) => state.image.image);
   const { checkedImages } = useAppSelector((state) => state.image);
-  const [pathTask] = usePathTaskMutation();
+  const [pathEvent] = usePathEventMutation();
   const buttonModifyHandle = () => {
     isButtonModifyActive && dispatch(clearCheckedImages());
     setIsButtonModifyActive(!isButtonModifyActive);
@@ -63,19 +63,19 @@ export const ModalThumbsList: FC<ModalThumbsListProps> = ({
   const deleteImagesFromTaskFieldHandle = async (
     checkedImages: string[],
     imagesIds: string[],
-    taskId: string
+    eventId: string,
   ) => {
     const filteredImages = imagesIds.filter(
-      (item) => !checkedImages.includes(item)
+      (item) => !checkedImages.includes(item),
     );
-    await pathTask({ id: taskId, body: { images: filteredImages } });
+    await pathEvent({ id: eventId, body: { images: filteredImages } });
   };
 
   useEffect(() => {
     if (isButtonModifyActive) {
-      setButtonModifyClassName("image__modifyActive");
+      setButtonModifyClassName('image__modifyActive');
     } else {
-      setButtonModifyClassName("image__modify");
+      setButtonModifyClassName('image__modify');
     }
   }, [isButtonModifyActive]);
 
@@ -89,7 +89,7 @@ export const ModalThumbsList: FC<ModalThumbsListProps> = ({
             mimetype: null,
             thumb: null,
             filename: null,
-          })
+          }),
         );
         modalThumbsHandler();
         dispatch(clearCheckedImages());
@@ -101,15 +101,15 @@ export const ModalThumbsList: FC<ModalThumbsListProps> = ({
       }}
       style={{
         overlay: {
-          backgroundColor: "rgba(0, 0, 0, 0.6)",
+          backgroundColor: 'rgba(0, 0, 0, 0.6)',
         },
         content: {
-          maxWidth: "100rem",
-          maxHeight: "100rem",
-          margin: "0 auto",
-          border: "none",
-          borderRadius: "10px",
-          padding: "20px",
+          maxWidth: '100rem',
+          maxHeight: '100rem',
+          margin: '0 auto',
+          border: 'none',
+          borderRadius: '10px',
+          padding: '20px',
         },
       }}
     >
@@ -123,7 +123,7 @@ export const ModalThumbsList: FC<ModalThumbsListProps> = ({
                   mimetype: null,
                   thumb: null,
                   filename: null,
-                })
+                }),
               )
             }
             className="image__thumbsBox"
@@ -148,7 +148,7 @@ export const ModalThumbsList: FC<ModalThumbsListProps> = ({
                         mimetype: thumb.mimetype,
                         thumb: thumb.thumb,
                         filename: thumb.filename,
-                      })
+                      }),
                     );
                   }}
                 />
@@ -176,7 +176,7 @@ export const ModalThumbsList: FC<ModalThumbsListProps> = ({
                   mimetype: null,
                   thumb: null,
                   filename: null,
-                })
+                }),
               );
               modalThumbsHandler();
               dispatch(clearCheckedImages());
@@ -198,13 +198,13 @@ export const ModalThumbsList: FC<ModalThumbsListProps> = ({
             onClick={() =>
               setDeleteConfirmModal({
                 isOpen: true,
-                title: "Delete Confirm",
+                title: 'Delete Confirm',
                 handleConfirm: async () => {
                   await deleteImage(checkedImages);
                   await deleteImagesFromTaskFieldHandle(
                     checkedImages,
                     images,
-                    taskId
+                    taskId,
                   );
                   dispatch(clearCheckedImages());
                 },

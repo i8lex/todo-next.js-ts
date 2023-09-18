@@ -64,7 +64,7 @@ module.exports = {
       gray: {
         100: '#565859',
         90: '#777a7c',
-        80: '#9a9e9f',
+        80: '#b2b6b7',
         60: '#d2d5d9',
         40: '#f1f4f5',
         20: '#f9fbfb',
@@ -90,7 +90,7 @@ module.exports = {
       },
     },
     fontFamily: {
-      // sans: ["var(--font-inter)", ...defaultTheme.fontFamily.sans],
+      digital: ['DS-Digital', 'mono'],
     },
     fontSize: {
       dispXL: ['64px', '125%'],
@@ -106,6 +106,7 @@ module.exports = {
     },
     screens: {
       tablet: '768px',
+      laptop: '1140px',
       desktop: '1440px',
     },
   },

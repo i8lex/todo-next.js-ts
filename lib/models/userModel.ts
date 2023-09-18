@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from 'mongoose';
 
 export type UserType = {
   name: string;
@@ -7,30 +7,42 @@ export type UserType = {
   confirmationCode: string;
   isConfirmed: boolean;
   created: Date;
+  events: mongoose.Types.ObjectId[];
+  avatar: {
+    name: string;
+    buffer: string;
+    mimeType: string;
+  };
 };
 
+const fileDataSchema = new Schema({
+  name: { type: String },
+  buffer: { type: String },
+  mimeType: { type: String },
+});
 const UserSchema = new mongoose.Schema({
+  events: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Event' }],
   name: {
     type: String,
-    required: [true, "Username is required"],
+    required: [true, 'Username is required'],
     unique: true,
-    minlength: [4, "Username must be at least 4 characters long"],
-    maxlength: [20, "Username must be at max 20 characters long"],
+    minlength: [4, 'Username must be at least 4 characters long'],
+    maxlength: [20, 'Username must be at max 20 characters long'],
   },
   email: {
     type: String,
-    required: [true, "Email is required"],
+    required: [true, 'Email is required'],
     unique: true,
     lowercase: true,
-    match: [/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, "Invalid email format"],
+    match: [/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, 'Invalid email format'],
   },
   password: {
     type: String,
-    required: [true, "Password is required"],
-    minlength: [8, "Password must be at least 8 characters long"],
+    required: [true, 'Password is required'],
+    minlength: [8, 'Password must be at least 8 characters long'],
     match: [
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/,
-      "Password must contain at least one lowercase letter, one uppercase letter and one number",
+      'Password must contain at least one lowercase letter, one uppercase letter and one number',
     ],
   },
   confirmationCode: {
@@ -42,8 +54,10 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  images: { type: [String], default: [] },
+  avatar: fileDataSchema,
   created: { type: Date, default: Date.now },
 });
 
 export const User =
-  mongoose.models.User || mongoose.model<UserType>("User", UserSchema);
+  mongoose.models.User || mongoose.model<UserType>('User', UserSchema);

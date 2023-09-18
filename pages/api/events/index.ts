@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import db from '../../../lib/db';
-import { deleteTaskHandler } from '@/handlers/tasks/deleteTaskHandler';
-import { changeTaskHandler } from '@/handlers/tasks/changeTaskHandler';
+import { getEventsHandler } from '@/handlers/events/getEventsHandler';
+import { createEventHandler } from '@/handlers/events/createEventHandler';
 import { authMiddleware } from '@/middlewares/authMiddleware';
 
 export default authMiddleware(async function tasksHandlers(
@@ -13,6 +13,7 @@ export default authMiddleware(async function tasksHandlers(
   switch (method) {
     case 'GET':
       try {
+        await getEventsHandler(req, res);
       } catch (error) {
         console.log(error);
         res.status(500).json({ message: 'Internal server error' });
@@ -21,6 +22,7 @@ export default authMiddleware(async function tasksHandlers(
 
     case 'POST':
       try {
+        await createEventHandler(req, res);
       } catch (error) {
         console.log(error);
         res.status(500).json({ message: 'Internal server error' });
@@ -30,7 +32,6 @@ export default authMiddleware(async function tasksHandlers(
 
     case 'PUT':
       try {
-        await changeTaskHandler(req, res);
       } catch (error) {
         console.log(error);
         res.status(500).json({ message: 'Internal server error' });
@@ -40,7 +41,6 @@ export default authMiddleware(async function tasksHandlers(
 
     case 'DELETE':
       try {
-        await deleteTaskHandler(req, res);
       } catch (error) {
         console.log(error);
         res.status(500).json({ message: 'Internal server error' });

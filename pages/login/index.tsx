@@ -40,7 +40,7 @@ const LoginPage: FC = () => {
           setConfirmed(true);
           setMessage('Welcome back!');
           setTimeout(() => {
-            router.push('/tasks');
+            router.push('/events');
             handleClose();
           }, 3000);
         }

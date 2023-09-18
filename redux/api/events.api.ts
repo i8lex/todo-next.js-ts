@@ -4,7 +4,7 @@ import {
   fetchBaseQuery,
   TagDescription,
 } from '@reduxjs/toolkit/query/react';
-import { AddTask, AuthState, Tasks } from '@/types';
+import { AddEvent, Event } from '@/types';
 import { getSession } from 'next-auth/react';
 
 const prepareHeaders = async (
@@ -23,57 +23,57 @@ const prepareHeaders = async (
   return headers;
 };
 
-export const tasksApi = createApi({
-  reducerPath: 'tasksApi',
-  tagTypes: ['Tasks', 'Task'],
+export const eventsApi = createApi({
+  reducerPath: 'eventsApi',
+  tagTypes: ['Events', 'Event'],
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.BASE_API_URL || process.env.NEXT_PUBLIC_BASE_API_URL,
     prepareHeaders,
   }),
 
   endpoints: (build) => ({
-    getTasks: build.query<Tasks, void>({
-      query: () => 'tasks',
+    getEvents: build.query<Event[], void>({
+      query: () => 'events',
       providesTags: (
-        result: Tasks | undefined,
-      ): (TagDescription<'Tasks'> | TagDescription<'Task'>)[] =>
+        result: Event[] | undefined,
+      ): (TagDescription<'Events'> | TagDescription<'Event'>)[] =>
         result
           ? [
-              ...result.map(({ _id }) => ({ type: 'Task' as const, _id })),
-              { type: 'Tasks' as const, id: 'LIST' },
+              ...result.map(({ _id }) => ({ type: 'Event' as const, _id })),
+              { type: 'Events' as const, id: 'LIST' },
             ]
-          : [{ type: 'Tasks' as const, id: 'LIST' }],
+          : [{ type: 'Events' as const, id: 'LIST' }],
     }),
 
-    addTask: build.mutation<void, AddTask>({
+    addEvent: build.mutation<void, AddEvent>({
       query: (body) => ({
-        url: 'tasks',
+        url: 'events',
         method: 'POST',
         body,
       }),
-      invalidatesTags: [{ type: 'Tasks', id: 'LIST' }],
+      invalidatesTags: [{ type: 'Events', id: 'LIST' }],
     }),
-    pathTask: build.mutation<void, { id: string; body: AddTask }>({
+    pathEvent: build.mutation<void, { id: string; body: AddEvent }>({
       query: ({ id, body }) => ({
-        url: `tasks/${id}`,
+        url: `events/${id}`,
         method: 'PUT',
         body,
       }),
-      invalidatesTags: [{ type: 'Tasks', id: 'LIST' }],
+      invalidatesTags: [{ type: 'Events', id: 'LIST' }],
     }),
-    deleteTask: build.mutation<void, string>({
+    deleteEvent: build.mutation<void, string | string[]>({
       query: (id) => ({
-        url: `tasks/${id}`,
+        url: `events/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: [{ type: 'Tasks', id: 'LIST' }],
+      invalidatesTags: [{ type: 'Events', id: 'LIST' }],
     }),
   }),
 });
 
 export const {
-  useGetTasksQuery,
-  useAddTaskMutation,
-  useDeleteTaskMutation,
-  usePathTaskMutation,
-} = tasksApi;
+  useGetEventsQuery,
+  useAddEventMutation,
+  useDeleteEventMutation,
+  usePathEventMutation,
+} = eventsApi;

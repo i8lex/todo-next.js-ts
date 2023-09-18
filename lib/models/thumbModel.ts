@@ -1,8 +1,8 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema } from 'mongoose';
 
 export type ThumbType = {
   user: mongoose.Types.ObjectId;
-  task: mongoose.Types.ObjectId;
+  event: mongoose.Types.ObjectId;
   image: mongoose.Types.ObjectId;
   filename: string;
   mimetype: string;
@@ -13,9 +13,22 @@ export type ThumbType = {
 };
 
 const thumbSchema: Schema = new Schema({
-  user: { type: Schema.Types.ObjectId, ref: "User" },
-  task: { type: Schema.Types.ObjectId, ref: "Task" },
-  image: { type: Schema.Types.ObjectId, ref: "Image" },
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
+  event: {
+    type: Schema.Types.ObjectId,
+    ref: 'Event',
+    required: true,
+  },
+  image: {
+    type: Schema.Types.ObjectId,
+    ref: 'Image',
+    unique: true,
+    required: true,
+  },
   filename: String,
   mimetype: String,
   thumb: Object,
@@ -25,4 +38,4 @@ const thumbSchema: Schema = new Schema({
 });
 
 export const Thumb =
-  mongoose.models.Thumb || mongoose.model<ThumbType>("Thumb", thumbSchema);
+  mongoose.models.Thumb || mongoose.model<ThumbType>('Thumb', thumbSchema);
