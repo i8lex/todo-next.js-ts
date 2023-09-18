@@ -1,9 +1,9 @@
-import React, { useState, useEffect, FC } from "react";
+import React, { useState, useEffect, FC } from 'react';
 import {
   formatDistanceToNowStrict,
   parseISO,
   differenceInMilliseconds,
-} from "date-fns";
+} from 'date-fns';
 
 type TimerProps = {
   deadline: string;
@@ -11,21 +11,21 @@ type TimerProps = {
 
 export const Timer: FC<TimerProps> = ({ deadline }) => {
   const [remainingTime, setRemainingTime] = useState<number | null | string>(
-    null
+    null,
   );
   const [remainingTimeClock, setRemainingTimeClock] = useState<number | null>(
-    null
+    null,
   );
-  const [animation, setAnimation] = useState(" ");
+  const [animation, setAnimation] = useState(' ');
   useEffect(() => {
     const intervalId = setInterval(() => {
-      setAnimation(animation === " " ? ":" : " ");
+      setAnimation(animation === ' ' ? ':' : ' ');
     }, 1000);
     return () => clearInterval(intervalId);
   }, [animation]);
 
   useEffect(() => {
-    if (deadline !== "Not set") {
+    if (deadline !== 'Not set') {
       const deadlineDate = new Date(deadline);
       const intervalId = setInterval(() => {
         const now = new Date();
@@ -42,7 +42,7 @@ export const Timer: FC<TimerProps> = ({ deadline }) => {
   }, [deadline]);
 
   useEffect(() => {
-    if (deadline !== "Not set") {
+    if (deadline !== 'Not set') {
       const deadlineDate = parseISO(deadline);
       const intervalId = setInterval(() => {
         const now = new Date();
@@ -67,35 +67,37 @@ export const Timer: FC<TimerProps> = ({ deadline }) => {
   const hours = Math.floor(((remainingTimeClock ?? 0) / (1000 * 60 * 60)) % 24);
   const days = Math.floor((remainingTimeClock ?? 0) / (1000 * 60 * 60 * 24));
 
-  return (
-    <div>
-      <p className="tasks__item__dateText">Remaining time:</p>
-      {deadline !== "1970-01-01T00:00:00.000Z" ? (
+  return deadline !== '1970-01-01T00:00:00.000Z' ? (
+    <div className="w-[50px] tablet:w-[85px] flex flex-col items-center gap-1">
+      <p className="text-dark-60 tablet:text-parS text-[8px] font-normal text-center !leading-none">
+        Remaining time:
+      </p>
+      {days >= 1 ? (
+        <p className="text-dark-100 text-[10px]  tablet:text-parM font-bold">
+          {remainingTime}
+        </p>
+      ) : (
         <>
-          {days >= 1 ? (
-            <p className="tasks__item__date">{remainingTime}</p>
+          {typeof remainingTime === 'number' && remainingTime <= 0 ? (
+            <p className="text-error-100 text-[8px] tablet:text-parM font-bold">
+              TIME IS UP
+            </p>
           ) : (
-            <>
-              {typeof remainingTime === "number" && remainingTime <= 0 ? (
-                <p className="tasks__item__timeUp">TIME IS UP!!!</p>
-              ) : (
-                <div className="tasks__item__clockBox">
-                  <p className="tasks__item__clock">{` ${hours
-                    .toString()
-                    .padStart(2, "\u2007\u2007")}${animation}${minutes
-                    .toString()
-                    .padStart(2, "0")}${animation}${seconds
-                    .toString()
-                    .padStart(2, "0")}`}</p>
-                  <p className="tasks__item__clockBcg">88:88:88</p>
-                </div>
-              )}
-            </>
+            <div className="relative text-quot tablet:text-[20px] leading-none text-center font-digital bg-[#CEE7CE] border border-stroke shadow-sm shadow-dark-60 rounded-[3px]">
+              <p className="py-0.5 px-1 tablet:py-2 tablet:px-4 text-gray-60">
+                88:88:88
+              </p>
+              <p className="absolute top-0 left-0 py-0.5 px-1 tablet:py-2 tablet:px-4 text-dark-100">{` ${hours
+                .toString()
+                .padStart(2, '\u2007\u2007')}${animation}${minutes
+                .toString()
+                .padStart(2, '0')}${animation}${seconds
+                .toString()
+                .padStart(2, '0')}`}</p>
+            </div>
           )}
         </>
-      ) : (
-        <p className="tasks__item__date">No deadline set</p>
       )}
     </div>
-  );
+  ) : null;
 };

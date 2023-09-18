@@ -1,13 +1,13 @@
-import * as jwt from "jsonwebtoken";
+import * as jwt from 'jsonwebtoken';
 // import { v4 as uuidv4 } from "uuid";
 // import fs from "fs";
 // import path from "path";
-import sharp from "sharp";
-import { Task, TaskType } from "@/lib/models/taskModel";
-import { Image } from "@/lib/models/imageModel";
-import { Thumb } from "@/lib/models/thumbModel";
-import multer from "multer";
-import { Request, Response } from "express";
+import sharp from 'sharp';
+import { Event, EventType } from '@/lib/models/eventModel';
+import { Image } from '@/lib/models/imageModel';
+import { Thumb } from '@/lib/models/thumbModel';
+import multer from 'multer';
+import { Request, Response } from 'express';
 
 const upload = multer({
   // dest: "uploads/",
@@ -21,19 +21,20 @@ export const uploadImageHandler = async (request: Request, reply: Response) => {
     // @ts-ignore
     const { verify } = jwt.default;
     const authHeader = request.headers.authorization;
-    const token = authHeader ? authHeader.split(" ")[1] : null;
+    const token = authHeader ? authHeader.split(' ')[1] : null;
     const { id, email } = await verify(token, process.env.SECRET_WORD);
-
-    upload.array("images")(request, reply, async (err) => {
+    console.log(id);
+    upload.array('images')(request, reply, async (err) => {
       if (err) {
-        return reply.status(400).json({ error: "Error uploading files" });
+        return reply.status(400).json({ error: 'Error uploading files' });
       }
-      const task = request.body.task as string;
-      const taskData: TaskType | null = await Task.findOne({ _id: task });
-      if (!taskData) {
-        return reply.status(404).send({ message: "Task not found" });
+      const event = request.body.event as string;
+
+      const eventData: EventType | null = await Event.findOne({ _id: event });
+      if (!eventData) {
+        return reply.status(404).send({ message: 'Event not found' });
       }
-      const { images: imagesList } = taskData;
+      const { images: imagesList } = eventData;
       const images = request.files as Express.Multer.File[];
 
       // const uploadDir = "uploads";
@@ -47,9 +48,9 @@ export const uploadImageHandler = async (request: Request, reply: Response) => {
       // }
 
       for (const image of images) {
-        const mimeType = image.mimetype.replace(/^.+\//, ".");
+        const mimeType = image.mimetype.replace(/^.+\//, '.');
         const thumbBuffer: Buffer = await sharp(image.buffer)
-          .resize(100, 100, { fit: "cover" })
+          .resize(100, 100, { fit: 'cover' })
           .toBuffer();
 
         // const imageSaveTo = path.join(
@@ -65,7 +66,7 @@ export const uploadImageHandler = async (request: Request, reply: Response) => {
 
         const addImage = new Image({
           user: id,
-          task: task,
+          event: event,
           filename: image.originalname,
           mimetype: mimeType,
           size: image.buffer.length,
@@ -75,7 +76,7 @@ export const uploadImageHandler = async (request: Request, reply: Response) => {
 
         const addThumb = new Thumb({
           user: id,
-          task: task,
+          event: event,
           image: addImage._id,
           filename: image.originalname,
           size: thumbBuffer.length,
@@ -88,16 +89,16 @@ export const uploadImageHandler = async (request: Request, reply: Response) => {
 
         await Image.updateOne(
           { _id: addImage._id },
-          { $set: { thumb: addThumb._id } }
+          { $set: { thumb: addThumb._id } },
         );
 
         imagesList.push(addImage._id);
       }
 
-      await Task.updateOne({ _id: task }, { $set: { images: imagesList } });
-      reply.status(200).json({ message: "Files upload successful" });
+      await Event.updateOne({ _id: event }, { $set: { images: imagesList } });
+      reply.status(200).json({ message: 'Files upload successful' });
     });
   } catch (error) {
-    return reply.status(500).json({ error: "Internal server error" });
+    return reply.status(500).json({ error: 'Internal server error' });
   }
 };

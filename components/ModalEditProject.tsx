@@ -1,18 +1,20 @@
-import React, { FC } from "react";
-import Modal from "react-modal";
-import { Formik, Form } from "formik";
-import { form } from "@/constants/form";
-import { Input } from "./Input";
-import { AddTask, Task } from "@/types";
+import React, { FC } from 'react';
+import Modal from 'react-modal';
+import { Formik, Form } from 'formik';
+import { form } from '@/constants/form';
+import { Input } from './Input';
+import { AddEvent, Event } from '@/types';
 
-Modal.setAppElement("#__next");
+Modal.setAppElement('#__next');
 
 type ModalEditProjectProps = {
   title: string;
   isOpen: boolean;
   handleClose: () => void;
-  handleConfirm: (() => void) | ((values: AddTask) => Promise<void>);
-  data: Task;
+  handleConfirm:
+    | ((values: AddEvent) => void)
+    | ((values: AddEvent) => Promise<void>);
+  data: Event;
 };
 
 export const ModalEditProject: FC<ModalEditProjectProps> = ({
@@ -36,15 +38,15 @@ export const ModalEditProject: FC<ModalEditProjectProps> = ({
       contentLabel={title}
       style={{
         overlay: {
-          backgroundColor: "rgba(0, 0, 0, 0.6)",
+          backgroundColor: 'rgba(0, 0, 0, 0.6)',
         },
         content: {
-          maxWidth: "500px",
-          maxHeight: "500px",
-          margin: "0 auto",
-          border: "none",
-          borderRadius: "10px",
-          padding: "20px",
+          maxWidth: '500px',
+          maxHeight: '500px',
+          margin: '0 auto',
+          border: 'none',
+          borderRadius: '10px',
+          padding: '20px',
         },
       }}
     >
@@ -63,7 +65,7 @@ export const ModalEditProject: FC<ModalEditProjectProps> = ({
             <Input label="Title" required name="title" />
             <Input label="Description" as="textarea" name="description" />
             <Input label="Deadline" type="datetime-local" name="deadline" />
-            <div style={{ textAlign: "right" }}>
+            <div style={{ textAlign: 'right' }}>
               <button type="submit" className="tasks__button">
                 Yes
               </button>

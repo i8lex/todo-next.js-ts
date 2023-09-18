@@ -1,13 +1,13 @@
-import React, { FC, useEffect, useState } from "react";
-import { useGetThumbsQuery } from "@/redux/api/images.api";
-import { ModalThumbsList } from "./ModalThumbsList";
-import { ImageUploader } from "./ImageUploader";
+import React, { FC, useEffect, useState } from 'react';
+import { useGetThumbsQuery } from '@/redux/api/images.api';
+import { ModalThumbsList } from './ModalThumbsList';
+import { ImageUploader } from './ImageUploader';
 import {
   setImage,
   setModalThumbsNeedRefetch,
-} from "@/redux/slices/images.slice";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-
+} from '@/redux/slices/images.slice';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import ImageIcon from '@/public/IconsSet/image-03.svg';
 type ThumbListProps = {
   _id: string;
   images: string[];
@@ -19,7 +19,6 @@ export const ThumbsList: FC<ThumbListProps> = ({ _id, images }) => {
   const [isGetImages, setIsGetImages] = useState(false);
   const { data: thumbs = [], refetch, isLoading } = useGetThumbsQuery(_id);
   const { modalThumbsNeedRefetch } = useAppSelector((state) => state.image);
-
   useEffect(() => {
     if (isGetImages && images.length) {
       refetch();
@@ -50,15 +49,15 @@ export const ThumbsList: FC<ThumbListProps> = ({ _id, images }) => {
   return (
     <>
       {!isGetImages && !images.length ? (
-        <div className="image__uploadBoxSmall">
+        <div className="w-full h-[205px] bg-softGreen border border-stroke rounded-md shadow-inner shadow-dark-60">
           <ImageUploader setIsGetImages={setIsGetImages} _id={_id} />
         </div>
       ) : (
-        <ul className="tasks__item__thumbsWrapper">
+        <div className="p-2 grid grid-cols-2 grid-rows-2 gap-1 bg-yellow-10 shadow-inner shadow-dark-60 rounded-md">
           {thumbs.slice(0, 3).map((thumb) => {
             return (
-              <li
-                className="tasks__item__thumbBox"
+              <div
+                className="p-[2px] bg-yellow-40 shadow-sm shadow-dark-60 overflow-hidden  rounded-md"
                 key={thumb._id}
                 onClick={() => {
                   dispatch(
@@ -67,23 +66,23 @@ export const ThumbsList: FC<ThumbListProps> = ({ _id, images }) => {
                       mimetype: thumb.mimetype,
                       thumb: thumb.thumb,
                       filename: thumb.filename,
-                    })
+                    }),
                   );
                   modalThumbsHandler();
                 }}
               >
                 <img
                   alt={thumb.filename}
-                  className="tasks__item__thumb"
+                  className="object-cover rounded-md w-full h-full"
                   src={`data:${
                     thumb.mimetype
                   };base64,${thumb.thumb.toString()}`}
                 />
-              </li>
+              </div>
             );
           })}
-          <li
-            className="tasks__item__thumbsMore"
+          <div
+            className=" flex w-full justify-center items-center cursor-pointer p-2"
             onClick={() => {
               modalThumbsHandler();
               dispatch(
@@ -92,13 +91,13 @@ export const ThumbsList: FC<ThumbListProps> = ({ _id, images }) => {
                   mimetype: null,
                   thumb: null,
                   filename: null,
-                })
+                }),
               );
             }}
           >
-            <></>
-          </li>
-        </ul>
+            <ImageIcon className="w-12 h-12 text-dark-100 p-2 shadow-md shadow-dark-60 rounded-md bg-yellow-20 hover:shadow-sm hover:shadow-dark-60 hover:bg-yellow-10" />
+          </div>
+        </div>
       )}
       <ModalThumbsList
         images={images}

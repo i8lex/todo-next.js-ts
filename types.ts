@@ -1,17 +1,12 @@
 import React from 'react';
 
 export type LayoutProps = {
+  id: string;
   children: React.ReactNode;
   page: string;
 };
 
-export type Page = {
-  className: string;
-  children: React.ReactNode;
-  currentPage?: string;
-};
-
-export type Images = Image[];
+export type Page = 'events' | 'about' | 'contact';
 
 export type Image = {
   _id: string;
@@ -32,9 +27,9 @@ export type AuthState = {
   };
 };
 
-export type Tasks = Task[];
+export type Events = Event[];
 
-export type Task = {
+export type Event = {
   _id?: string;
   user?: string;
   title: string;
@@ -46,7 +41,7 @@ export type Task = {
   images?: string[];
 };
 
-export type AddTask = {
+export type AddEvent = {
   title?: string;
   description?: string;
   deadline?: string;
@@ -55,8 +50,10 @@ export type AddTask = {
 export type EditModal = {
   isOpen: boolean;
   title: string;
-  data: Image | Task | {};
-  handleConfirm: (() => void) | (() => Promise<void>);
+  data: Image | Event | {};
+  handleConfirm:
+    | ((values: AddEvent) => void)
+    | ((values: AddEvent) => Promise<void>);
   handleClose?: () => void;
 };
 

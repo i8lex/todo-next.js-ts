@@ -20,7 +20,7 @@ const Header = () => {
         <div className="header__wrapper">
           {isAuthenticated ? (
             <>
-              <Link className="header__link" href="/tasks">
+              <Link className="header__link" href="/events">
                 Tasks
               </Link>
               <button className="header__logout" onClick={handleLogout}>

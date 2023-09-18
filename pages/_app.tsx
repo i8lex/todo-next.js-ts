@@ -2,7 +2,7 @@ import '@/styles/globals.css';
 import { Provider } from 'react-redux';
 import { wrapper } from '@/redux/store';
 import React, { FC } from 'react';
-import Header from '../components/Header';
+import Header from '../components/layouts/Header';
 import { AppProps } from 'next/app';
 import { SessionProvider } from 'next-auth/react';
 
