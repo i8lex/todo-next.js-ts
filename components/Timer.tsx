@@ -53,7 +53,6 @@ export const Timer: FC<TimerProps> = ({ deadline }) => {
         } else {
           const remainingTime = formatDistanceToNowStrict(deadlineDate, {
             addSuffix: true,
-            // includeSeconds: true,
           });
           setRemainingTime(remainingTime);
         }
@@ -79,15 +78,15 @@ export const Timer: FC<TimerProps> = ({ deadline }) => {
       ) : (
         <>
           {typeof remainingTime === 'number' && remainingTime <= 0 ? (
-            <p className="text-error-100 text-[8px] tablet:text-parM font-bold">
+            <p className="text-error-100 text-[8px] tablet:text-parM font-bold truncate">
               TIME IS UP
             </p>
           ) : (
-            <div className="relative text-quot tablet:text-[20px] leading-none text-center font-digital bg-[#CEE7CE] border border-stroke shadow-sm shadow-dark-60 rounded-[3px]">
+            <div className="relative text-quot tablet:text-[20px] truncate leading-none text-center font-digital bg-[#CEE7CE] border border-stroke shadow-sm shadow-dark-60 rounded-[3px]">
               <p className="py-0.5 px-1 tablet:py-2 tablet:px-4 text-gray-60">
                 88:88:88
               </p>
-              <p className="absolute top-0 left-0 py-0.5 px-1 tablet:py-2 tablet:px-4 text-dark-100">{` ${hours
+              <p className="absolute top-0 truncate left-0 py-0.5 px-1 tablet:py-2 tablet:px-4 text-dark-100">{` ${hours
                 .toString()
                 .padStart(2, '\u2007\u2007')}${animation}${minutes
                 .toString()

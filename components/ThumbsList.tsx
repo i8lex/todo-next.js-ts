@@ -1,6 +1,9 @@
 import React, { FC, useEffect, useState } from 'react';
-import { useGetThumbsQuery } from '@/redux/api/images.api';
-import { ModalThumbsList } from './ModalThumbsList';
+import {
+  useGetThumbsQuery,
+  useLazyGetThumbsQuery,
+} from '@/redux/api/images.api';
+import { ModalThumbsList } from './modal/ModalThumbsList';
 import { ImageUploader } from './ImageUploader';
 import {
   setImage,
@@ -16,23 +19,29 @@ type ThumbListProps = {
 export const ThumbsList: FC<ThumbListProps> = ({ _id, images }) => {
   const dispatch = useAppDispatch();
   const [isThumbsOpen, setIsThumbsOpen] = useState(false);
-  const [isGetImages, setIsGetImages] = useState(false);
-  const { data: thumbs = [], refetch, isLoading } = useGetThumbsQuery(_id);
+  // const [isGetImages, setIsGetImages] = useState(false);
+  const {
+    data: thumbs = [],
+    refetch,
+    isLoading,
+  } = useGetThumbsQuery(_id, {
+    skip: !_id,
+  });
   const { modalThumbsNeedRefetch } = useAppSelector((state) => state.image);
-  useEffect(() => {
-    if (isGetImages && images.length) {
-      refetch();
-    }
-  }, [images, refetch]);
-
-  useEffect(() => {
-    if (modalThumbsNeedRefetch) {
-      refetch();
-      setTimeout(() => {
-        dispatch(setModalThumbsNeedRefetch(false));
-      }, 100);
-    }
-  }, [modalThumbsNeedRefetch, refetch]);
+  // useEffect(() => {
+  //   if (isGetImages && images.length) {
+  //     refetch();
+  //   }
+  // }, [images, refetch]);
+  //
+  // useEffect(() => {
+  //   if (modalThumbsNeedRefetch) {
+  //     refetch();
+  //     setTimeout(() => {
+  //       dispatch(setModalThumbsNeedRefetch(false));
+  //     }, 100);
+  //   }
+  // }, [modalThumbsNeedRefetch, refetch]);
 
   if (isLoading) {
     return <h3>...LOADING...</h3>;
@@ -48,9 +57,9 @@ export const ThumbsList: FC<ThumbListProps> = ({ _id, images }) => {
 
   return (
     <>
-      {!isGetImages && !images.length ? (
+      {!images.length ? (
         <div className="w-full h-[205px] bg-softGreen border border-stroke rounded-md shadow-inner shadow-dark-60">
-          <ImageUploader setIsGetImages={setIsGetImages} _id={_id} />
+          <ImageUploader _id={_id} />
         </div>
       ) : (
         <div className="p-2 grid grid-cols-2 grid-rows-2 gap-1 bg-yellow-10 shadow-inner shadow-dark-60 rounded-md">
@@ -104,7 +113,7 @@ export const ThumbsList: FC<ThumbListProps> = ({ _id, images }) => {
         thumbs={thumbs}
         isThumbsOpen={isThumbsOpen}
         modalThumbsHandler={modalThumbsHandler}
-        setIsGetImages={setIsGetImages}
+        // setIsGetImages={setIsGetImages}
         _id={_id}
       />
     </>

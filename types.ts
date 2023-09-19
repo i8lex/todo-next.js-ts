@@ -1,7 +1,7 @@
 import React from 'react';
 
 export type LayoutProps = {
-  id: string;
+  id?: string;
   children: React.ReactNode;
   page: string;
 };
@@ -57,7 +57,7 @@ export type EditModal = {
   handleClose?: () => void;
 };
 
-export type DeleteConfirmModal = {
+export type DeleteConfirmModalTypes = {
   isOpen: boolean;
   title: string;
   handleConfirm: () => void;

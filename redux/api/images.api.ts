@@ -73,6 +73,7 @@ export const imageApi = createApi({
 
 export const {
   useGetImageQuery,
+  useLazyGetThumbsQuery,
   useGetThumbsQuery,
   useAddImageMutation,
   useDeleteImageMutation,

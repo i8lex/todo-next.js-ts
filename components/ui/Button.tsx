@@ -21,7 +21,7 @@ const button = cva(
           'bg-green-10 text-green-100 hover:bg-green-20 focus-visible:bg-green-20',
         ],
         white: [
-          'bg-white text-darkSkyBlue-80 hover:bg-mystic-20 focus-visible:bg-[#F9FAFB] border border-solid border-stroke',
+          'bg-white text-darkSkyBlue-80 hover:bg-mystic-20 focus-visible:bg-[#F9FAFB] border border-solid border-stroke shadow-md shadow-dark-60 hover:shadow-sm hover:shadow-dark-60 hover:bg-gray-10',
         ],
         whitered: [
           'bg-white text-errorText hover:bg-mystic-20 focus-visible:bg-[#F9FAFB] border border-solid border-error-100',
@@ -161,6 +161,7 @@ export const Button: React.FC<AsButtonProps | AsLinkProps> = (props) => {
   }
 
   return (
+    // @ts-ignore
     <button
       className={button({
         variant,
@@ -170,6 +171,7 @@ export const Button: React.FC<AsButtonProps | AsLinkProps> = (props) => {
         isLoading,
         className,
       })}
+      {...rest}
     >
       {body}
     </button>

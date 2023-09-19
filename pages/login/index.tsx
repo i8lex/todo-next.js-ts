@@ -42,7 +42,7 @@ const LoginPage: FC = () => {
           setTimeout(() => {
             router.push('/events');
             handleClose();
-          }, 3000);
+          }, 2000);
         }
         setOpenModal(true);
       });

@@ -1,46 +1,38 @@
 import React, { FC, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { useAddImageMutation } from '@/redux/api/images.api';
+import {
+  useAddImageMutation,
+  useLazyGetThumbsQuery,
+} from '@/redux/api/images.api';
+import { useLazyGetEventsQuery } from '@/redux/api/events.api';
 import { setModalThumbsNeedRefetch } from '@/redux/slices/images.slice';
+import AlertIcon from '@/public/IconsSet/exclamation.svg';
+
 import { useAppDispatch } from '@/redux/hooks';
 // import {Image, Images} from "@/types";
 import UploadIcon from '@/public/IconsSet/upload-cloud-02.svg';
 import { Spinner } from '@/components/ui/Spinner';
 type ImageUploaderProps = {
   _id: string;
-  setIsGetImages: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-// type Image ={
-//   path: string;
-//   lastModified: number;
-//   lastModifiedDate: Date;
-//   name: string;
-//   size: number;
-//   type: string;
-//   webkitRelativePath: string;
-// }
-
-export const ImageUploader: FC<ImageUploaderProps> = ({
-  _id,
-  setIsGetImages,
-}) => {
+export const ImageUploader: FC<ImageUploaderProps> = ({ _id }) => {
   const [isUploadSuccess, setIsUploadIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
-
+  const [triggerGetThumbs] = useLazyGetThumbsQuery();
+  const [triggerGetEvents] = useLazyGetEventsQuery();
   const dispatch = useAppDispatch();
-  const { acceptedFiles, fileRejections, getRootProps, getInputProps } =
-    useDropzone({
-      accept: {
-        'image/jpeg': ['.jpg', '.jpeg'],
-        'image/png': ['.png'],
-      },
-      maxFiles: 4,
-      maxSize: 6 * 1024 * 1024,
-      onDrop: (acceptedFiles) => {
-        uploadImages(acceptedFiles).then();
-      },
-    });
+  const { fileRejections, getRootProps, getInputProps } = useDropzone({
+    accept: {
+      'image/jpeg': ['.jpg', '.jpeg'],
+      'image/png': ['.png'],
+    },
+    maxFiles: 4,
+    maxSize: 6 * 1024 * 1024,
+    onDrop: (acceptedFiles) => {
+      uploadImages(acceptedFiles).then();
+    },
+  });
 
   const [addImage, { isLoading, isSuccess }] = useAddImageMutation();
 
@@ -58,7 +50,7 @@ export const ImageUploader: FC<ImageUploaderProps> = ({
         // @ts-ignore
         await addImage(body);
         dispatch(setModalThumbsNeedRefetch(true));
-        setIsGetImages(true);
+        // setIsGetImages(true);
       }
 
       // setIsGetImages(true);
@@ -98,28 +90,24 @@ export const ImageUploader: FC<ImageUploaderProps> = ({
   // }
 
   useEffect(() => {
-    let timer: NodeJS.Timeout;
     if (isSuccess) {
       setIsUploadIsSuccess(isSuccess);
-      timer = setTimeout(() => {
-        setIsUploadIsSuccess(false);
-      }, 3000);
+      triggerGetEvents(undefined, false);
+      triggerGetThumbs(_id, false);
     }
-
-    return () => clearTimeout(timer);
   }, [isSuccess]);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
-    if (!!fileRejections.length) {
+    if (fileRejections.length) {
       setIsError(true);
-      setIsGetImages(false);
+      // setIsGetImages(false);
       timer = setTimeout(() => {
         setIsError(false);
       }, 5000);
       return () => clearTimeout(timer);
     }
-  }, [!!fileRejections.length]);
+  }, [fileRejections.length]);
 
   return (
     <div
@@ -128,14 +116,20 @@ export const ImageUploader: FC<ImageUploaderProps> = ({
     >
       <input {...getInputProps()} />
       {isError ? (
-        <>
-          <p className="text-dark-100 text-center text-parM">Error!</p>
-          <p className="text-dark-100 text-center text-parM">
+        <div className="flex flex-col gap-2 items-center justify-center">
+          <div className="text-yellow-100 flex flex-col items-center justify-center py-2 px-4 border border-stroke rounded-md shadow-inner shadow-dark-60">
+            <AlertIcon className="w-8 h-8 " />
+            <p className="text-errorText text-center text-parM">Error!</p>
+          </div>
+
+          <p className="text-dark-100 text-center font-semibold text-parM">
             You can upload 4 files, no larger than 4mb!
           </p>
-        </>
+        </div>
       ) : isUploadSuccess ? (
-        <p className="text-dark-100 text-center text-parM">Upload successful</p>
+        <p className="text-dark-100 text-center text-parM font-semibold">
+          Upload successful
+        </p>
       ) : isLoading ? (
         <Spinner className="fill-green-20 text-green-60" />
       ) : (
