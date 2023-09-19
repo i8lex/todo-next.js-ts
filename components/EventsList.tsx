@@ -1,35 +1,33 @@
 import React, { FC, useState } from 'react';
 import { format, parseISO } from 'date-fns';
 import { Timer } from './Timer';
-import EventsCheckBox from './EventsCheckBox';
-// import { useGetThumbsQuery } from "../providers/redux/images/imageApi";
+import CheckBox from './CheckBox';
 import EditIcon from '@/public/IconsSet/edit-05.svg';
 import TrashIcon from '@/public/IconsSet/trash-01.svg';
 import ImageIcon from '@/public/IconsSet/image-03.svg';
 import { ThumbsList } from './ThumbsList';
-import { AddEvent, DeleteConfirmModal, EditModal, Event } from '@/types';
+import { AddEvent, EditModal, Event } from '@/types';
 import {
   useDeleteEventMutation,
   usePathEventMutation,
 } from '@/redux/api/events.api';
 import clsx from 'clsx';
+import { DeleteConfirmModal } from '@/components/modal/DeleteConfirmModal';
 
 type EventsListProps = {
   event: Event;
-  setDeleteConfirmModal: React.Dispatch<
-    React.SetStateAction<DeleteConfirmModal>
-  >;
   setEditModal: React.Dispatch<React.SetStateAction<EditModal>>;
 };
 
-export const EventsList: FC<EventsListProps> = ({
-  event,
-  setDeleteConfirmModal,
-  setEditModal,
-}) => {
+export const EventsList: FC<EventsListProps> = ({ event, setEditModal }) => {
   const [deleteEvent] = useDeleteEventMutation();
   const [pathEvent] = usePathEventMutation();
   const [isImageBoxActive, setIsImageBoxActive] = useState(false);
+  const [isDeleteConfirmShowModal, setIsDeleteConfirmShowModal] =
+    useState(false);
+  const handleDeleteEvent = async (id: string) => {
+    await deleteEvent(id);
+  };
   return (
     <div className="flex items-center justify-between gap-4 w-full bg-white">
       <div className="flex gap-4 w-full p-4 justify-between items-center border border-stroke hover:shadow-sm hover:shadow-dark-60 rounded-md shadow-md shadow-dark-60">
@@ -113,7 +111,7 @@ export const EventsList: FC<EventsListProps> = ({
                         }));
                       } catch (error) {}
                     },
-                    title: `Update ${event.title}`,
+                    title: event.title,
                   });
                 }}
               >
@@ -122,22 +120,16 @@ export const EventsList: FC<EventsListProps> = ({
 
               <div
                 className="p-1 border w-[30px] h-[30px] border-stroke rounded-md flex flex-col gap-1 cursor-pointer hover:bg-yellow-20 hover:shadow-sm hover:shadow-dark-60 shadow-md shadow-dark-60 bg-yellow-10"
-                onClick={() =>
-                  setDeleteConfirmModal({
-                    isOpen: true,
-                    title: event.title,
-                    handleConfirm: async () => {
-                      if (event._id) {
-                        await deleteEvent(event._id);
-                      }
-                    },
-                  })
-                }
+                onClick={() => {
+                  setIsDeleteConfirmShowModal(true);
+                }}
               >
                 <TrashIcon className="w-[20px] h-[20px] text-dark-80" />
               </div>
 
-              {event._id ? <EventsCheckBox eventId={event._id} /> : null}
+              {event._id ? (
+                <CheckBox itemId={event._id} variant={'event'} />
+              ) : null}
             </div>
             <div
               className={clsx(
@@ -171,6 +163,16 @@ export const EventsList: FC<EventsListProps> = ({
           )}
         </div>
       </div>
+      <DeleteConfirmModal
+        buttonText={'Delete'}
+        titleText={'Delete Event'}
+        messageText={'Are you sure you want to delete this event?'}
+        showDeleteConfirmModal={isDeleteConfirmShowModal}
+        setShowDeleteConfirmModal={setIsDeleteConfirmShowModal}
+        Action={async () => {
+          await handleDeleteEvent(event._id!);
+        }}
+      />
     </div>
   );
 };

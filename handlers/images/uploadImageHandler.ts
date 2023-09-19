@@ -23,7 +23,6 @@ export const uploadImageHandler = async (request: Request, reply: Response) => {
     const authHeader = request.headers.authorization;
     const token = authHeader ? authHeader.split(' ')[1] : null;
     const { id, email } = await verify(token, process.env.SECRET_WORD);
-    console.log(id);
     upload.array('images')(request, reply, async (err) => {
       if (err) {
         return reply.status(400).json({ error: 'Error uploading files' });
@@ -96,7 +95,7 @@ export const uploadImageHandler = async (request: Request, reply: Response) => {
       }
 
       await Event.updateOne({ _id: event }, { $set: { images: imagesList } });
-      reply.status(200).json({ message: 'Files upload successful' });
+      await reply.status(200).json({ message: 'Files upload successful' });
     });
   } catch (error) {
     return reply.status(500).json({ error: 'Internal server error' });

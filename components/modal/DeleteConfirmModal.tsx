@@ -4,7 +4,7 @@ import DeleteIcon from '../../public/IconsSet/exclamation.svg';
 
 type DeleteConfirmModalProps = {
   showDeleteConfirmModal: boolean | undefined;
-  setShowDeleteConfirmModal: (arg0: boolean) => void;
+  setShowDeleteConfirmModal: (flag: boolean) => void;
   Action: () => void;
   titleText: string;
   messageText: string;
@@ -52,36 +52,50 @@ export const DeleteConfirmModal: FC<DeleteConfirmModalProps> = ({
             leaveTo="opacity-0 scale-95"
           >
             <div className="fixed inset-0 flex items-center justify-center">
-              <Dialog.Panel className="mx-auto h-screen tablet:h-fit flex items-center w-full gap-4 rounded-lg bg-white p-6 tablet:max-w-[512px] ">
-                <div className=" h-12 w-12 text-error-100">
-                  <DeleteIcon />
-                </div>
+              <Dialog.Panel className="mx-auto bg-softGreen h-screen tablet:h-fit flex items-center w-full gap-4 rounded-lg p-4 tablet:max-w-[512px] ">
+                <div className=" bg-white w-full h-full p-4 rounded-md shadow-inner shadow-dark-60 border border-stroke">
+                  <div className="flex items-center gap-4">
+                    <div className="hidden h-full tablet:block text-error-100">
+                      <DeleteIcon
+                        className={
+                          'h-20 w-20 p-4 border border-error-40 rounded-md shadow-inner shadow-dark-60'
+                        }
+                      />
+                    </div>
+                    <div className="flex w-full flex-col h-full justify-between items-center gap-4">
+                      <div className="flex justify-center items-center h-full tablet:hidden text-error-100">
+                        <DeleteIcon
+                          className={
+                            'h-40 w-40 p-4 border border-error-40 rounded-md shadow-inner shadow-dark-60'
+                          }
+                        />
+                      </div>
+                      <div className="flex h-full flex-col gap-2">
+                        <Dialog.Title className="text-parL font-medium text-darkSkyBlue-100">
+                          {titleText}
+                        </Dialog.Title>
+                        <p className=" text-parS font-normal text-darkSkyBlue-80">
+                          {messageText}
+                        </p>
+                      </div>
 
-                <div className="flex w-full flex-col gap-4">
-                  <div className="flex flex-col gap-2">
-                    <Dialog.Title className="text-parL font-medium text-darkSkyBlue-100">
-                      {titleText}
-                    </Dialog.Title>
-                    <p className=" text-parS font-normal text-darkSkyBlue-80">
-                      {messageText}
-                    </p>
-                  </div>
-
-                  <div className="flex w-full justify-end gap-2 tablet:gap-4">
-                    <button
-                      type="button"
-                      className="font-medium text-dark-100 py-2 px-4 bg-white hover:border-gray-80 border border-gray-60 rounded-md w-full tablet:w-[150px]"
-                      onClick={() => setShowDeleteConfirmModal(false)}
-                    >
-                      {'Cancel'}
-                    </button>
-                    <button
-                      type="button"
-                      className="font-medium text-errorText py-2 px-4 bg-white border border-error-40 hover:border-error-100 rounded-md w-full tablet:w-[150px]"
-                      onClick={Action}
-                    >
-                      {buttonText}
-                    </button>
+                      <div className="flex w-full justify-end gap-2 tablet:gap-4 ">
+                        <button
+                          type="button"
+                          className="font-medium shadow-md shadow-dark-60 hover:shadow-sm hover:shadow-dark-60 text-dark-100 py-2 px-4 bg-white hover:border-gray-80 border border-gray-60 rounded-md w-full tablet:w-[150px]"
+                          onClick={() => setShowDeleteConfirmModal(false)}
+                        >
+                          {'Cancel'}
+                        </button>
+                        <button
+                          type="button"
+                          className="font-medium text-errorText py-2 px-4 shadow-md shadow-dark-60 hover:shadow-sm hover:shadow-dark-60 bg-white border border-error-40 hover:border-error-100 rounded-md w-full tablet:w-[150px]"
+                          onClick={Action}
+                        >
+                          {buttonText}
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </Dialog.Panel>

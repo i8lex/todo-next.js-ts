@@ -1,33 +1,39 @@
-import * as jwt from "jsonwebtoken";
-import { Image } from "@/lib/models/imageModel";
-import { Thumb } from "@/lib/models/thumbModel";
-import { NextApiRequest, NextApiResponse } from "next";
+import * as jwt from 'jsonwebtoken';
+import { Image } from '@/lib/models/imageModel';
+import { Thumb } from '@/lib/models/thumbModel';
+import { Event } from '@/lib/models/eventModel';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export const deleteImagesHandler = async (
   request: NextApiRequest,
-  reply: NextApiResponse
+  reply: NextApiResponse,
 ) => {
   // @ts-ignore
   const { verify } = jwt.default;
   const authHeader = request.headers.authorization;
-  const token = authHeader ? authHeader.split(" ")[1] : null;
+  const token = authHeader ? authHeader.split(' ')[1] : null;
   const { userId } = await verify(token, process.env.SECRET_WORD);
   const { id: ids } = request.query;
 
   try {
-    if (typeof ids === "string" && ids.split(",").length === 0) {
+    if (typeof ids === 'string' && ids.split(',').length === 0) {
       const images = await Image.find({ user: userId });
-      reply.send(images);
+
+      await Event.updateMany({ images: ids }, { $pull: { images: ids } });
     }
-    if (typeof ids === "string") {
+    if (typeof ids === 'string') {
       const deletedImages = await Image.deleteMany({
-        _id: { $in: ids.split(",") },
+        _id: { $in: ids.split(',') },
       });
+      await Event.updateMany(
+        { images: { $in: ids.split(',') } },
+        { $pull: { images: { $in: ids.split(',') } } },
+      );
       await Thumb.deleteMany({
-        image: { $in: ids.split(",") },
+        image: { $in: ids.split(',') },
       });
       if (deletedImages.deletedCount === 0) {
-        return reply.status(404).send("Images not found");
+        return reply.status(404).send('Images not found');
       }
 
       reply.send(deletedImages);

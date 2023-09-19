@@ -4,45 +4,35 @@ import { Input } from '@/components/Input';
 import ArrowUpIcon from '@/public/IconsSet/chevron-up.svg';
 import ArrowDownIcon from '@/public/IconsSet/chevron-down.svg';
 
-import {
-  useGetEventsQuery,
-  useAddEventMutation,
-  useDeleteEventMutation,
-} from '@/redux/api/events.api';
-import { ModalDeleteConfirm } from '@/components/ModalDeleteConfirm';
+import { useGetEventsQuery, useAddEventMutation } from '@/redux/api/events.api';
 import { form } from '@/constants/form';
-import { ModalEditProject } from '@/components/ModalEditProject';
+import { ModalEditProject } from '@/components/modal/ModalEditProject';
 import { EventsList } from '@/components/EventsList';
-import { clearEvents } from '@/redux/slices/events.slice';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { DeleteConfirmModal, EditModal, Event } from '@/types';
+import { EditModal, Event } from '@/types';
 import { GeneralLayout } from '@/components/layouts/General/Layout';
 import { Button } from '@/components/ui/Button';
 import clsx from 'clsx';
+import { Spinner } from '@/components/ui/Spinner';
 
 const EventsPage = () => {
   const { data: events = [], isLoading } = useGetEventsQuery();
   const [addEvent] = useAddEventMutation();
-  const [deleteEvent] = useDeleteEventMutation();
   const [isCreateShowing, setCreateShowing] = useState(false);
-  const [deleteConfirmModal, setDeleteConfirmModal] =
-    useState<DeleteConfirmModal>({
-      isOpen: false,
-      title: '',
-      handleConfirm: () => {},
-    });
+
   const [editModal, setEditModal] = useState<EditModal>({
     isOpen: false,
     title: '',
     data: {},
     handleConfirm: () => {},
   });
-
-  const dispatch = useAppDispatch();
-  const { events: checkedEvents } = useAppSelector((state) => state.events);
+  useState(false);
 
   if (isLoading) {
-    return <h1>...LOADING...</h1>;
+    return (
+      <div className="flex h-screen flex-col justify-center items-center">
+        <Spinner className="fill-green-20 text-green-60 w-20 h-20 tablet:w-40 tablet:h-40" />
+      </div>
+    );
   }
 
   return (
@@ -56,8 +46,8 @@ const EventsPage = () => {
           }}
           onSubmit={async (values, formikHelpers) => {
             await addEvent(values).unwrap();
-
             formikHelpers.resetForm();
+            setCreateShowing(false);
           }}
           validationSchema={form.projectsValidationSchema}
         >
@@ -66,32 +56,14 @@ const EventsPage = () => {
               <p className="text-parL tablet:text-dispS1 text-dark-100">
                 Create project
               </p>
-              {checkedEvents.length ? (
-                <Button
-                  variant="whitered"
-                  size={'xs'}
-                  className="h-[28px] p-2 shadow-md shadow-dark-60 hover:shadow-sm hover:shadow-dark-60"
-                  text={'Delete checked'}
-                  type="button"
-                  onClick={() =>
-                    setDeleteConfirmModal((prevState: any) => ({
-                      ...prevState,
-                      isOpen: true,
-                      handleConfirm: async () => {
-                        await deleteEvent(checkedEvents);
-                        dispatch(clearEvents());
-                      },
-                    }))
-                  }
-                />
-              ) : null}
+
               <div
                 onClick={() => {
                   setCreateShowing(!isCreateShowing);
                 }}
                 className={clsx(
                   isCreateShowing
-                    ? 'bg-yellow-20 shadow-sm hover:shadow-md hover:bg-yellow-10'
+                    ? 'bg-yellow-20 shadow-sm  hover:bg-yellow-40'
                     : 'bg-yellow-10 shadow-md hover:shadow-sm hover:bg-yellow-20',
                   'flex flex-col cursor-pointer items-center shadow-dark-60 hover:shadow-dark-60 rounded-md justify-center w-[30px] h-[30px] p-1',
                 )}
@@ -142,26 +114,13 @@ const EventsPage = () => {
               <EventsList
                 key={event._id}
                 event={event}
-                setDeleteConfirmModal={setDeleteConfirmModal}
                 setEditModal={setEditModal}
               />
             );
           })}
         </div>
       </div>
-      <ModalDeleteConfirm
-        isOpen={deleteConfirmModal.isOpen}
-        title={deleteConfirmModal.title}
-        handleClose={() => {
-          setDeleteConfirmModal((prevState) => {
-            return {
-              ...prevState,
-              isOpen: false,
-            };
-          });
-        }}
-        handleConfirm={deleteConfirmModal.handleConfirm}
-      />
+
       <ModalEditProject
         isOpen={editModal.isOpen}
         title={editModal.title}

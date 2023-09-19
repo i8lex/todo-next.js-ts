@@ -19,7 +19,7 @@ const EventSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-    maxlength: [500, 'Event description must be at max 500 characters long'],
+    maxlength: [2000, 'Event description must be at max 2000 characters long'],
   },
   images: { type: [String], default: [] },
   done: {
