@@ -15,6 +15,7 @@ const LoginPage: FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [message, setMessage] = useState('');
+  const [email, setEmail] = useState('');
   const [confirmed, setConfirmed] = useState<boolean | undefined>(undefined);
   const router = useRouter();
 
@@ -34,6 +35,7 @@ const LoginPage: FC = () => {
           const { error } = response;
           setMessage(error);
           if (error === "Please activate you're account") {
+            setEmail(values.email);
             setConfirmed(false);
           }
         } else {
@@ -57,6 +59,7 @@ const LoginPage: FC = () => {
   return (
     <AuthorizationLayout page={'login'}>
       <ModalAuth
+        email={email}
         open={openModal}
         handleClose={handleClose}
         confirmed={confirmed}

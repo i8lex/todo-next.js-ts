@@ -9,12 +9,12 @@ import { AuthorizationLayout } from '@/components/layouts/authorization/Layout';
 import { Button } from '@/components/ui/Button';
 import EyeIcon from '@/public/IconsSet/eye.svg';
 import EyeOffIcon from '@/public/IconsSet/eye-off.svg';
-import { PopUpModal } from '@/components/modal/PopUpModal';
 
 const RegistrationPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [message, setMessage] = useState('');
+  const [email, setEmail] = useState('');
   const router = useRouter();
   const [registration] = useRegistrationMutation();
 
@@ -37,9 +37,10 @@ const RegistrationPage = () => {
       } else {
         const data = response.data;
         const successMessage = data.message;
+        setEmail(data.email);
         setMessage(successMessage);
         setOpenModal(true);
-        return setTimeout(() => router.push('/login'), 3000);
+        // return setTimeout(() => router.push('/login'), 3000);
       }
     } catch (error) {
       console.log(error);
@@ -51,7 +52,12 @@ const RegistrationPage = () => {
   return (
     <AuthorizationLayout page={'register'}>
       {/*<PopUpModal type={} showPopUpModal={true} setShowPopUpModal={setOpenModal} titleText={''} messageText={''} buttonText={}/>*/}
-      <ModalAuth open={openModal} handleClose={handleClose} message={message} />
+      <ModalAuth
+        open={openModal}
+        handleClose={handleClose}
+        message={message}
+        email={email}
+      />
 
       <Formik
         initialValues={{
