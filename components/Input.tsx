@@ -1,4 +1,4 @@
-import React, { useState, useEffect, FC } from 'react';
+import React, { useState, FC } from 'react';
 import { Field, useField } from 'formik';
 import clsx from 'clsx';
 
