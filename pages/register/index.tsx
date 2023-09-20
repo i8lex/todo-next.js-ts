@@ -40,7 +40,7 @@ const RegistrationPage = () => {
         setEmail(data.email);
         setMessage(successMessage);
         setOpenModal(true);
-        // return setTimeout(() => router.push('/login'), 3000);
+        return setTimeout(() => router.push('/login'), 3000);
       }
     } catch (error) {
       console.log(error);

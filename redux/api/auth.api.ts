@@ -19,7 +19,7 @@ export type LoginBody = {
   password: string;
 };
 
-export type LoginResponse = {
+export type LoginResponse = SignInResponse & {
   token: string;
   message: string;
   confirmed: boolean;
@@ -63,7 +63,6 @@ export const authApi = createApi({
 });
 
 export const {
-  useLoginMutation,
   useRegistrationMutation,
   useEmailConfirmQuery,
   useEmailRepeatMutation,
