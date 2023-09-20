@@ -1,8 +1,9 @@
 import { User } from '@/lib/models/userModel';
 import { transporter } from '@/config';
 import * as jwt from 'jsonwebtoken';
-import Handlebars from 'handlebars';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { render } from '@react-email/render';
+import { ConfirmEmail } from '@/components/ConfirmEmail';
 
 export const repeatConfirmEmailHandler = async (
   request: NextApiRequest,
@@ -16,36 +17,30 @@ export const repeatConfirmEmailHandler = async (
     expiresIn: '15m',
   });
 
-  const source = `<a href="{{url}}">Click to confirm</a>`;
-  const template = Handlebars.compile(source);
-
   try {
-    const data = { url: `${process.env.URL}/email/?confirm=${token}` };
-    const html = template(data);
+    const user = await User.findOne({ email });
+    const url = `${process.env.BASE_URL}/email/?confirm=${token}`;
 
+    const emailHtml = render(<ConfirmEmail url={url} name={user.name} />);
     await transporter.sendMail({
       from: 'noreply-authtodomail@gmail.com',
       to: email,
-      subject: 'Todo register',
-      html: html,
+      subject: 'Events, confirm registration email',
+      html: emailHtml,
     });
-  } catch (error) {
-    reply.send({ error: error });
-  }
-  try {
     const updateStatus = await User.updateOne(
       { email: email },
       { confirmationCode: token },
     );
 
-    if (updateStatus.modifiedCount === 0) {
+    if (!updateStatus.modifiedCount) {
       return reply.status(404).send('User not found');
     }
-  } catch (err) {
-    reply.status(500).send(err);
+    return reply.send({
+      message: 'Successfully send',
+      email,
+    });
+  } catch (error) {
+    reply.send({ error: error });
   }
-  reply.send({
-    message: 'Successfully send',
-    email,
-  });
 };

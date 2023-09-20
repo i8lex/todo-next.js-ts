@@ -21,15 +21,13 @@ export const ModalAuth: FC<ModalAuthProps> = ({
   message,
   confirmed,
 }) => {
-  console.log(confirmed);
   const [emailRepeat] = useEmailRepeatMutation();
   const repeatEmailHandler = async () => {
     try {
-      const value = { email: email };
-
-      // @ts-ignore
-      await emailRepeat(value);
-      handleClose();
+      if (email) {
+        await emailRepeat({ email });
+        handleClose();
+      }
     } catch (err) {
       console.log('error repeat send email');
     }
@@ -81,15 +79,28 @@ export const ModalAuth: FC<ModalAuthProps> = ({
                 >
                   <CloseIcon className="w-3 h-3 tablet:w-4 tablet:h-4  " />
                 </div>
-                <div className="bg-white shadow-inner shadow-dark-60 rounded-xl h-full mx-4 p-4 flex flex-col gap-4 items-center">
+                <div className="bg-white shadow-inner shadow-dark-60 rounded-xl h-full mx-4 p-4 flex flex-col gap-2 tablet:gap-4 items-center">
                   {confirmed || confirmed === undefined ? null : (
                     <div className="text-yellow-100 p-4 border border-stroke rounded-md shadow-inner shadow-dark-60">
                       <AlertIcon className="w-8 h-8 " />
                     </div>
                   )}
                   <p className="text-parL h-full tablet:text-dispS3 flex flex-col items-center justify-center text-dark-100 font-bold text-center mb-6">
-                    {JSON.stringify(message, null, 2).replace(/["']/g, '')}
+                    {message}
                   </p>
+                  {email ? (
+                    <>
+                      <p className="text-parM h-full text-dark-80 tablet:text-parL flex flex-col items-center justify-center  font-semibold text-center mb-6">
+                        We have sent you message to{' '}
+                        <span className="font-bold text-dispS3 text-dark-100 tablet:text-dispS2">
+                          {email}
+                        </span>{' '}
+                      </p>
+                      <p className="text-parM h-full tablet:text-dispS3 flex flex-col items-center justify-center text-dark-80 font-semibold text-center mb-6">
+                        Please follow the link inside
+                      </p>
+                    </>
+                  ) : null}
                   {confirmed || confirmed === undefined ? null : (
                     <Button
                       className="!text-quot"

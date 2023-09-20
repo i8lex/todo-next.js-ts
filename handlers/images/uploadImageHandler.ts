@@ -22,7 +22,7 @@ export const uploadImageHandler = async (request: Request, reply: Response) => {
     const { verify } = jwt.default;
     const authHeader = request.headers.authorization;
     const token = authHeader ? authHeader.split(' ')[1] : null;
-    const { id, email } = await verify(token, process.env.SECRET_WORD);
+    const { id } = await verify(token, process.env.SECRET_WORD);
     upload.array('images')(request, reply, async (err) => {
       if (err) {
         return reply.status(400).json({ error: 'Error uploading files' });

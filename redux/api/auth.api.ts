@@ -4,6 +4,7 @@ import { SignInResponse } from 'next-auth/react';
 
 type RegistrationResponse = {
   message: string;
+  email: string;
 };
 
 export type RegistrationBody = {
@@ -51,11 +52,11 @@ export const authApi = createApi({
     emailRepeat: build.mutation<void, EmailRepeatBody>({
       query: (body) => ({
         url: '/email',
-        method: 'PUT',
+        method: 'POST',
         body,
       }),
     }),
-    emailConfirm: build.query<void, string>({
+    emailConfirm: build.query<{ message: string; email: string }, string>({
       query: (confirmId) => `/email/?confirm=${confirmId}`,
     }),
   }),

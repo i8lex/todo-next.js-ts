@@ -1,9 +1,11 @@
 import pkg from 'bcryptjs';
 import { transporter } from '@/config';
-import Handlebars from 'handlebars';
 import * as jwt from 'jsonwebtoken';
 import { User } from '@/lib/models/userModel';
 import { NextApiRequest, NextApiResponse } from 'next';
+import * as process from 'process';
+import { render } from '@react-email/render';
+import { ConfirmEmail } from '@/components/ConfirmEmail';
 
 export const postRegistrationHandler = async (
   request: NextApiRequest,
@@ -43,18 +45,15 @@ export const postRegistrationHandler = async (
     expiresIn: '15m',
   });
 
-  const source = `<a href="{{url}}">Click to confirm</a>`;
-  const template = Handlebars.compile(source);
-
   try {
-    const data = { url: `http://localhost:3000/api/email/?confirm=${token}` };
-    const html = template(data);
+    const url = `${process.env.BASE_URL}/email/?confirm=${token}`;
 
+    const emailHtml = render(<ConfirmEmail url={url} name={name} />);
     await transporter.sendMail({
       from: 'noreply-authtodomail@gmail.com',
       to: email,
-      subject: 'Todo register',
-      html: html,
+      subject: 'Events, confirm registration email',
+      html: emailHtml,
     });
   } catch (error) {
     reply.send({ error: error });
@@ -68,5 +67,8 @@ export const postRegistrationHandler = async (
   });
 
   await newUser.save();
-  return reply.status(201).send({ message: 'User successful created' });
+  return reply.status(201).send({
+    message: 'Registration successful',
+    email,
+  });
 };
