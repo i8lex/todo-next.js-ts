@@ -1,11 +1,10 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 
 import clsx from 'clsx';
 
 import LogOutIcon from '@/public/IconsSet/log-out-01.svg';
-// import Logo from '@/public/IconsSet/l';
 
 import type { Page } from '@/types';
 import type { FC } from 'react';
@@ -16,7 +15,10 @@ export type GeneralHeaderProps = {
 
 export const GeneralHeader: FC<GeneralHeaderProps> = ({ currentPage }) => {
   const router = useRouter();
-
+  const { data: sessionData } = useSession();
+  if (!sessionData) {
+    router.push('/login');
+  }
   const links: Array<{ id: Page; href: string; name: string }> = [
     { id: 'events', href: '/events', name: 'Events' },
   ];
@@ -55,7 +57,7 @@ export const GeneralHeader: FC<GeneralHeaderProps> = ({ currentPage }) => {
             await signOut({
               redirect: false,
             });
-            router.push('/login');
+            await router.push('/login');
           }}
           className="solid h-7 w-7 flex flex-col items-center bg-white shadow-md shadow-dark-60 hover:shadow-sm hover:shadow-dark-60 hover:bg-softGreen justify-center overflow-hidden rounded-full border border-stroke focus:border-green-80 focus:outline-none focus:ring-2 focus:ring-green-80 tablet:h-8 tablet:w-8"
         >
