@@ -40,10 +40,10 @@ export const Input: FC<InputProps> = ({
         className={clsx(
           className,
           as === 'textarea'
-            ? 'tablet:h-[390px] h-[120px] overflow-y-scroll resize-none px-2 '
+            ? 'tablet:h-[390px] desktop:w-full h-[120px] overflow-y-scroll resize-none px-2 '
             : 'px-1',
           !isErrorShown ? 'border-gray-80' : 'border-error-80',
-          'py-3 h-10 shadow-md text-dark-100 shadow-dark-60 w-full laptop:w-[390px]  indent-6 text-parS border bg-none rounded-lg placeholder:text-parS placeholder:font-normal focus:border-orange-40 focus:ring-orange-40 focus:ring-1 focus:outline-none autofill:text-pars',
+          'py-3 h-10 shadow-md text-dark-100 shadow-dark-60 w-full laptop:w-[390px] desktop:w-full indent-6 text-parS border bg-none rounded-lg placeholder:text-parS placeholder:font-normal focus:border-orange-40 focus:ring-orange-40 focus:ring-1 focus:outline-none autofill:text-pars',
         )}
         as={as}
         required={required}

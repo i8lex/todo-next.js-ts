@@ -26,13 +26,6 @@ export const ModalEditProject: FC<ModalEditProjectProps> = ({
   handleConfirm,
   data,
 }) => {
-  // const [isEditMode, setIsEditMode] = useState(false);
-  // const handleEditClick = () => {
-  //   setIsEditMode(true);
-  // };
-  // const handleTextOnBlur = () => {
-  //   setIsEditMode(false);
-  // };
   return (
     <>
       <Transition show={isOpen} as={Fragment}>
@@ -80,8 +73,8 @@ export const ModalEditProject: FC<ModalEditProjectProps> = ({
                     }}
                     onSubmit={handleConfirm}
                   >
-                    <Form className="flex flex-col items-stretch w-full h-full">
-                      <div className="flex flex-col gap-4 items-center w-full h-full">
+                    <Form className="flex flex-col  items-stretch  tablet:gap-8 gap-0 w-full h-full">
+                      <div className="flex flex-col gap-6 items-center w-full h-full">
                         <Input label="Title" required name="title" />
                         <Input
                           label="Description"
@@ -95,12 +88,12 @@ export const ModalEditProject: FC<ModalEditProjectProps> = ({
                         />
                       </div>
 
-                      <div className="flex gap-4 tablet:self-end justify-between w-full">
+                      <div className="flex gap-4 tablet:justify-end justify-between w-full">
                         <Button
                           text={'Cancel'}
                           type="button"
                           variant={'white'}
-                          className="w-full"
+                          className="w-full tablet:w-[140px]"
                           onClick={handleClose}
                         />
                         <Button text="Confirm" type="submit" />
