@@ -190,15 +190,15 @@ export const UserSettings: FC<UserSettingsProps> = ({
       onSubmit={handleSubmit(onSubmit, handleError)}
       noValidate
       method="post"
-      className="flex flex-col gap-6 justify-between tablet:justify-start h-full w-full tablet:w-fit"
+      className="flex flex-col gap-6 justify-between tablet:justify-start "
     >
       <div>
-        <p className="text-dispL text-dark-100 font-bold mb-12">Your info</p>
         <div className="flex flex-col gap-4 tablet:gap-6">
           <ImageUploader maxFiles={1} maxSize={2 * 1024 * 1024} />
           <div className="flex items-center gap-6">
             <Input
               label={'Enter firstname'}
+              className="laptop:max-w-[240px]"
               isRequired={true}
               type="text"
               id="title"
@@ -217,6 +217,7 @@ export const UserSettings: FC<UserSettingsProps> = ({
             />
             <Input
               label={'Enter lastname'}
+              className="laptop:max-w-[240px]"
               isRequired={true}
               type="text"
               id="title"
