@@ -1,5 +1,5 @@
 import * as jwt from 'jsonwebtoken';
-import { Event } from '@/lib/models/eventModel';
+import { Event } from '@/lib/models/event.model';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export const createEventHandler = async (

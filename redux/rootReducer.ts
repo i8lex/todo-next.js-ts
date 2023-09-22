@@ -1,12 +1,11 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import eventsSlice from './slices/events.slice';
 import { eventsApi } from './api/events.api';
-import { persistReducer, persistStore } from 'redux-persist';
-import authSlice from './slices/auth.slice';
 import { authApi } from './api/auth.api';
 import imagesSlice from './slices/images.slice';
 import { imageApi } from '@/redux/api/images.api';
 import createWebStorage from 'redux-persist/lib/storage/createWebStorage';
+import { userApi } from '@/redux/api/user.api';
 
 const createNoopStorage = () => {
   return {
@@ -36,7 +35,7 @@ const authPersistConfig = {
 const combinedReducer = combineReducers({
   events: eventsSlice,
   image: imagesSlice,
-  auth: persistReducer(authPersistConfig, authSlice),
+  [userApi.reducerPath]: userApi.reducer,
   [authApi.reducerPath]: authApi.reducer,
   [eventsApi.reducerPath]: eventsApi.reducer,
   [imageApi.reducerPath]: imageApi.reducer,

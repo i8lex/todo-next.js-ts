@@ -1,27 +1,26 @@
 import React, { FC, useState } from 'react';
 import { format, parseISO } from 'date-fns';
-import { Timer } from './Timer';
-import CheckBox from './CheckBox';
+import { Timer } from '../ui/Timer';
+import CheckBox from '../ui/CheckBox';
 import EditIcon from '@/public/IconsSet/edit-05.svg';
 import TrashIcon from '@/public/IconsSet/trash-01.svg';
 import ImageIcon from '@/public/IconsSet/image-03.svg';
-import { ThumbsList } from './ThumbsList';
-import { AddEvent, EditModal, Event } from '@/types';
-import {
-  useDeleteEventMutation,
-  usePathEventMutation,
-} from '@/redux/api/events.api';
+import { ThumbsList } from '../ThumbsList';
+import { Event } from '@/types';
+import { useDeleteEventMutation } from '@/redux/api/events.api';
 import clsx from 'clsx';
 import { DeleteConfirmModal } from '@/components/modal/DeleteConfirmModal';
 
 type EventsListProps = {
   event: Event;
-  setEditModal: React.Dispatch<React.SetStateAction<EditModal>>;
+  setEditModalOpen: (flag: boolean) => void;
 };
 
-export const EventsList: FC<EventsListProps> = ({ event, setEditModal }) => {
+export const EventsList: FC<EventsListProps> = ({
+  event,
+  setEditModalOpen,
+}) => {
   const [deleteEvent] = useDeleteEventMutation();
-  const [pathEvent] = usePathEventMutation();
   const [isImageBoxActive, setIsImageBoxActive] = useState(false);
   const [isDeleteConfirmShowModal, setIsDeleteConfirmShowModal] =
     useState(false);
@@ -92,27 +91,7 @@ export const EventsList: FC<EventsListProps> = ({ event, setEditModal }) => {
               <div
                 className="p-1 w-[30px] h-[30px] border border-stroke rounded-md flex flex-col gap-1 cursor-pointer hover:bg-yellow-20 hover:shadow-sm hover:shadow-dark-60 shadow-md shadow-dark-60 bg-yellow-10"
                 onClick={() => {
-                  setEditModal({
-                    isOpen: true,
-                    data: {
-                      title: event.title,
-                      description: event.description,
-                      deadline: event.deadline,
-                    },
-                    handleConfirm: async (values: AddEvent) => {
-                      try {
-                        if (event._id) {
-                          await pathEvent({ id: event._id, body: values });
-                        }
-
-                        setEditModal((prevState) => ({
-                          ...prevState,
-                          isOpen: false,
-                        }));
-                      } catch (error) {}
-                    },
-                    title: event.title,
-                  });
+                  setEditModalOpen(true);
                 }}
               >
                 <EditIcon className="w-[20px] h-[20px] text-dark-80" />

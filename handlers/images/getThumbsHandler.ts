@@ -1,5 +1,5 @@
 import * as jwt from 'jsonwebtoken';
-import { Thumb } from '@/lib/models/thumbModel';
+import { Thumb } from '@/lib/models/thumb.model';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export const getThumbsHandler = async (

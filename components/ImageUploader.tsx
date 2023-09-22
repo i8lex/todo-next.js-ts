@@ -5,18 +5,28 @@ import {
   useLazyGetThumbsQuery,
 } from '@/redux/api/images.api';
 import { useLazyGetEventsQuery } from '@/redux/api/events.api';
-import { setModalThumbsNeedRefetch } from '@/redux/slices/images.slice';
+import {
+  setImage,
+  setModalThumbsNeedRefetch,
+} from '@/redux/slices/images.slice';
 import AlertIcon from '@/public/IconsSet/exclamation.svg';
 
 import { useAppDispatch } from '@/redux/hooks';
 // import {Image, Images} from "@/types";
 import UploadIcon from '@/public/IconsSet/upload-cloud-02.svg';
 import { Spinner } from '@/components/ui/Spinner';
+import sharp from 'sharp';
 type ImageUploaderProps = {
-  _id: string;
+  _id?: string;
+  maxFiles?: number;
+  maxSize?: number;
 };
 
-export const ImageUploader: FC<ImageUploaderProps> = ({ _id }) => {
+export const ImageUploader: FC<ImageUploaderProps> = ({
+  _id,
+  maxSize = 6 * 1024 * 1024,
+  maxFiles = 4,
+}) => {
   const [isUploadSuccess, setIsUploadIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
   const [triggerGetThumbs] = useLazyGetThumbsQuery();
@@ -27,8 +37,8 @@ export const ImageUploader: FC<ImageUploaderProps> = ({ _id }) => {
       'image/jpeg': ['.jpg', '.jpeg'],
       'image/png': ['.png'],
     },
-    maxFiles: 4,
-    maxSize: 6 * 1024 * 1024,
+    maxFiles: maxFiles,
+    maxSize: maxSize,
     onDrop: (acceptedFiles) => {
       uploadImages(acceptedFiles).then();
     },
@@ -38,59 +48,41 @@ export const ImageUploader: FC<ImageUploaderProps> = ({ _id }) => {
 
   const uploadImages = async (files: File[]) => {
     try {
-      const body: FormData = new FormData();
+      if (maxFiles > 1 && _id) {
+        const body: FormData = new FormData();
+        files.forEach((file) => {
+          body.append('images', file);
+        });
+        body.append('event', _id);
+        if (!fileRejections.length && files.length) {
+          // @ts-ignore
+          await addImage(body);
+        }
+      } else {
+        console.log(files);
+        if (files && files.length > 0) {
+          const reader = new FileReader();
+          const file = files[0];
 
-      files.forEach((file) => {
-        body.append('images', file);
-      });
-
-      body.append('event', _id);
-
-      if (!fileRejections.length && files.length) {
-        // @ts-ignore
-        await addImage(body);
-        dispatch(setModalThumbsNeedRefetch(true));
-        // setIsGetImages(true);
+          reader.addEventListener('load', () => {
+            dispatch(
+              setImage({
+                filename: file.name,
+                file: reader.result?.toString() || '',
+                mimetype: file.type,
+              }),
+            );
+          });
+          reader.readAsDataURL(file);
+        }
       }
-
-      // setIsGetImages(true);
     } catch (error) {
       console.log(error);
     }
   };
 
-  // const uploadImages = async (files: File[]) => {
-  //   try {
-  //     const body: FormData = new FormData();
-  //     files.forEach((file) => {
-  //       body.append("files", file);
-  //     });
-  //
-  //     body.append("task", _id);
-  //
-  //     const imageArray = Array.from(body.getAll("files"));
-  //     const payload = { files: imageArray, task: _id };
-  //
-  //     console.log(payload);
-  //
-  //     if (!fileRejections.length && files.length) {
-  //       await addImage(payload);
-  //       dispatch(setModalThumbsNeedRefetch(true));
-  //       setIsGetImages(true);
-  //     }
-  //
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  // if (!fileRejections.length) {
-  //   setIsGetImages(false);
-  //   console.log("OK");
-  // }
-
   useEffect(() => {
-    if (isSuccess) {
+    if (isSuccess && _id) {
       setIsUploadIsSuccess(isSuccess);
       triggerGetEvents(undefined, false);
       triggerGetThumbs(_id, false);
@@ -101,7 +93,6 @@ export const ImageUploader: FC<ImageUploaderProps> = ({ _id }) => {
     let timer: NodeJS.Timeout;
     if (fileRejections.length) {
       setIsError(true);
-      // setIsGetImages(false);
       timer = setTimeout(() => {
         setIsError(false);
       }, 5000);
@@ -123,7 +114,9 @@ export const ImageUploader: FC<ImageUploaderProps> = ({ _id }) => {
           </div>
 
           <p className="text-dark-100 text-center font-semibold text-parM">
-            You can upload 4 files, no larger than 4mb!
+            {maxFiles > 1
+              ? 'You can upload 4 files, no larger than 6mb!'
+              : 'You can upload 1 files, no larger than 2mb!'}
           </p>
         </div>
       ) : isUploadSuccess ? (
@@ -135,7 +128,9 @@ export const ImageUploader: FC<ImageUploaderProps> = ({ _id }) => {
       ) : (
         <div className="flex flex-col items-center justify-center gap-3">
           <p className="text-dark-100 text-center text-parM font-semibold">
-            You can drop images here
+            {maxFiles > 1
+              ? 'You can drop images here'
+              : 'You can drop avatar here'}
           </p>
           <div className="flex items-center justify-center flex-col w-[70px] h-[70px] border border-stroke rounded-md hover:shadow-sm hover:shadow-dark-60 hover:bg-green-10 cursor-pointer shadow-md shadow-dark-60">
             <UploadIcon className="w-[50px] h-[50px] text-dark-100" />

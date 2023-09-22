@@ -1,6 +1,6 @@
 import * as jwt from 'jsonwebtoken';
 import pkg from 'bcryptjs';
-import { User } from '@/lib/models/userModel';
+import { User } from '@/lib/models/user.model';
 import { NextApiRequest, NextApiResponse } from 'next';
 import db from '@/lib/db';
 
