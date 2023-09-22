@@ -22,6 +22,5 @@ export const getAge = (birthday: string) => {
   const currentDate = new Date();
   const age = currentDate.getFullYear() - birthDate.getFullYear();
   const monthName = months[birthDate.getMonth()];
-  const formattedDate = `${day} ${monthName}, ${age}`;
-  return formattedDate;
+  return `${day} ${monthName}, ${age}`;
 };

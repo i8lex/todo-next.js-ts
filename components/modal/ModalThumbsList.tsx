@@ -57,7 +57,7 @@ export const ModalThumbsList: FC<ModalThumbsListProps> = ({
     setIsButtonModifyActive(!isButtonModifyActive);
   };
 
-  const deleteImagesFromTaskFieldHandle = async (
+  const deleteImagesFromEventFieldHandle = async (
     checkedImages: string[],
     imagesIds: string[],
     eventId: string,
@@ -65,7 +65,7 @@ export const ModalThumbsList: FC<ModalThumbsListProps> = ({
     const filteredImages = imagesIds.filter(
       (item) => !checkedImages.includes(item),
     );
-    await pathEvent({ id: eventId, body: { images: filteredImages } });
+    await pathEvent({ id: eventId, body: filteredImages });
   };
 
   return (
@@ -201,7 +201,7 @@ export const ModalThumbsList: FC<ModalThumbsListProps> = ({
                         }
                         className="flex flex-col items-center justify-center rounded-md p-2 bg-yellow-10 w-[100px] h-[100px] border border-stroke tablet:w-[150px] tablet:h-[150px] overflow-hidden shadow-inner shadow-dark-60"
                       >
-                        <div className="p-1 mx-auto my-5 h-full border flex flex-col items-center justify-center w-[75px] h-[75px] border-stroke rounded-md flex flex-col gap-1 cursor-pointer hover:bg-yellow-20 hover:shadow-inner hover:shadow-dark-60  bg-yellow-10">
+                        <div className="p-1 mx-auto my-5  border items-center justify-center w-[75px] h-full shadow-sm shadow-dark-60 border-stroke rounded-md flex flex-col gap-1 cursor-pointer hover:bg-yellow-20 hover:shadow-inner hover:shadow-dark-60  bg-yellow-10">
                           <UploadIcon className=" w-[50px] h-[50px] text-dark-80" />
                         </div>
                       </SwiperSlide>
@@ -258,7 +258,7 @@ export const ModalThumbsList: FC<ModalThumbsListProps> = ({
                     setShowDeleteConfirmModal={setShowDeleteConfirmModal}
                     Action={async () => {
                       await deleteImage(checkedImages);
-                      await deleteImagesFromTaskFieldHandle(
+                      await deleteImagesFromEventFieldHandle(
                         checkedImages,
                         images,
                         taskId,
