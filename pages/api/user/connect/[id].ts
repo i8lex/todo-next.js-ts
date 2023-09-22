@@ -1,9 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import db from '../../../lib/db';
+import db from '../../../../lib/db';
 import { authMiddleware } from '@/middlewares/authMiddleware';
-import { updateUserHandler } from '@/handlers/user/updateUserHandler';
 import { getUserHandler } from '@/handlers/user/getUserHandler';
 import { addConnectHandler } from '@/handlers/user/addConnectHandler';
+import { deleteConnectHandler } from '@/handlers/user/deleteConnectHandler';
 export default authMiddleware(async function userHandlers(
   req: NextApiRequest,
   res: NextApiResponse,
@@ -14,38 +14,29 @@ export default authMiddleware(async function userHandlers(
 
   switch (method) {
     case 'GET':
-      try {
-        await getUserHandler(req, res);
-      } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: 'Internal server error' });
-      }
       break;
 
     case 'POST':
       try {
-        await updateUserHandler(req, res);
-      } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: 'Internal server error' });
-      }
-
-      break;
-
-    case 'PUT':
-      // ...
-      break;
-    case 'PATH':
-      try {
-        console.log('here');
         await addConnectHandler(req, res);
       } catch (error) {
         console.log(error);
         res.status(500).json({ message: 'Internal server error' });
       }
       break;
+
+    case 'PUT':
+      break;
+    case 'PATH':
+      break;
     case 'DELETE':
-      // ...
+      try {
+        await deleteConnectHandler(req, res);
+      } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Internal server error' });
+      }
+
       break;
 
     default:

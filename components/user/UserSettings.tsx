@@ -158,11 +158,11 @@ export const UserSettings: FC<UserSettingsProps> = ({
       if (values.isEventsShowing !== infoData?.isEventsShowing) {
         data.isEventsShowing = values.isEventsShowing;
       }
-
       if (avatar.mimetype && avatar.buffer !== values.avatar?.buffer) {
+        console.log('test if');
         data.avatar = {
           name: avatar.filename,
-          buffer: avatar.file,
+          buffer: avatar.buffer,
 
           mimeType: avatar.mimetype,
         };

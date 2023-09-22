@@ -1,25 +1,12 @@
 import { GeneralLayout } from '@/components/layouts/General/Layout';
 
-import {
-  useGetMyInfoQuery,
-  usePathInfoMutation,
-  UserDTO,
-} from '@/redux/api/user.api';
+import { useGetMyInfoQuery } from '@/redux/api/user.api';
 import { Button } from '@/components/ui/Button';
-import React, { useEffect, useState } from 'react';
-import { ImageUploader } from '@/components/ImageUploader';
-import { useSelector } from 'react-redux';
-import { Spinner } from '@/components/ui/Spinner';
-import { Controller, useForm } from 'react-hook-form';
-import { Input } from '@/components/ui/Input';
-import { ListBox } from '@/components/Listbox';
-import DateIcon from '@/public/IconsSet/calendar-date.svg';
-import BuildingIcon from '@/public/IconsSet/building-08.svg';
-import PuzzleIcon from '@/public/IconsSet/puzzle-piece-02.svg';
+import React, { useState } from 'react';
+
 import ChatIcon from '@/public/IconsSet/message-chat-square.svg';
 import SettingsIcon from '@/public/IconsSet/users-edit.svg';
 import GlobeIcon from '@/public/IconsSet/globe-06.svg';
-import ModemIcon from '@/public/IconsSet/modem-02.svg';
 import { UserSettings } from '@/components/user/UserSettings';
 import { UserInfo } from '@/components/user/UserInfo';
 import clsx from 'clsx';
@@ -36,7 +23,6 @@ const MyPage = () => {
     connections: true,
     chats: false,
   });
-  console.log(isVisible);
   return (
     <GeneralLayout currentPage={'my'}>
       <div className="flex flex-col tablet:flex-row gap-6">
@@ -44,7 +30,7 @@ const MyPage = () => {
           <UserInfo userInfo={infoData} isSuccess={isSuccess} />
         </div>
         <div className="flex laptop:min-w-[572px] tablet:min-w-[400px] flex-col gap-6 justify-between tablet:justify-start bg-softGreen h-full w-full shadow-inner shadow-dark-60 tablet:w-fit border border-stroke rounded-md p-4">
-          <div className="flex gap-4 items-center justify-between self-end">
+          <div className="flex gap-4 items-center  justify-between self-end w-fit tablet:w-full">
             <p className="tablet:text-dispS1 hidden tablet:block text-dark-100 font-bold">
               {isVisible.settings ? 'Settings and info' : ''}
               {isVisible.connections ? 'My connections' : ''}
