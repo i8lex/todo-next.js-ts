@@ -6,7 +6,7 @@ export type LayoutProps = {
   page: string;
 };
 
-export type Page = 'events' | 'about' | 'contact' | 'my';
+export type Page = 'events' | 'about' | 'contact' | 'my' | 'users';
 
 export type Image = {
   _id: string;

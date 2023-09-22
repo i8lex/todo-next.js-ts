@@ -5,7 +5,7 @@ type Image = {
   mimetype?: string | null;
   thumb?: string | null;
   filename?: string | null;
-  file?: string | null;
+  buffer?: string | null;
   thumbBuffer?: string | null;
 };
 
@@ -23,7 +23,7 @@ const initialState: ImageStateType = {
     thumb: null,
     filename: null,
     thumbBuffer: null,
-    file: null,
+    buffer: null,
   },
   thumbsNeedRefetch: false,
   modalThumbsNeedRefetch: false,
@@ -34,12 +34,6 @@ const imageSlice = createSlice({
   name: 'image',
   initialState,
   reducers: {
-    setThumbsNeedRefetch: (state, action: PayloadAction<boolean>) => {
-      state.thumbsNeedRefetch = action.payload;
-    },
-    setModalThumbsNeedRefetch: (state, action: PayloadAction<boolean>) => {
-      state.modalThumbsNeedRefetch = action.payload;
-    },
     setImage: (state, action: PayloadAction<Image>) => {
       state.image = action.payload;
     },
@@ -67,12 +61,6 @@ const imageSlice = createSlice({
   },
 });
 
-export const {
-  setThumbsNeedRefetch,
-  setModalThumbsNeedRefetch,
-  setImage,
-  toggleImagesList,
-  clearCheckedImages,
-  clearImage,
-} = imageSlice.actions;
+export const { setImage, toggleImagesList, clearCheckedImages, clearImage } =
+  imageSlice.actions;
 export default imageSlice.reducer;

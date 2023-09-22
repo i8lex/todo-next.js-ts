@@ -1,38 +1,19 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import * as process from 'process';
 import { getSession, SignInResponse } from 'next-auth/react';
-import { BaseQueryApi } from '@reduxjs/toolkit/dist/query/react';
+import {
+  BaseQueryApi,
+  TagDescription,
+} from '@reduxjs/toolkit/dist/query/react';
+import { Event } from '@/types';
 
 type PathInfoResponse = {
   message: string;
 };
 
-// export type GetMyInfoResponse = {
-//   email: string;
-//   firstname: string;
-//   lastname: string;
-//   birthday: string;
-//   isBirthdayShowing: string;
-//   gender: string;
-//   isGenderShowing: string;
-//   company: string;
-//   isCompanyShowing: string;
-//   role: string;
-//   isRoleShowing: string;
-//   about: string;
-//   isAboutShowing: string;
-//   connects: string[];
-//   isConnectsShowing: string;
-//   events: string[];
-//   isEventsShowing: string;
-//   avatar: {
-//     name: string;
-//     buffer: string;
-//     mimeType: string;
-//   };
-// };
-
+export type UsersDTO = UserDTO[];
 export type UserDTO = {
+  _id?: string;
   name?: string;
   firstname?: string;
   lastname?: string;
@@ -45,6 +26,8 @@ export type UserDTO = {
   role?: string;
   isRoleShowing?: string;
   about?: string;
+  connects?: string[];
+  isConnect?: string;
   isAboutShowing?: string;
   isConnectsShowing?: string;
   isEventsShowing?: string;
@@ -71,17 +54,41 @@ const prepareHeaders = async (
 };
 export const userApi = createApi({
   reducerPath: 'userApi',
-  tagTypes: ['User', 'Error'],
+  tagTypes: ['User', 'Users'],
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.BASE_API_URL || process.env.NEXT_PUBLIC_BASE_API_URL,
     prepareHeaders,
   }),
   endpoints: (build) => ({
+    getUsers: build.query<UserDTO[], void>({
+      query: () => 'users',
+      providesTags: (
+        result: UserDTO[] | undefined,
+      ): (TagDescription<'Users'> | TagDescription<'User'>)[] =>
+        result
+          ? [
+              ...result.map(({ _id }) => ({ type: 'User' as const, _id })),
+              { type: 'Users' as const, id: 'LIST' },
+            ]
+          : [{ type: 'Users' as const, id: 'LIST' }],
+    }),
     pathInfo: build.mutation<PathInfoResponse, UserDTO>({
       query: (body) => ({
         url: '/user',
         method: 'POST',
         body,
+      }),
+    }),
+    addRequestConnect: build.mutation<PathInfoResponse, string>({
+      query: (id) => ({
+        url: `/user/connect/${id}`,
+        method: 'POST',
+      }),
+    }),
+    deleteRequestConnect: build.mutation<PathInfoResponse, string>({
+      query: (id) => ({
+        url: `/user/connect/${id}`,
+        method: 'DELETE',
       }),
     }),
     getMyInfo: build.query<UserDTO, void>({
@@ -93,5 +100,12 @@ export const userApi = createApi({
   }),
 });
 
-export const { usePathInfoMutation, useGetMyInfoQuery, useLazyGetMyInfoQuery } =
-  userApi;
+export const {
+  usePathInfoMutation,
+  useGetMyInfoQuery,
+  useLazyGetMyInfoQuery,
+  useGetUsersQuery,
+  useLazyGetUsersQuery,
+  useAddRequestConnectMutation,
+  useDeleteRequestConnectMutation,
+} = userApi;

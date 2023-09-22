@@ -22,6 +22,7 @@ export const GeneralHeader: FC<GeneralHeaderProps> = ({ currentPage }) => {
   const links: Array<{ id: Page; href: string; name: string }> = [
     { id: 'my', href: '/my', name: 'My page' },
     { id: 'events', href: '/events', name: 'Events' },
+    { id: 'users', href: '/users', name: 'Users' },
   ];
   return (
     <header className="flex justify-center bg-softGreen px-4 py-2 tablet:px-6">

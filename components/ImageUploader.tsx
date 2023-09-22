@@ -5,17 +5,12 @@ import {
   useLazyGetThumbsQuery,
 } from '@/redux/api/images.api';
 import { useLazyGetEventsQuery } from '@/redux/api/events.api';
-import {
-  setImage,
-  setModalThumbsNeedRefetch,
-} from '@/redux/slices/images.slice';
+import { setImage } from '@/redux/slices/images.slice';
 import AlertIcon from '@/public/IconsSet/exclamation.svg';
 
 import { useAppDispatch } from '@/redux/hooks';
-// import {Image, Images} from "@/types";
 import UploadIcon from '@/public/IconsSet/upload-cloud-02.svg';
 import { Spinner } from '@/components/ui/Spinner';
-import sharp from 'sharp';
 type ImageUploaderProps = {
   _id?: string;
   maxFiles?: number;
@@ -68,7 +63,7 @@ export const ImageUploader: FC<ImageUploaderProps> = ({
             dispatch(
               setImage({
                 filename: file.name,
-                file: reader.result?.toString() || '',
+                buffer: reader.result?.toString() || '',
                 mimetype: file.type,
               }),
             );

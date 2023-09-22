@@ -20,11 +20,14 @@ export const UserInfo: FC<UserInfoProps> = ({ userInfo, isSuccess }) => {
       setBirthday(getAge(userInfo?.birthday!));
     }
   }, [userInfo?.birthday]);
-
+  console.log(userInfo);
   return isSuccess ? (
     <div className="flex flex-col gap-4">
       <div className="flex laptop:hidden flex-col w-fit">
-        {userInfo?.avatar?.buffer ? (
+        <p className="text-dispS3 text-dark-100 font-bold ml-3">
+          {userInfo?.name}
+        </p>
+        {userInfo?.avatar ? (
           <div className="p-2 border border-stroke rounded-md bg-white shadow-sm shadow-dark-60">
             <Image
               width={400}
@@ -35,7 +38,13 @@ export const UserInfo: FC<UserInfoProps> = ({ userInfo, isSuccess }) => {
               className="w-[150px] h-[150px] aspect-square object-cover rounded-md"
             />
           </div>
-        ) : null}
+        ) : (
+          <div className="p-2 border border-stroke rounded-md bg-white shadow-sm shadow-dark-60">
+            <p className="flex items-center text-dark-100 font-semibold text-parM justify-center rounded-md border bg-yellow-10 border-stroke shadow-inner shadow-dark-60 w-[150px] h-[150px]">
+              No Image
+            </p>
+          </div>
+        )}
       </div>
       <div className="flex gap-4">
         <div className="hidden laptop:flex flex-col ">
@@ -50,17 +59,21 @@ export const UserInfo: FC<UserInfoProps> = ({ userInfo, isSuccess }) => {
                 className="w-[150px] h-[150px] aspect-square object-cover rounded-md"
               />
             </div>
-          ) : null}
+          ) : (
+            <div className="p-2 border border-stroke rounded-md bg-white shadow-sm shadow-dark-60">
+              <p className="flex items-center text-dark-100 font-semibold text-parM justify-center rounded-md border bg-yellow-10 border-stroke shadow-inner shadow-dark-60 w-[150px] h-[150px]">
+                No Image
+              </p>
+            </div>
+          )}
         </div>
         <div className="flex flex-col gap-1 w-full">
-          <p className="text-dispS1 text-dark-100 font-bold">
+          <p className="text-dispS1 hidden laptop:block text-dark-100 font-bold">
             {userInfo?.name}
           </p>
           <div className="text-dispS2 text-dark-100 flex flex-col">
             <p className="text-dispS2">{userInfo?.firstname}</p>
-            <p className="ml-6 self-end tablet:self-start">
-              {userInfo?.lastname}
-            </p>
+            <p className="ml-6 self-start">{userInfo?.lastname}</p>
           </div>
           <div className="flex justify-between w-full text-parS text-dark-80">
             <p>
@@ -92,7 +105,7 @@ export const UserInfo: FC<UserInfoProps> = ({ userInfo, isSuccess }) => {
               isAboutVisible
                 ? 'bg-yellow-20 shadow-sm shadow-dark-60 hover:bg-yellow-40'
                 : '',
-              'text-dark-80',
+              'text-dark-80 flex tablet:hidden',
             )}
             text={''}
             variant={'yellow'}
