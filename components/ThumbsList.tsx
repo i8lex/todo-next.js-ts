@@ -1,15 +1,9 @@
-import React, { FC, useEffect, useState } from 'react';
-import {
-  useGetThumbsQuery,
-  useLazyGetThumbsQuery,
-} from '@/redux/api/images.api';
+import React, { FC, useState } from 'react';
+import { useGetThumbsQuery } from '@/redux/api/images.api';
 import { ModalThumbsList } from './modal/ModalThumbsList';
 import { ImageUploader } from './ImageUploader';
-import {
-  setImage,
-  setModalThumbsNeedRefetch,
-} from '@/redux/slices/images.slice';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { setImage } from '@/redux/slices/images.slice';
+import { useAppDispatch } from '@/redux/hooks';
 import ImageIcon from '@/public/IconsSet/image-03.svg';
 type ThumbListProps = {
   _id: string;
@@ -19,42 +13,16 @@ type ThumbListProps = {
 export const ThumbsList: FC<ThumbListProps> = ({ _id, images }) => {
   const dispatch = useAppDispatch();
   const [isThumbsOpen, setIsThumbsOpen] = useState(false);
-  // const [isGetImages, setIsGetImages] = useState(false);
-  const {
-    data: thumbs = [],
-    refetch,
-    isLoading,
-  } = useGetThumbsQuery(_id, {
+  const { data: thumbs = [], isLoading } = useGetThumbsQuery(_id, {
     skip: !_id,
   });
-  const { modalThumbsNeedRefetch } = useAppSelector((state) => state.image);
-  // useEffect(() => {
-  //   if (isGetImages && images.length) {
-  //     refetch();
-  //   }
-  // }, [images, refetch]);
-  //
-  // useEffect(() => {
-  //   if (modalThumbsNeedRefetch) {
-  //     refetch();
-  //     setTimeout(() => {
-  //       dispatch(setModalThumbsNeedRefetch(false));
-  //     }, 100);
-  //   }
-  // }, [modalThumbsNeedRefetch, refetch]);
 
   if (isLoading) {
     return <h3>...LOADING...</h3>;
   }
-
   const modalThumbsHandler = () => {
     setIsThumbsOpen(!isThumbsOpen);
   };
-
-  // const handleFileSelect = (files) => {
-  //   console.log(files);
-  // };
-
   return (
     <>
       {!images.length ? (

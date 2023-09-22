@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 import { toggleEvent } from '@/redux/slices/events.slice';
 import { useAppDispatch } from '@/redux/hooks';
-import Checkcon from '@/public/IconsSet/check.svg';
+import CheckIcon from '@/public/IconsSet/check.svg';
 import clsx from 'clsx';
 import { toggleImagesList } from '@/redux/slices/images.slice';
 
@@ -19,10 +19,13 @@ const CheckBox: FC<CheckboxType> = ({ itemId, variant, className }) => {
       case 'image': {
         dispatch(toggleEvent({ itemId: itemId, isChecked }));
         setIsChecked(event.target.checked);
+        break;
       }
+
       case 'event': {
         dispatch(toggleImagesList({ imageId: itemId, isChecked }));
         setIsChecked(event.target.checked);
+        break;
       }
     }
   };
@@ -39,7 +42,7 @@ const CheckBox: FC<CheckboxType> = ({ itemId, variant, className }) => {
       )}
     >
       {isChecked ? (
-        <Checkcon className="w-[20px] h-[20px] text-dark-80" />
+        <CheckIcon className="w-[20px] h-[20px] text-dark-80" />
       ) : null}
 
       <input
