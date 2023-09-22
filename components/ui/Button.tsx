@@ -23,6 +23,9 @@ const button = cva(
         white: [
           'bg-white text-darkSkyBlue-80 hover:bg-mystic-20 focus-visible:bg-[#F9FAFB] border border-solid border-stroke shadow-md shadow-dark-60 hover:shadow-sm hover:shadow-dark-60 hover:bg-gray-10',
         ],
+        yellow: [
+          'bg-yellow-10 text-darkSkyBlue-80 hover:bg-mystic-20 focus-visible:bg-[#F9FAFB] focus-visible:rounded-md border border-solid border-stroke shadow-md shadow-dark-60 hover:shadow-sm hover:shadow-dark-60 hover:bg-yellow-20',
+        ],
         whitered: [
           'bg-white text-errorText hover:bg-mystic-20 focus-visible:bg-[#F9FAFB] border border-solid border-error-100',
         ],
