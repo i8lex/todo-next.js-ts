@@ -15,6 +15,7 @@ import { configureStore, createStore } from '@reduxjs/toolkit';
 import { createWrapper, HYDRATE } from 'next-redux-wrapper';
 
 import combinedReducer from '@/redux/rootReducer';
+import { userApi } from '@/redux/api/user.api';
 
 const reducer: typeof combinedReducer = (state, action) => {
   if (action.type === HYDRATE) {
@@ -35,7 +36,12 @@ export const makeStore = () =>
         serializableCheck: {
           ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
         },
-      }).concat(authApi.middleware, eventsApi.middleware, imageApi.middleware),
+      }).concat(
+        authApi.middleware,
+        eventsApi.middleware,
+        imageApi.middleware,
+        userApi.middleware,
+      ),
     ],
   });
 

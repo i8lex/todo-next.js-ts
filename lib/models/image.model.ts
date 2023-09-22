@@ -1,41 +1,49 @@
 import mongoose, { Schema } from 'mongoose';
 
-export type ThumbType = {
+export type ImageType = {
   user: mongoose.Types.ObjectId;
   event: mongoose.Types.ObjectId;
-  image: mongoose.Types.ObjectId;
+  chat: mongoose.Types.ObjectId;
+  thumb: mongoose.Types.ObjectId;
   filename: string;
   mimetype: string;
-  thumb: object;
+  size: number;
+  path: string;
+  image: object;
+  thumbMimetype: string;
   thumbSize: number;
   thumbPath: string;
   created_at: Date;
 };
 
-const thumbSchema: Schema = new Schema({
+const imageSchema: Schema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
     ref: 'User',
     required: true,
   },
+  chat: { type: mongoose.Schema.Types.ObjectId, ref: 'Chat' },
+
   event: {
     type: Schema.Types.ObjectId,
     ref: 'Event',
     required: true,
   },
-  image: {
+  thumb: {
     type: Schema.Types.ObjectId,
-    ref: 'Image',
+    ref: 'Thumb',
     unique: true,
-    required: true,
   },
   filename: String,
   mimetype: String,
-  thumb: Object,
+  size: Number,
+  path: String,
+  image: Object,
+  thumbMimetype: String,
   thumbSize: Number,
   thumbPath: String,
   created_at: { type: Date, default: Date.now },
 });
 
-export const Thumb =
-  mongoose.models.Thumb || mongoose.model<ThumbType>('Thumb', thumbSchema);
+export const Image =
+  mongoose.models.Image || mongoose.model<ImageType>('Image', imageSchema);

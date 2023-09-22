@@ -52,7 +52,7 @@ const authOptions: NextAuthOptions = {
   callbacks: {
     jwt({ token, user, account }) {
       if (account) {
-        token.name = user.name;
+        token.name = user.id;
       }
       if (user) {
         // @ts-ignore
@@ -60,9 +60,10 @@ const authOptions: NextAuthOptions = {
       }
       return token;
     },
-    async session({ session, token }) {
+    async session({ session, token, user }) {
       // @ts-ignore
       session.user.token = token.token;
+      console.log();
 
       return session;
     },

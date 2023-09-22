@@ -53,7 +53,7 @@ export const eventsApi = createApi({
       }),
       invalidatesTags: [{ type: 'Events', id: 'LIST' }],
     }),
-    pathEvent: build.mutation<void, { id: string; body: AddEvent }>({
+    pathEvent: build.mutation<void, { id: string; body: Event }>({
       query: ({ id, body }) => ({
         url: `events/${id}`,
         method: 'PUT',

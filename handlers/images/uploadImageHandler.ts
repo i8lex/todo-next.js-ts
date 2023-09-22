@@ -3,9 +3,9 @@ import * as jwt from 'jsonwebtoken';
 // import fs from "fs";
 // import path from "path";
 import sharp from 'sharp';
-import { Event, EventType } from '@/lib/models/eventModel';
-import { Image } from '@/lib/models/imageModel';
-import { Thumb } from '@/lib/models/thumbModel';
+import { Event, EventType } from '@/lib/models/event.model';
+import { Image } from '@/lib/models/image.model';
+import { Thumb } from '@/lib/models/thumb.model';
 import multer from 'multer';
 import { Request, Response } from 'express';
 

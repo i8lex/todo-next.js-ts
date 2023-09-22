@@ -1,7 +1,7 @@
 import * as jwt from 'jsonwebtoken';
-import { Image } from '@/lib/models/imageModel';
-import { Thumb } from '@/lib/models/thumbModel';
-import { Event } from '@/lib/models/eventModel';
+import { Image } from '@/lib/models/image.model';
+import { Thumb } from '@/lib/models/thumb.model';
+import { Event } from '@/lib/models/event.model';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export const deleteImagesHandler = async (

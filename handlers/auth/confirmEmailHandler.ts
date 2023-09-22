@@ -1,4 +1,4 @@
-import { User } from '@/lib/models/userModel';
+import { User } from '@/lib/models/user.model';
 
 import * as jwt from 'jsonwebtoken';
 import { NextApiRequest, NextApiResponse } from 'next';

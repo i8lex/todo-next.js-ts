@@ -3,7 +3,13 @@ import mongoose from 'mongoose';
 export type EventType = {
   title: string;
   description: string;
-  images: string[];
+  users: mongoose.Types.ObjectId[];
+  chat: mongoose.Types.ObjectId;
+  tasks: mongoose.Types.ObjectId[];
+  images: mongoose.Types.ObjectId[];
+  audios: mongoose.Types.ObjectId[];
+  videos: { name: string; link: string }[];
+  isPrivate: string;
   done: boolean;
   created: Date;
   deadline: Date;
@@ -11,6 +17,8 @@ export type EventType = {
 
 const EventSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  chat: { type: mongoose.Schema.Types.ObjectId, ref: 'Chat' },
+  users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   title: {
     type: String,
     required: [true, 'Name is required'],
@@ -21,7 +29,12 @@ const EventSchema = new mongoose.Schema({
     type: String,
     maxlength: [2000, 'Event description must be at max 2000 characters long'],
   },
-  images: { type: [String], default: [] },
+  images: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Image' }],
+  audios: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Audio' }],
+  videos: { type: [Object], default: [] },
+  isPrivate: {
+    type: String,
+  },
   done: {
     type: Boolean,
     default: false,

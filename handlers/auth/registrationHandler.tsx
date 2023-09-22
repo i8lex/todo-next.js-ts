@@ -1,7 +1,7 @@
 import pkg from 'bcryptjs';
 import { transporter } from '@/config';
 import * as jwt from 'jsonwebtoken';
-import { User } from '@/lib/models/userModel';
+import { User } from '@/lib/models/user.model';
 import { NextApiRequest, NextApiResponse } from 'next';
 import * as process from 'process';
 import { render } from '@react-email/render';
