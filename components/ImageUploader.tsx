@@ -8,25 +8,31 @@ import { useLazyGetEventsQuery } from '@/redux/api/events.api';
 import { setImage } from '@/redux/slices/images.slice';
 import AlertIcon from '@/public/IconsSet/exclamation.svg';
 
-import { useAppDispatch } from '@/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import UploadIcon from '@/public/IconsSet/upload-cloud-02.svg';
 import { Spinner } from '@/components/ui/Spinner';
+import Image from 'next/image';
+import { CropCoverImage } from '@/components/modal/CropImage';
+import imageCompression from 'browser-image-compression';
 type ImageUploaderProps = {
   _id?: string;
   maxFiles?: number;
   maxSize?: number;
+  imageFromDB?: string;
 };
 
 export const ImageUploader: FC<ImageUploaderProps> = ({
   _id,
-  maxSize = 6 * 1024 * 1024,
+  maxSize = 4 * 1024 * 1024,
   maxFiles = 4,
+  imageFromDB,
 }) => {
   const [isUploadSuccess, setIsUploadIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
   const [triggerGetThumbs] = useLazyGetThumbsQuery();
   const [triggerGetEvents] = useLazyGetEventsQuery();
   const dispatch = useAppDispatch();
+  const image = useAppSelector((state) => state.image.image);
   const { fileRejections, getRootProps, getInputProps } = useDropzone({
     accept: {
       'image/jpeg': ['.jpg', '.jpeg'],
@@ -54,12 +60,14 @@ export const ImageUploader: FC<ImageUploaderProps> = ({
           await addImage(body);
         }
       } else {
-        console.log(files);
         if (files && files.length > 0) {
           const reader = new FileReader();
           const file = files[0];
+          const compressedFile = await imageCompression(file, {
+            maxSizeMB: 1,
+          });
 
-          reader.addEventListener('load', () => {
+          await reader.addEventListener('load', () => {
             dispatch(
               setImage({
                 filename: file.name,
@@ -68,7 +76,7 @@ export const ImageUploader: FC<ImageUploaderProps> = ({
               }),
             );
           });
-          reader.readAsDataURL(file);
+          await reader.readAsDataURL(compressedFile);
         }
       }
     } catch (error) {
@@ -90,14 +98,16 @@ export const ImageUploader: FC<ImageUploaderProps> = ({
       setIsError(true);
       timer = setTimeout(() => {
         setIsError(false);
-      }, 5000);
+      }, 2000);
       return () => clearTimeout(timer);
     }
   }, [fileRejections.length]);
 
-  return (
+  return image.isCropMode ? (
+    <CropCoverImage />
+  ) : (
     <div
-      className="p-3 h-full flex flex-col items-center justify-center"
+      className="p-3 h-full flex flex-col items-center justify-center cursor-alias"
       {...getRootProps()}
     >
       <input {...getInputProps()} />
@@ -110,8 +120,8 @@ export const ImageUploader: FC<ImageUploaderProps> = ({
 
           <p className="text-dark-100 text-center font-semibold text-parM">
             {maxFiles > 1
-              ? 'You can upload 4 files, no larger than 6mb!'
-              : 'You can upload 1 files, no larger than 2mb!'}
+              ? 'You can upload 4 files, no larger than 4mb!'
+              : 'You can upload 1 files, no larger than 4mb!'}
           </p>
         </div>
       ) : isUploadSuccess ? (
@@ -122,14 +132,28 @@ export const ImageUploader: FC<ImageUploaderProps> = ({
         <Spinner className="fill-green-20 text-green-60" />
       ) : (
         <div className="flex flex-col items-center justify-center gap-3">
-          <p className="text-dark-100 text-center text-parM font-semibold">
-            {maxFiles > 1
-              ? 'You can drop images here'
-              : 'You can drop avatar here'}
-          </p>
-          <div className="flex items-center justify-center flex-col w-[70px] h-[70px] border border-stroke rounded-md hover:shadow-sm hover:shadow-dark-60 hover:bg-green-10 cursor-pointer shadow-md shadow-dark-60">
-            <UploadIcon className="w-[50px] h-[50px] text-dark-100" />
-          </div>
+          {!_id && (image.buffer || imageFromDB) ? (
+            <div className="p-2 border border-stroke rounded-md bg-yellow-10 shadow-inner shadow-dark-60">
+              <Image
+                src={image.buffer ? image?.buffer : imageFromDB!}
+                alt={'avatar'}
+                width={150}
+                height={150}
+                className="w-[150px] h-[150px] rounded-md shadow-sm shadow-dark-60"
+              />
+            </div>
+          ) : (
+            <>
+              <p className="text-dark-100 text-center text-parM font-semibold">
+                {maxFiles > 1
+                  ? 'You can drop images here'
+                  : 'You can drop avatar here'}
+              </p>
+              <div className="flex items-center justify-center flex-col w-[70px] h-[70px] border border-stroke rounded-md hover:shadow-sm hover:shadow-dark-60 hover:bg-green-10 cursor-pointer shadow-md shadow-dark-60">
+                <UploadIcon className="w-[50px] h-[50px] text-dark-100" />
+              </div>
+            </>
+          )}
         </div>
       )}
     </div>

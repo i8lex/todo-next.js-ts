@@ -20,7 +20,6 @@ export const UserInfo: FC<UserInfoProps> = ({ userInfo, isSuccess }) => {
       setBirthday(getAge(userInfo?.birthday!));
     }
   }, [userInfo?.birthday]);
-  console.log(userInfo);
   return isSuccess ? (
     <div className="flex flex-col gap-4">
       <div className="flex laptop:hidden flex-col w-fit">
@@ -34,7 +33,7 @@ export const UserInfo: FC<UserInfoProps> = ({ userInfo, isSuccess }) => {
               height={400}
               priority={true}
               src={userInfo?.avatar?.buffer}
-              alt={userInfo?.avatar?.name!}
+              alt={'avatar'}
               className="w-[150px] h-[150px] aspect-square object-cover rounded-md"
             />
           </div>
@@ -55,7 +54,7 @@ export const UserInfo: FC<UserInfoProps> = ({ userInfo, isSuccess }) => {
                 height={400}
                 priority={true}
                 src={userInfo?.avatar?.buffer}
-                alt={userInfo?.avatar?.name!}
+                alt={'avatar'}
                 className="w-[150px] h-[150px] aspect-square object-cover rounded-md"
               />
             </div>

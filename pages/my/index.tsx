@@ -1,6 +1,10 @@
 import { GeneralLayout } from '@/components/layouts/General/Layout';
 
-import { useGetMyInfoQuery } from '@/redux/api/user.api';
+import {
+  useGetConnectedUsersQuery,
+  useGetMyInfoQuery,
+  useLazyGetConnectedUsersQuery,
+} from '@/redux/api/user.api';
 import { Button } from '@/components/ui/Button';
 import React, { useState } from 'react';
 
@@ -10,6 +14,8 @@ import GlobeIcon from '@/public/IconsSet/globe-06.svg';
 import { UserSettings } from '@/components/user/UserSettings';
 import { UserInfo } from '@/components/user/UserInfo';
 import clsx from 'clsx';
+import { UserCard } from '@/components/user/UserCard';
+import { CropCoverImage } from '@/components/modal/CropImage';
 
 const MyPage = () => {
   // const router = useRouter();
@@ -17,7 +23,15 @@ const MyPage = () => {
   // if (!session.data) {
   //   return router.push('/login');
   // }
-  const { data: infoData, isSuccess, refetch } = useGetMyInfoQuery();
+  const { data: infoData, isSuccess: isInfoSuccess } = useGetMyInfoQuery(
+    undefined,
+    { refetchOnMountOrArgChange: true },
+  );
+  const { data: users, isSuccess: isUsersSuccess } = useGetConnectedUsersQuery(
+    undefined,
+    { refetchOnMountOrArgChange: true },
+  );
+  const [getConnectedUsersTrigger] = useLazyGetConnectedUsersQuery();
   const [isVisible, setIsVisible] = useState({
     settings: false,
     connections: true,
@@ -27,9 +41,9 @@ const MyPage = () => {
     <GeneralLayout currentPage={'my'}>
       <div className="flex flex-col tablet:flex-row gap-6">
         <div className="p-4 border border-stroke rounded-md bg-yellow-10 shadow-inner shadow-dark-60 flex-1">
-          <UserInfo userInfo={infoData} isSuccess={isSuccess} />
+          <UserInfo userInfo={infoData} isSuccess={isInfoSuccess} />
         </div>
-        <div className="flex laptop:min-w-[572px] tablet:min-w-[400px] flex-col gap-6 justify-between tablet:justify-start bg-softGreen h-full w-full shadow-inner shadow-dark-60 tablet:w-fit border border-stroke rounded-md p-4">
+        <div className="flex tablet:h-[89dvh] h-full overflow-y-auto tablet:overflow-y-scroll laptop:min-w-[572px] tablet:min-w-[400px] flex-col gap-6 justify-between tablet:justify-start bg-softGreen w-full shadow-inner shadow-dark-60 tablet:w-fit border border-stroke rounded-md p-4">
           <div className="flex gap-4 items-center  justify-between self-end w-fit tablet:w-full">
             <p className="tablet:text-dispS1 hidden tablet:block text-dark-100 font-bold">
               {isVisible.settings ? 'Settings and info' : ''}
@@ -103,8 +117,19 @@ const MyPage = () => {
             </div>
           </div>
           {isVisible.settings ? (
-            <UserSettings isSuccess={isSuccess} infoData={infoData} />
+            <>
+              <UserSettings isSuccess={isInfoSuccess} infoData={infoData} />
+            </>
           ) : null}
+          {isVisible.connections && isUsersSuccess
+            ? users?.map((user) => (
+                <UserCard
+                  lazyTrigger={getConnectedUsersTrigger}
+                  key={user._id}
+                  user={user}
+                />
+              ))
+            : null}
         </div>
       </div>
     </GeneralLayout>

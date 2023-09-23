@@ -12,7 +12,7 @@ import { Request, Response } from 'express';
 const upload = multer({
   // dest: "uploads/",
   limits: {
-    fileSize: 5 * 1024 * 1024,
+    fileSize: 4 * 1024 * 1024,
   },
 });
 
