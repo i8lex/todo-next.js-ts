@@ -17,7 +17,7 @@ export const ListBox: FC<ListBoxProps> = ({
   valuesArray,
   field,
   label,
-  defaultValue,
+  defaultValue = 'false',
   svg = (
     <ChevronUpDownIcon className="h-5 w-5 text-dark-80" aria-hidden="true" />
   ),

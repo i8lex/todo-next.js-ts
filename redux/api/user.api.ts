@@ -72,6 +72,18 @@ export const userApi = createApi({
             ]
           : [{ type: 'Users' as const, id: 'LIST' }],
     }),
+    getConnectedUsers: build.query<UserDTO[], void>({
+      query: () => 'users/connected',
+      providesTags: (
+        result: UserDTO[] | undefined,
+      ): (TagDescription<'Users'> | TagDescription<'User'>)[] =>
+        result
+          ? [
+              ...result.map(({ _id }) => ({ type: 'User' as const, _id })),
+              { type: 'Users' as const, id: 'LIST' },
+            ]
+          : [{ type: 'Users' as const, id: 'LIST' }],
+    }),
     pathInfo: build.mutation<PathInfoResponse, UserDTO>({
       query: (body) => ({
         url: '/user',
@@ -105,6 +117,8 @@ export const {
   useGetMyInfoQuery,
   useLazyGetMyInfoQuery,
   useGetUsersQuery,
+  useGetConnectedUsersQuery,
+  useLazyGetConnectedUsersQuery,
   useLazyGetUsersQuery,
   useAddRequestConnectMutation,
   useDeleteRequestConnectMutation,

@@ -1,12 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-type Image = {
+export type Image = {
   imageId?: string | null;
   mimetype?: string | null;
   thumb?: string | null;
   filename?: string | null;
   buffer?: string | null;
-  thumbBuffer?: string | null;
+  path?: string | null;
+  isCropMode?: boolean;
+  file?: File | null;
 };
 
 export type ImageStateType = {
@@ -22,8 +24,9 @@ const initialState: ImageStateType = {
     mimetype: null,
     thumb: null,
     filename: null,
-    thumbBuffer: null,
     buffer: null,
+    isCropMode: false,
+    file: null,
   },
   thumbsNeedRefetch: false,
   modalThumbsNeedRefetch: false,

@@ -18,6 +18,7 @@ import ImageIcon from '@/public/IconsSet/image-user.svg';
 import GlobeIcon from '@/public/IconsSet/globe-06.svg';
 import ModemIcon from '@/public/IconsSet/modem-02.svg';
 import { Spinner } from '@/components/ui/Spinner';
+import { onSubmitUpdateUserFormUtil } from '@/utils/onSubmitUpdateUserFormUtil';
 
 type FormRequiredFields = {
   firstname?: string;
@@ -34,6 +35,7 @@ type FormRequiredFields = {
   isAboutShowing?: string;
   isEventsShowing?: string;
   isConnectsShowing?: string;
+  image?: File;
   avatar?: {
     name: string;
     buffer: string;
@@ -112,67 +114,16 @@ export const UserSettings: FC<UserSettingsProps> = ({
 
   //@ts-ignore
   const avatar = useSelector((state) => state.image.image);
-  const onSubmit = async (values: UserDTO) => {
-    try {
-      const data: UserDTO = {};
-      console.log('firstname', values.firstname !== infoData?.firstname);
-      if (values.firstname !== infoData?.firstname) {
-        data.firstname = values.firstname;
-      }
-      if (values.lastname !== infoData?.lastname) {
-        data.lastname = values.lastname;
-      }
-      if (values.birthday !== infoData?.birthday) {
-        data.birthday = values.birthday;
-      }
-      if (values.isBirthdayShowing !== infoData?.isBirthdayShowing) {
-        data.isBirthdayShowing = values.isBirthdayShowing;
-      }
-      if (values.gender !== infoData?.gender) {
-        data.gender = values.gender;
-      }
-      if (values.isGenderShowing !== infoData?.isGenderShowing) {
-        data.isGenderShowing = values.isGenderShowing;
-      }
-      if (values.company !== infoData?.company) {
-        data.company = values.company;
-      }
-      if (values.isCompanyShowing !== infoData?.isCompanyShowing) {
-        data.isCompanyShowing = values.isCompanyShowing;
-      }
-      if (values.role !== infoData?.role) {
-        data.role = values.role;
-      }
-      if (values.isRoleShowing !== infoData?.isRoleShowing) {
-        data.isRoleShowing = values.isRoleShowing;
-      }
-      if (values.about !== infoData?.about) {
-        data.about = values.about;
-      }
-      if (values.isAboutShowing !== infoData?.isAboutShowing) {
-        data.isAboutShowing = values.isAboutShowing;
-      }
-      if (values.isConnectsShowing !== infoData?.isConnectsShowing) {
-        data.isConnectsShowing = values.isConnectsShowing;
-      }
-      if (values.isEventsShowing !== infoData?.isEventsShowing) {
-        data.isEventsShowing = values.isEventsShowing;
-      }
-      if (avatar.mimetype && avatar.buffer !== values.avatar?.buffer) {
-        console.log('test if');
-        data.avatar = {
-          name: avatar.filename,
-          buffer: avatar.buffer,
 
-          mimeType: avatar.mimetype,
-        };
-      }
-      if (!!Object.keys(data).length) {
-        await pathInfo(data);
+  const onSubmit = async (values: UserDTO) => {
+    if (infoData) {
+      const data = onSubmitUpdateUserFormUtil(values, infoData, avatar);
+
+      if (data.isNoEmpty) {
+        // @ts-ignore
+        await pathInfo(data.formData!);
         await getMyInfoTrigger();
       }
-    } catch (error) {
-      console.log(error);
     }
   };
   const valuesForListBox = [
@@ -194,7 +145,11 @@ export const UserSettings: FC<UserSettingsProps> = ({
     >
       <div>
         <div className="flex flex-col gap-4 tablet:gap-6">
-          <ImageUploader maxFiles={1} maxSize={2 * 1024 * 1024} />
+          <ImageUploader
+            imageFromDB={infoData?.avatar?.buffer}
+            maxFiles={1}
+            maxSize={5 * 1024 * 1024}
+          />
           <div className="flex items-center gap-6">
             <Input
               label={'Enter firstname'}
@@ -254,13 +209,14 @@ export const UserSettings: FC<UserSettingsProps> = ({
             <Controller
               name={`isBirthdayShowing`}
               control={control}
+              defaultValue={infoData?.isBirthdayShowing || 'false'}
               render={({ field }) => {
                 return (
                   <ListBox
                     label={'Show birthday'}
                     field={field}
                     svg={<DateIcon className={'w-5 h-5 text-dark-80'} />}
-                    defaultValue={infoData?.isBirthdayShowing}
+                    defaultValue={infoData?.isBirthdayShowing || 'false'}
                     valuesArray={valuesForListBox}
                   />
                 );
@@ -290,6 +246,7 @@ export const UserSettings: FC<UserSettingsProps> = ({
             <Controller
               name={`isCompanyShowing`}
               control={control}
+              defaultValue={infoData?.isCompanyShowing}
               render={({ field }) => {
                 return (
                   <ListBox
@@ -326,13 +283,14 @@ export const UserSettings: FC<UserSettingsProps> = ({
             <Controller
               name={`isRoleShowing`}
               control={control}
+              defaultValue={infoData?.isCompanyShowing || 'false'}
               render={({ field }) => {
                 return (
                   <ListBox
                     label={'Show role'}
                     svg={<PuzzleIcon className={'w-5 h-5 text-dark-80'} />}
                     field={field}
-                    defaultValue={infoData?.isCompanyShowing}
+                    defaultValue={infoData?.isCompanyShowing || 'false'}
                     valuesArray={valuesForListBox}
                   />
                 );
@@ -366,6 +324,7 @@ export const UserSettings: FC<UserSettingsProps> = ({
               <Controller
                 name={`isAboutShowing`}
                 control={control}
+                defaultValue={infoData?.isCompanyShowing || 'false'}
                 render={({ field }) => {
                   return (
                     <ListBox
@@ -375,7 +334,7 @@ export const UserSettings: FC<UserSettingsProps> = ({
                       }
                       className={'self-start'}
                       field={field}
-                      defaultValue={infoData?.isCompanyShowing}
+                      defaultValue={infoData?.isCompanyShowing || 'false'}
                       valuesArray={valuesForListBox}
                     />
                   );
@@ -385,12 +344,13 @@ export const UserSettings: FC<UserSettingsProps> = ({
                 <Controller
                   name={`gender`}
                   control={control}
+                  defaultValue={infoData?.gender || 'None'}
                   render={({ field }) => {
                     return (
                       <ListBox
                         label={'Your gender'}
                         field={field}
-                        defaultValue={infoData?.gender}
+                        defaultValue={infoData?.gender || 'None'}
                         valuesArray={valuesForGenderListBox}
                       />
                     );
@@ -400,13 +360,14 @@ export const UserSettings: FC<UserSettingsProps> = ({
                 <Controller
                   name={`isGenderShowing`}
                   control={control}
+                  defaultValue={infoData?.isGenderShowing || 'false'}
                   render={({ field }) => {
                     return (
                       <ListBox
                         label={'Show gender'}
                         svg={<ImageIcon className={'w-5 h-5 text-dark-80'} />}
                         field={field}
-                        defaultValue={infoData?.isGenderShowing}
+                        defaultValue={infoData?.isGenderShowing || 'false'}
                         valuesArray={valuesForListBox}
                       />
                     );
@@ -417,13 +378,14 @@ export const UserSettings: FC<UserSettingsProps> = ({
                 <Controller
                   name={`isEventsShowing`}
                   control={control}
+                  defaultValue={infoData?.isEventsShowing || 'false'}
                   render={({ field }) => {
                     return (
                       <ListBox
                         label={'Show events'}
                         svg={<GlobeIcon className={'w-5 h-5 text-dark-80'} />}
                         field={field}
-                        defaultValue={infoData?.isEventsShowing}
+                        defaultValue={infoData?.isEventsShowing || 'false'}
                         valuesArray={valuesForListBox}
                       />
                     );
@@ -432,13 +394,14 @@ export const UserSettings: FC<UserSettingsProps> = ({
                 <Controller
                   name={`isConnectsShowing`}
                   control={control}
+                  defaultValue={infoData?.isConnectsShowing || 'false'}
                   render={({ field }) => {
                     return (
                       <ListBox
                         label={'Show connects'}
                         svg={<ModemIcon className={'w-5 h-5 text-dark-80'} />}
                         field={field}
-                        defaultValue={infoData?.isConnectsShowing}
+                        defaultValue={infoData?.isConnectsShowing || 'false'}
                         valuesArray={valuesForListBox}
                       />
                     );

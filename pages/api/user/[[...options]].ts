@@ -4,6 +4,12 @@ import { authMiddleware } from '@/middlewares/authMiddleware';
 import { updateUserHandler } from '@/handlers/user/updateUserHandler';
 import { getUserHandler } from '@/handlers/user/getUserHandler';
 import { addConnectHandler } from '@/handlers/user/addConnectHandler';
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
 export default authMiddleware(async function userHandlers(
   req: NextApiRequest,
   res: NextApiResponse,
@@ -24,6 +30,7 @@ export default authMiddleware(async function userHandlers(
 
     case 'POST':
       try {
+        // @ts-ignore
         await updateUserHandler(req, res);
       } catch (error) {
         console.log(error);
