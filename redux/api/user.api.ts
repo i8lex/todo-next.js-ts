@@ -86,26 +86,26 @@ export const userApi = createApi({
     }),
     pathInfo: build.mutation<PathInfoResponse, UserDTO>({
       query: (body) => ({
-        url: '/user',
-        method: 'POST',
+        url: '/users',
+        method: 'PUT',
         body,
       }),
     }),
     addRequestConnect: build.mutation<PathInfoResponse, string>({
       query: (id) => ({
-        url: `/user/connect/${id}`,
+        url: `/users/add/${id}`,
         method: 'POST',
       }),
     }),
     deleteRequestConnect: build.mutation<PathInfoResponse, string>({
       query: (id) => ({
-        url: `/user/connect/${id}`,
+        url: `/users/untouch/${id}`,
         method: 'DELETE',
       }),
     }),
     getMyInfo: build.query<UserDTO, void>({
       query: () => ({
-        url: '/user',
+        url: '/users/user',
         method: 'GET',
       }),
     }),

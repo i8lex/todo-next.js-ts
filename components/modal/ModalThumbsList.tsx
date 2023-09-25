@@ -49,7 +49,7 @@ export const ModalThumbsList: FC<ModalThumbsListProps> = ({
 
   const dispatch = useAppDispatch();
   const { imageId } = useAppSelector((state) => state.image.image);
-  const { checkedImages } = useAppSelector((state) => state.image);
+  const checkedImages = useAppSelector((state) => state.image.checkedImages);
   const [pathEvent] = usePathEventMutation();
   const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
   const buttonModifyHandle = () => {
@@ -57,16 +57,16 @@ export const ModalThumbsList: FC<ModalThumbsListProps> = ({
     setIsButtonModifyActive(!isButtonModifyActive);
   };
 
-  const deleteImagesFromEventFieldHandle = async (
-    checkedImages: string[],
-    imagesIds: string[],
-    eventId: string,
-  ) => {
-    const filteredImages = imagesIds.filter(
-      (item) => !checkedImages.includes(item),
-    );
-    await pathEvent({ id: eventId, body: filteredImages });
-  };
+  // const deleteImagesFromEventFieldHandle = async (
+  //   checkedImages: string[],
+  //   imagesIds: string[],
+  //   eventId: string,
+  // ) => {
+  //   const filteredImages = imagesIds.filter(
+  //     (item) => !checkedImages.includes(item),
+  //   );
+  //   await pathEvent({ id: eventId, body: filteredImages });
+  // };
 
   return (
     <>
@@ -257,12 +257,13 @@ export const ModalThumbsList: FC<ModalThumbsListProps> = ({
                     showDeleteConfirmModal={showDeleteConfirmModal}
                     setShowDeleteConfirmModal={setShowDeleteConfirmModal}
                     Action={async () => {
+                      console.log(checkedImages);
                       await deleteImage(checkedImages);
-                      await deleteImagesFromEventFieldHandle(
-                        checkedImages,
-                        images,
-                        taskId,
-                      );
+                      // await deleteImagesFromEventFieldHandle(
+                      //   checkedImages,
+                      //   images,
+                      //   taskId,
+                      // );
                       await getThumbsTrigger(taskId, false);
                       await getEventsTrigger(undefined, false);
                       dispatch(clearCheckedImages());

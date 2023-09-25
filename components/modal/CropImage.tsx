@@ -122,22 +122,22 @@ export const CropCoverImage: FC<CropCoverImageModalProps> = ({}) => {
               return;
             }
 
-            // await previewCanvasRef.current?.toBlob(async (newBlob) => {
-            //   if (newBlob) {
-            //     const reader = new FileReader();
-            //
-            //     reader.addEventListener('load', () => {
-            //       dispatch(
-            //         setImage({
-            //           ...image,
-            //           buffer: reader.result?.toString() || '',
-            //           isCropMode: false,
-            //         }),
-            //       );
-            //     });
-            //     reader.readAsDataURL(newBlob);
-            //   }
-            // });
+            await previewCanvasRef.current?.toBlob(async (newBlob) => {
+              if (newBlob) {
+                const reader = new FileReader();
+
+                reader.addEventListener('load', () => {
+                  dispatch(
+                    setImage({
+                      ...image,
+                      buffer: reader.result?.toString() || '',
+                      isCropMode: false,
+                    }),
+                  );
+                });
+                reader.readAsDataURL(newBlob);
+              }
+            });
           }}
         />
       </div>

@@ -32,13 +32,13 @@ export const imageApi = createApi({
 
   endpoints: (build) => ({
     getImage: build.query({
-      query: (id: string) => ({ url: `image?id=${id}` }),
+      query: (id: string) => ({ url: `images/${id}` }),
       providesTags: (result: Image | undefined, error, id: string) => [
         { type: 'Image', id },
       ],
     }),
     getThumbs: build.query({
-      query: (id: string) => `image/${id}`,
+      query: (id: string) => `images/thumbs/${id}`,
       providesTags: (
         result: Image[] | undefined,
       ): (TagDescription<'Images'> | TagDescription<'Image'>)[] =>
@@ -52,19 +52,20 @@ export const imageApi = createApi({
             ]
           : [{ type: 'Image' as const, id: 'LIST' }],
     }),
-    addImage: build.mutation<void, Image[]>({
-      query: (body) => ({
-        url: 'image',
+    addImage: build.mutation<void, FormData>({
+      query: (formData: FormData) => ({
+        url: `images/${formData.get('event')}`,
         method: 'POST',
-        body,
+        body: formData,
       }),
       invalidatesTags: [{ type: 'Image', id: 'LIST' }],
     }),
 
     deleteImage: build.mutation({
-      query: (id) => ({
-        url: `image/${id}`,
-        method: 'DELETE',
+      query: (body) => ({
+        url: `images/delete`,
+        method: 'PUT',
+        body,
       }),
       invalidatesTags: [{ type: 'Image', id: 'LIST' }],
     }),
