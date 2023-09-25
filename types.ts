@@ -44,7 +44,7 @@ export type Event = {
 export type AddEvent = {
   title?: string;
   description?: string;
-  deadline?: string;
+  deadline?: string | Date;
   images?: string[];
 };
 export type EditModal = {

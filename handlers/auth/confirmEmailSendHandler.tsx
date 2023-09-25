@@ -1,27 +1,19 @@
 import { User } from '@/lib/models/user.model';
 import { transporter } from '@/config';
-import * as jwt from 'jsonwebtoken';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { render } from '@react-email/render';
 import { ConfirmEmail } from '@/components/ConfirmEmail';
 
-export const repeatConfirmEmailHandler = async (
+export const confirmEmailSendHandler = async (
   request: NextApiRequest,
   reply: NextApiResponse,
 ) => {
-  // @ts-ignore
-  const { sign } = jwt.default;
-  const { email } = request.body;
-
-  const token = await sign({ email }, process.env.SECRET_WORD, {
-    expiresIn: '15m',
-  });
+  const { email, token, name } = request.body;
 
   try {
-    const user = await User.findOne({ email });
     const url = `${process.env.BASE_URL}/email/?confirm=${token}`;
 
-    const emailHtml = render(<ConfirmEmail url={url} name={user.name} />);
+    const emailHtml = render(<ConfirmEmail url={url} name={name} />);
     await transporter.sendMail({
       from: 'noreply-authtodomail@gmail.com',
       to: email,

@@ -21,7 +21,6 @@ import {
 } from '@/redux/api/images.api';
 import { useLazyGetEventsQuery } from '@/redux/api/events.api';
 import { DeleteConfirmModal } from '../modal/DeleteConfirmModal';
-import { usePathEventMutation } from '@/redux/api/events.api';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Image as ImageTypes } from '@/types';
 import { Dialog, Transition } from '@headlessui/react';
@@ -32,7 +31,6 @@ type ModalThumbsListProps = {
   isThumbsOpen: boolean;
   modalThumbsHandler: any;
   _id: string;
-  images: string[];
 };
 
 export const ModalThumbsList: FC<ModalThumbsListProps> = ({
@@ -40,7 +38,6 @@ export const ModalThumbsList: FC<ModalThumbsListProps> = ({
   isThumbsOpen,
   modalThumbsHandler,
   _id: taskId,
-  images,
 }) => {
   const [deleteImage] = useDeleteImageMutation();
   const [getThumbsTrigger] = useLazyGetThumbsQuery();
@@ -50,23 +47,11 @@ export const ModalThumbsList: FC<ModalThumbsListProps> = ({
   const dispatch = useAppDispatch();
   const { imageId } = useAppSelector((state) => state.image.image);
   const checkedImages = useAppSelector((state) => state.image.checkedImages);
-  const [pathEvent] = usePathEventMutation();
   const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
   const buttonModifyHandle = () => {
     isButtonModifyActive && dispatch(clearCheckedImages());
     setIsButtonModifyActive(!isButtonModifyActive);
   };
-
-  // const deleteImagesFromEventFieldHandle = async (
-  //   checkedImages: string[],
-  //   imagesIds: string[],
-  //   eventId: string,
-  // ) => {
-  //   const filteredImages = imagesIds.filter(
-  //     (item) => !checkedImages.includes(item),
-  //   );
-  //   await pathEvent({ id: eventId, body: filteredImages });
-  // };
 
   return (
     <>
@@ -155,7 +140,6 @@ export const ModalThumbsList: FC<ModalThumbsListProps> = ({
                             );
                             modalThumbsHandler();
                             dispatch(clearCheckedImages());
-                            // setIsGetImages(false);
                             setIsButtonModifyActive(false);
                           }}
                         >
@@ -257,13 +241,7 @@ export const ModalThumbsList: FC<ModalThumbsListProps> = ({
                     showDeleteConfirmModal={showDeleteConfirmModal}
                     setShowDeleteConfirmModal={setShowDeleteConfirmModal}
                     Action={async () => {
-                      console.log(checkedImages);
                       await deleteImage(checkedImages);
-                      // await deleteImagesFromEventFieldHandle(
-                      //   checkedImages,
-                      //   images,
-                      //   taskId,
-                      // );
                       await getThumbsTrigger(taskId, false);
                       await getEventsTrigger(undefined, false);
                       dispatch(clearCheckedImages());

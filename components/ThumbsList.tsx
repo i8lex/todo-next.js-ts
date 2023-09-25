@@ -77,11 +77,9 @@ export const ThumbsList: FC<ThumbListProps> = ({ _id, images }) => {
         </div>
       )}
       <ModalThumbsList
-        images={images}
         thumbs={thumbs}
         isThumbsOpen={isThumbsOpen}
         modalThumbsHandler={modalThumbsHandler}
-        // setIsGetImages={setIsGetImages}
         _id={_id}
       />
     </>

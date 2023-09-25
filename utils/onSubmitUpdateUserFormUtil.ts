@@ -1,5 +1,4 @@
 import { UserDTO } from '@/redux/api/user.api';
-import { Image } from '@/redux/slices/images.slice';
 
 export const onSubmitUpdateUserFormUtil = (
   values: UserDTO,
@@ -65,7 +64,6 @@ export const onSubmitUpdateUserFormUtil = (
     formData.append('isEventsShowing', values?.isEventsShowing!);
   }
   if (avatar.mimetype && avatar.buffer !== values.avatar?.buffer) {
-    console.log('test if');
     data.avatar = {
       name: avatar.filename,
       buffer: avatar.buffer,
@@ -97,7 +95,6 @@ export const onSubmitUpdateUserFormUtil = (
     formData.has('isConnectsShowing') ||
     formData.has('isEventsShowing')
   ) {
-    console.log('before', formData.get('image'));
     return {
       isNoEmpty: true,
       formData,
