@@ -15,7 +15,7 @@ import { UserSettings } from '@/components/user/UserSettings';
 import { UserInfo } from '@/components/user/UserInfo';
 import clsx from 'clsx';
 import { UserCard } from '@/components/user/UserCard';
-import { CropCoverImage } from '@/components/modal/CropImage';
+import { Chat } from '@/components/Chat';
 
 const MyPage = () => {
   // const router = useRouter();
@@ -130,6 +130,7 @@ const MyPage = () => {
                 />
               ))
             : null}
+          {isVisible.chats ? <Chat /> : null}
         </div>
       </div>
     </GeneralLayout>

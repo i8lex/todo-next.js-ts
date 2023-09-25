@@ -16,13 +16,13 @@ const CheckBox: FC<CheckboxType> = ({ itemId, variant, className }) => {
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const isChecked = event.target.checked;
     switch (variant) {
-      case 'image': {
+      case 'event': {
         dispatch(toggleEvent({ itemId: itemId, isChecked }));
         setIsChecked(event.target.checked);
         break;
       }
 
-      case 'event': {
+      case 'image': {
         dispatch(toggleImagesList({ imageId: itemId, isChecked }));
         setIsChecked(event.target.checked);
         break;

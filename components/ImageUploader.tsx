@@ -50,14 +50,13 @@ export const ImageUploader: FC<ImageUploaderProps> = ({
   const uploadImages = async (files: File[]) => {
     try {
       if (maxFiles > 1 && _id) {
-        const body: FormData = new FormData();
+        const formData: FormData = new FormData();
         files.forEach((file) => {
-          body.append('images', file);
+          formData.append('images', file);
         });
-        body.append('event', _id);
+        formData.append('event', _id);
         if (!fileRejections.length && files.length) {
-          // @ts-ignore
-          await addImage(body);
+          await addImage(formData);
         }
       } else {
         if (files && files.length > 0) {
