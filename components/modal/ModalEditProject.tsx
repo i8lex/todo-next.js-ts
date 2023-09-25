@@ -51,7 +51,6 @@ export const ModalEditProject: FC<ModalEditProjectProps> = ({
     console.warn(errors);
   };
   const onSubmit = async (values: FormRequiredFields) => {
-    console.log(id);
     await pathEvent({ id: id, body: values });
     reset();
     handleClose();

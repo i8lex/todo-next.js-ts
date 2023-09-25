@@ -1,17 +1,12 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import * as process from 'process';
-import { getSession, SignInResponse } from 'next-auth/react';
-import {
-  BaseQueryApi,
-  TagDescription,
-} from '@reduxjs/toolkit/dist/query/react';
-import { Event } from '@/types';
+import { getSession } from 'next-auth/react';
+import { TagDescription } from '@reduxjs/toolkit/dist/query/react';
 
 type PathInfoResponse = {
   message: string;
 };
 
-export type UsersDTO = UserDTO[];
 export type UserDTO = {
   _id?: string;
   name?: string;
@@ -37,12 +32,7 @@ export type UserDTO = {
     mimeType: string;
   };
 };
-const prepareHeaders = async (
-  headers: Headers,
-  {
-    getState,
-  }: Pick<BaseQueryApi, 'getState' | 'extra' | 'endpoint' | 'type' | 'forced'>,
-) => {
+const prepareHeaders = async (headers: Headers) => {
   // const token = (getState() as AuthState).auth.token;
   const session = await getSession();
   // @ts-ignore

@@ -51,13 +51,13 @@ export const authApi = createApi({
     }),
     emailRepeat: build.mutation<void, EmailRepeatBody>({
       query: (body) => ({
-        url: '/email',
+        url: '/auth/confirm/repeat',
         method: 'POST',
         body,
       }),
     }),
     emailConfirm: build.query<{ message: string; email: string }, string>({
-      query: (confirmId) => `/email/?confirm=${confirmId}`,
+      query: (confirmId) => `/auth/confirm/${confirmId}`,
     }),
   }),
 });

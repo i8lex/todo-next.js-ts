@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import db from '../../../lib/db';
-import { loginHandler } from '@/handlers/auth/loginHandler';
+import { confirmEmailSendHandler } from '@/handlers/auth/confirmEmailSendHandler';
 
 export default async function authHandlers(
   req: NextApiRequest,
@@ -16,7 +16,7 @@ export default async function authHandlers(
 
     case 'POST':
       try {
-        await loginHandler(req, res);
+        await confirmEmailSendHandler(req, res);
       } catch (error) {
         res.status(500).json({ message: 'Internal server error' });
       }

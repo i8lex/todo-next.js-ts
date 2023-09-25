@@ -3,12 +3,11 @@ import { GeneralLayout } from '@/components/layouts/General/Layout';
 import { UserCard } from '@/components/user/UserCard';
 
 const UsersPage = () => {
-  const { data: users, isSuccess } = useGetUsersQuery(undefined, {
+  const { data: users } = useGetUsersQuery(undefined, {
     refetchOnMountOrArgChange: true,
   });
   const [getUsersTrigger] = useLazyGetUsersQuery();
 
-  console.log(users);
   return (
     <>
       <GeneralLayout currentPage={'users'}>
