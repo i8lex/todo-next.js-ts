@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { useGetChatQuery } from '@/redux/api/chats.api';
-import { useSession } from 'next-auth/react';
 import clsx from 'clsx';
 import useSocket from '@/utils/socket.connection';
 import {

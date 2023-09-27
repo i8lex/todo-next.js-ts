@@ -3,7 +3,6 @@ import {
   FLUSH,
   PAUSE,
   PERSIST,
-  persistStore,
   PURGE,
   REGISTER,
   REHYDRATE,
@@ -11,7 +10,7 @@ import {
 import { eventsApi } from './api/events.api';
 import { imageApi } from './api/images.api';
 
-import { configureStore, createStore } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 import { createWrapper, HYDRATE } from 'next-redux-wrapper';
 
 import combinedReducer from '@/redux/rootReducer';

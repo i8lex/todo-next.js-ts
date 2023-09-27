@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import * as process from 'process';
-import { getSession, SignInResponse } from 'next-auth/react';
-import { Chat, Event, Message } from '@/types';
+import { getSession } from 'next-auth/react';
+import { Chat, Message } from '@/types';
 import { TagDescription } from '@reduxjs/toolkit/dist/query/react';
 
 export type ChatDTO = {

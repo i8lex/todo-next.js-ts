@@ -14,7 +14,6 @@ import MessagePlusIcon from '@/public/IconsSet/message-plus-square.svg';
 import { addChatId } from '@/redux/slices/chat.slice';
 import { useAppDispatch } from '@/redux/hooks';
 import { useCreateChatMutation } from '@/redux/api/chats.api';
-import { Chat } from '@/types';
 
 type UserCardProps = {
   user: UserDTO;
@@ -173,11 +172,15 @@ export const UserCard: FC<UserCardProps> = ({
                   connections: false,
                   chats: true,
                 });
-                const response = await createChat({ users: [user?._id!] });
+                const response = await createChat({
+                  users: [user?._id!],
+                  messages: [],
+                });
                 if ('data' in response) {
-                  console.log(response.data);
-                  const { user, users, _id, messages } = response.data;
-                  dispatch(addChatId(_id));
+                  const { _id } = response.data;
+                  if (_id) {
+                    dispatch(addChatId(_id));
+                  }
 
                   await setIsVisible({
                     settings: false,
