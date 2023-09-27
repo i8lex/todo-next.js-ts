@@ -144,7 +144,7 @@ export const UserSettings: FC<UserSettingsProps> = ({
       className="flex flex-col gap-6 justify-between tablet:justify-start "
     >
       <div>
-        <div className="flex flex-col gap-4 tablet:gap-6">
+        <div className="flex flex-col gap-8 ">
           <ImageUploader
             imageFromDB={infoData?.avatar?.buffer}
             maxFiles={1}

@@ -62,3 +62,20 @@ export type DeleteConfirmModalTypes = {
   title: string;
   handleConfirm: () => void;
 };
+
+export type Message = {
+  _id: string;
+  user: string;
+  username: string;
+  message: string;
+  created_at: string;
+  readBy: string[];
+  // __v: number;
+};
+
+export type Chat = {
+  _id?: string;
+  user: string;
+  users: string[];
+  messages: Message[];
+};

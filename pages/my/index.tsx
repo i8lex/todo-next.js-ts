@@ -6,7 +6,7 @@ import {
   useLazyGetConnectedUsersQuery,
 } from '@/redux/api/user.api';
 import { Button } from '@/components/ui/Button';
-import React, { useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 
 import ChatIcon from '@/public/IconsSet/message-chat-square.svg';
 import SettingsIcon from '@/public/IconsSet/users-edit.svg';
@@ -16,13 +16,56 @@ import { UserInfo } from '@/components/user/UserInfo';
 import clsx from 'clsx';
 import { UserCard } from '@/components/user/UserCard';
 import { Chat } from '@/components/Chat';
+import { getSession, SignInResponse } from 'next-auth/react';
+import { GetServerSidePropsContext } from 'next';
+import { Session } from 'next-auth';
+import { useAppDispatch } from '@/redux/hooks';
+import { setSession } from '@/redux/slices/auth.slice';
 
-const MyPage = () => {
-  // const router = useRouter();
-  // const session = useSession();
-  // if (!session.data) {
-  //   return router.push('/login');
-  // }
+type MyPageProps = {
+  session: SignInResponse & {
+    user: {
+      token: string;
+      name: string;
+      _id: string;
+      email: string;
+      isConfirmed: boolean;
+    };
+  };
+};
+type GetServerSideProps = Promise<
+  | { redirect: { permanent: boolean; destination: string } }
+  | {
+      props: { session: Session };
+    }
+>;
+
+export const getServerSideProps: (
+  ctx: GetServerSidePropsContext,
+) => GetServerSideProps = async (ctx) => {
+  const session = await getSession(ctx);
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: {
+      session,
+    },
+  };
+};
+
+const MyPage: FC<MyPageProps> = ({ session }) => {
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    if (session && session.user) {
+      dispatch(setSession(session.user));
+    }
+  }, [dispatch, session]);
   const { data: infoData, isSuccess: isInfoSuccess } = useGetMyInfoQuery(
     undefined,
     { refetchOnMountOrArgChange: true },
@@ -127,6 +170,7 @@ const MyPage = () => {
                   lazyTrigger={getConnectedUsersTrigger}
                   key={user._id}
                   user={user}
+                  setIsVisible={setIsVisible}
                 />
               ))
             : null}

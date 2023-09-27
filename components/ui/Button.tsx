@@ -82,7 +82,7 @@ const button = cva(
 );
 
 type BaseButtonProps = VariantProps<typeof button> & {
-  text: React.ReactNode;
+  text?: React.ReactNode;
   className?: string;
   isLoading?: boolean;
   href?: string;
@@ -141,9 +141,11 @@ export const Button: React.FC<AsButtonProps | AsLinkProps> = (props) => {
     <>
       {isLoading ? <Spinner className="absolute" /> : null}
       {!isLoading && svg && iconPosition === 'start' ? svg : null}
-      <span className={clsx('whitespace-nowrap', isLoading && 'invisible')}>
-        {text}
-      </span>
+      {text ? (
+        <span className={clsx('whitespace-nowrap', isLoading && 'invisible')}>
+          {text}
+        </span>
+      ) : null}
       {!isLoading && svg && iconPosition === 'end' ? svg : null}
     </>
   );

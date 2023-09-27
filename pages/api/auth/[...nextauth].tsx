@@ -29,7 +29,7 @@ const authOptions: NextAuthOptions = {
             }),
           );
         }
-        const url = `${process.env.BASE_API_URL}/auth/login`;
+        const url = `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/login`;
         const response = await fetch(url, {
           method: 'POST',
           headers: {
@@ -58,13 +58,22 @@ const authOptions: NextAuthOptions = {
       if (user) {
         // @ts-ignore
         token.token = user?.token;
+        token.name = user?.name;
+        // @ts-ignore
+        token.sub = user?._id;
+        token.email = user?.email;
       }
       return token;
     },
     async session({ session, token }) {
       // @ts-ignore
       session.user.token = token.token;
-
+      // @ts-ignore
+      session.user.name = token.name;
+      // @ts-ignore
+      session.user.id = token.sub;
+      // @ts-ignore
+      session.user.email = token.email;
       return session;
     },
   },
