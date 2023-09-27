@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import React, { FC } from 'react';
 import {
   useAddRequestConnectMutation,
   UserDTO,
@@ -10,17 +10,66 @@ import GlobeIcon from '@/public/IconsSet/globe-06.svg';
 import WifiOffIcon from '@/public/IconsSet/wifi-off.svg';
 import { LazyQueryTrigger } from '@reduxjs/toolkit/src/query/react/buildHooks';
 import { QueryDefinition } from '@reduxjs/toolkit/query';
+import MessagePlusIcon from '@/public/IconsSet/message-plus-square.svg';
+import { addChatId } from '@/redux/slices/chat.slice';
+import { useAppDispatch } from '@/redux/hooks';
+import { useCreateChatMutation } from '@/redux/api/chats.api';
+import { Chat } from '@/types';
 
 type UserCardProps = {
   user: UserDTO;
+  setIsVisible: ({
+    settings,
+    connections,
+    chats,
+  }: {
+    settings: boolean;
+    connections: boolean;
+    chats: boolean;
+  }) => void;
   lazyTrigger: LazyQueryTrigger<QueryDefinition<any, any, any, any>>;
 };
-export const UserCard: FC<UserCardProps> = ({ user, lazyTrigger }) => {
+export const UserCard: FC<UserCardProps> = ({
+  user,
+  lazyTrigger,
+  setIsVisible,
+}) => {
   const [addRequestConnect] = useAddRequestConnectMutation();
   const [deleteRequestConnect] = useDeleteRequestConnectMutation();
+  const [createChat] = useCreateChatMutation();
+  const dispatch = useAppDispatch();
   return (
     <div className="flex flex-col gap-2 border border-stroke rounded-md p-3 shadow-sm shadow-dark-60 bg-softGreen">
-      <p className="text-dispS2 text-dark-80 font-semibold">{user.name}</p>
+      <div className="flex justify-between items-center">
+        <p className="text-dispS2 text-dark-80 font-semibold">{user.name}</p>
+        {user.isConnect === 'true' ? (
+          <div className="flex gap-4 items-center">
+            <p className="text-green-100 text-center text-parS py-1 px-4 border border-green-100 rounded-md">
+              CONNECTED
+            </p>
+            <Button
+              onClick={async () => {
+                await deleteRequestConnect(user?._id!);
+                await lazyTrigger(undefined, false);
+              }}
+              variant="yellowRed"
+              size={'xs'}
+              icon={{
+                svg: (
+                  <>
+                    <span className="hidden group-hover:block text-parS">
+                      Disconnect
+                    </span>
+                    <WifiOffIcon />
+                  </>
+                ),
+                position: 'end',
+              }}
+              className="text-dark-80 h-fit self-center group gap-0"
+            />
+          </div>
+        ) : null}
+      </div>
       <div className="flex gap-4 justify-between tablet:flex-row flex-col">
         <div className="flex gap-4 tablet:flex-row flex-col">
           <div className="flex flex-col gap-2">
@@ -42,13 +91,13 @@ export const UserCard: FC<UserCardProps> = ({ user, lazyTrigger }) => {
               </div>
             )}
           </div>
-          <div className="text-dispS2 text-dark-100 font-bold flex flex-col justify-between gap-4">
+          <div className="text-dispS3 text-dark-100 font-bold flex flex-col justify-between gap-4">
             <div>
               <p>{user.firstname}</p>
               <p>{user.lastname}</p>
             </div>
             <p>{user.birthday}</p>
-            <p className="text-parL text-dark-80 font-normal">
+            <p className="text-parM text-dark-80 font-normal">
               {user.company && user.role
                 ? `${user.role} at ${user.company}`
                 : user.role && !user.company
@@ -116,19 +165,30 @@ export const UserCard: FC<UserCardProps> = ({ user, lazyTrigger }) => {
           </>
         ) : null}
         {user.isConnect === 'true' ? (
-          <div>
-            <p className="text-green-100 text-center text-parL mb-2 py-1 px-4 border border-green-100 rounded-md">
-              CONNECTED
-            </p>
+          <div className="h-full flex flex-col items-end justify-end">
             <Button
               onClick={async () => {
-                await deleteRequestConnect(user?._id!);
-                await lazyTrigger(undefined, false);
+                setIsVisible({
+                  settings: false,
+                  connections: false,
+                  chats: true,
+                });
+                const response = await createChat({ users: [user?._id!] });
+                if ('data' in response) {
+                  console.log(response.data);
+                  const { user, users, _id, messages } = response.data;
+                  dispatch(addChatId(_id));
+
+                  await setIsVisible({
+                    settings: false,
+                    connections: false,
+                    chats: true,
+                  });
+                }
               }}
-              variant="yellowRed"
-              text={'Break connection'}
-              icon={{ svg: <WifiOffIcon />, position: 'end' }}
-              className="text-dark-80 h-fit self-center "
+              variant="yellow"
+              icon={{ svg: <MessagePlusIcon />, position: 'end' }}
+              className="text-dark-80 h-fit self-center"
             />
           </div>
         ) : null}

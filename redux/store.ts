@@ -16,6 +16,7 @@ import { createWrapper, HYDRATE } from 'next-redux-wrapper';
 
 import combinedReducer from '@/redux/rootReducer';
 import { userApi } from '@/redux/api/user.api';
+import { chatsApi } from '@/redux/api/chats.api';
 
 const reducer: typeof combinedReducer = (state, action) => {
   if (action.type === HYDRATE) {
@@ -37,6 +38,7 @@ export const makeStore = () =>
           ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
         },
       }).concat(
+        chatsApi.middleware,
         authApi.middleware,
         eventsApi.middleware,
         imageApi.middleware,

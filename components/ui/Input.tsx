@@ -110,7 +110,7 @@ export const Input: FC<InputProps> = forwardRef<HTMLInputElement, InputProps>(
           />
         )}
         {errorText ? (
-          <div className="absolute -bottom-5 text-errorText text-quot right-2 ">
+          <div className="absolute -bottom-5 text-errorText tablet:text-quot text-[10px] right-2 truncate">
             {errorText}
           </div>
         ) : null}
