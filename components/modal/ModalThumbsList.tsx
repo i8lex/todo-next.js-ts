@@ -2,8 +2,8 @@ import React, { FC, Fragment, useState } from 'react';
 import { clearCheckedImages, setImage } from '@/redux/slices/images.slice';
 import { ImageUploader } from '../ImageUploader';
 import Image from 'next/image';
-import { ImageComponent } from '../ImageComponent';
-import Checkbox from '../CheckBox';
+import { ImageComponent } from '../ui/ImageComponent';
+import Checkbox from '../ui/CheckBox';
 import CloseIcon from '@/public/IconsSet/power-01.svg';
 import EditIcon from '@/public/IconsSet/edit-05.svg';
 import TrashIcon from '@/public/IconsSet/trash-01.svg';
@@ -21,7 +21,6 @@ import {
 } from '@/redux/api/images.api';
 import { useLazyGetEventsQuery } from '@/redux/api/events.api';
 import { DeleteConfirmModal } from '../modal/DeleteConfirmModal';
-import { usePathEventMutation } from '@/redux/api/events.api';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Image as ImageTypes } from '@/types';
 import { Dialog, Transition } from '@headlessui/react';
@@ -32,7 +31,6 @@ type ModalThumbsListProps = {
   isThumbsOpen: boolean;
   modalThumbsHandler: any;
   _id: string;
-  images: string[];
 };
 
 export const ModalThumbsList: FC<ModalThumbsListProps> = ({
@@ -40,7 +38,6 @@ export const ModalThumbsList: FC<ModalThumbsListProps> = ({
   isThumbsOpen,
   modalThumbsHandler,
   _id: taskId,
-  images,
 }) => {
   const [deleteImage] = useDeleteImageMutation();
   const [getThumbsTrigger] = useLazyGetThumbsQuery();
@@ -49,23 +46,11 @@ export const ModalThumbsList: FC<ModalThumbsListProps> = ({
 
   const dispatch = useAppDispatch();
   const { imageId } = useAppSelector((state) => state.image.image);
-  const { checkedImages } = useAppSelector((state) => state.image);
-  const [pathEvent] = usePathEventMutation();
+  const checkedImages = useAppSelector((state) => state.image.checkedImages);
   const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
   const buttonModifyHandle = () => {
     isButtonModifyActive && dispatch(clearCheckedImages());
     setIsButtonModifyActive(!isButtonModifyActive);
-  };
-
-  const deleteImagesFromTaskFieldHandle = async (
-    checkedImages: string[],
-    imagesIds: string[],
-    eventId: string,
-  ) => {
-    const filteredImages = imagesIds.filter(
-      (item) => !checkedImages.includes(item),
-    );
-    await pathEvent({ id: eventId, body: { images: filteredImages } });
   };
 
   return (
@@ -155,7 +140,6 @@ export const ModalThumbsList: FC<ModalThumbsListProps> = ({
                             );
                             modalThumbsHandler();
                             dispatch(clearCheckedImages());
-                            // setIsGetImages(false);
                             setIsButtonModifyActive(false);
                           }}
                         >
@@ -201,7 +185,7 @@ export const ModalThumbsList: FC<ModalThumbsListProps> = ({
                         }
                         className="flex flex-col items-center justify-center rounded-md p-2 bg-yellow-10 w-[100px] h-[100px] border border-stroke tablet:w-[150px] tablet:h-[150px] overflow-hidden shadow-inner shadow-dark-60"
                       >
-                        <div className="p-1 mx-auto my-5 h-full border flex flex-col items-center justify-center w-[75px] h-[75px] border-stroke rounded-md flex flex-col gap-1 cursor-pointer hover:bg-yellow-20 hover:shadow-inner hover:shadow-dark-60  bg-yellow-10">
+                        <div className="p-1 mx-auto my-5  border items-center justify-center w-[75px] h-full shadow-sm shadow-dark-60 border-stroke rounded-md flex flex-col gap-1 cursor-pointer hover:bg-yellow-20 hover:shadow-inner hover:shadow-dark-60  bg-yellow-10">
                           <UploadIcon className=" w-[50px] h-[50px] text-dark-80" />
                         </div>
                       </SwiperSlide>
@@ -258,11 +242,6 @@ export const ModalThumbsList: FC<ModalThumbsListProps> = ({
                     setShowDeleteConfirmModal={setShowDeleteConfirmModal}
                     Action={async () => {
                       await deleteImage(checkedImages);
-                      await deleteImagesFromTaskFieldHandle(
-                        checkedImages,
-                        images,
-                        taskId,
-                      );
                       await getThumbsTrigger(taskId, false);
                       await getEventsTrigger(undefined, false);
                       dispatch(clearCheckedImages());

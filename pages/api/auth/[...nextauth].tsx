@@ -2,6 +2,7 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import type { NextAuthOptions } from 'next-auth';
+import * as process from 'process';
 
 const authOptions: NextAuthOptions = {
   session: {
@@ -28,8 +29,8 @@ const authOptions: NextAuthOptions = {
             }),
           );
         }
-
-        const response = await fetch('http://192.168.1.9:3000/api/login', {
+        const url = `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/login`;
+        const response = await fetch(url, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -37,11 +38,11 @@ const authOptions: NextAuthOptions = {
           body: JSON.stringify(credentials),
         });
         const user = await response.json();
-        if (response.ok && user) {
+        if (user.isConfirmed) {
           return user;
         }
 
-        return Promise.reject(new Error(user.error));
+        return Promise.reject(new Error(user.message));
       },
     }),
   ],
@@ -52,18 +53,27 @@ const authOptions: NextAuthOptions = {
   callbacks: {
     jwt({ token, user, account }) {
       if (account) {
-        token.name = user.name;
+        token.name = user.id;
       }
       if (user) {
         // @ts-ignore
         token.token = user?.token;
+        token.name = user?.name;
+        // @ts-ignore
+        token.sub = user?._id;
+        token.email = user?.email;
       }
       return token;
     },
     async session({ session, token }) {
       // @ts-ignore
       session.user.token = token.token;
-
+      // @ts-ignore
+      session.user.name = token.name;
+      // @ts-ignore
+      session.user.id = token.sub;
+      // @ts-ignore
+      session.user.email = token.email;
       return session;
     },
   },

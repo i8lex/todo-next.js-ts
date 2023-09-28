@@ -11,7 +11,6 @@ export const getServerSideProps: GetServerSideProps<
   ConfirmEmailPageProps
 > = async (ctx) => {
   const { confirm } = ctx.query;
-  console.log('token', confirm);
 
   return {
     props: {

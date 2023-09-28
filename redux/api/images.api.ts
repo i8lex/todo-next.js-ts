@@ -1,18 +1,9 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import {
-  BaseQueryApi,
-  TagDescription,
-} from '@reduxjs/toolkit/dist/query/react';
+import { TagDescription } from '@reduxjs/toolkit/dist/query/react';
 import { Image } from '@/types';
 import { getSession } from 'next-auth/react';
 
-const prepareHeaders = async (
-  headers: Headers,
-  {
-    getState,
-  }: Pick<BaseQueryApi, 'getState' | 'extra' | 'endpoint' | 'type' | 'forced'>,
-) => {
-  // const token = (getState() as AuthState).auth.token;
+const prepareHeaders = async (headers: Headers) => {
   const session = await getSession();
   // @ts-ignore
   const token = session?.user?.token;
@@ -32,13 +23,13 @@ export const imageApi = createApi({
 
   endpoints: (build) => ({
     getImage: build.query({
-      query: (id: string) => ({ url: `image?id=${id}` }),
+      query: (id: string) => ({ url: `images/${id}` }),
       providesTags: (result: Image | undefined, error, id: string) => [
         { type: 'Image', id },
       ],
     }),
     getThumbs: build.query({
-      query: (id: string) => `image/${id}`,
+      query: (id: string) => `images/thumbs/${id}`,
       providesTags: (
         result: Image[] | undefined,
       ): (TagDescription<'Images'> | TagDescription<'Image'>)[] =>
@@ -52,19 +43,20 @@ export const imageApi = createApi({
             ]
           : [{ type: 'Image' as const, id: 'LIST' }],
     }),
-    addImage: build.mutation<void, Image[]>({
-      query: (body) => ({
-        url: 'image',
+    addImage: build.mutation<void, FormData>({
+      query: (formData: FormData) => ({
+        url: `images/${formData.get('event')}`,
         method: 'POST',
-        body,
+        body: formData,
       }),
       invalidatesTags: [{ type: 'Image', id: 'LIST' }],
     }),
 
     deleteImage: build.mutation({
-      query: (id) => ({
-        url: `image/${id}`,
-        method: 'DELETE',
+      query: (body) => ({
+        url: `images/delete`,
+        method: 'PUT',
+        body,
       }),
       invalidatesTags: [{ type: 'Image', id: 'LIST' }],
     }),

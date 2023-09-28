@@ -23,14 +23,23 @@ const button = cva(
         white: [
           'bg-white text-darkSkyBlue-80 hover:bg-mystic-20 focus-visible:bg-[#F9FAFB] border border-solid border-stroke shadow-md shadow-dark-60 hover:shadow-sm hover:shadow-dark-60 hover:bg-gray-10',
         ],
+        yellow: [
+          'bg-yellow-10 text-darkSkyBlue-80 hover:bg-mystic-20 focus-visible:bg-[#F9FAFB] focus-visible:rounded-md border border-solid border-stroke shadow-md shadow-dark-60 hover:shadow-sm hover:shadow-dark-60 hover:bg-yellow-20',
+        ],
         whitered: [
-          'bg-white text-errorText hover:bg-mystic-20 focus-visible:bg-[#F9FAFB] border border-solid border-error-100',
+          'bg-white text-errorText hover:bg-mystic-20 focus-visible:bg-[#F9FAFB] border border-solid border-error-100 shadow-md shadow-dark-60 hover:shadow-sm hover:shadow-dark-60 hover:bg-yellow-20',
+        ],
+        yellowRed: [
+          'text-errorText hover:bg-mystic-20 focus-visible:bg-[#F9FAFB] bg-yellow-10 border border-solid border-error-100 shadow-md shadow-dark-60 hover:shadow-sm hover:shadow-dark-60 hover:bg-yellow-20',
         ],
         red: [
           'bg-error-100 text-white hover:bg-error-80 focus-visible:bg-[#FF8383] border border-solid border-error-100',
         ],
         blue: [
-          'bg-blue-100 text-white hover:bg-blue-80 focus-visible:bg-[#FF8383] border border-solid border-blue-100',
+          'bg-blue-100 text-white hover:bg-blue-80 focus-visible:bg-[#FF8383] border border-solid border-blue-100 shadow-md shadow-dark-60 hover:shadow-sm hover:shadow-dark-60',
+        ],
+        green: [
+          'bg-green-60 text-white hover:bg-green-40 focus-visible:bg-[#FF8383] border border-solid border-green-80 shadow-md shadow-dark-60 hover:shadow-sm hover:shadow-dark-60',
         ],
       },
       size: {
@@ -76,7 +85,7 @@ const button = cva(
 );
 
 type BaseButtonProps = VariantProps<typeof button> & {
-  text: React.ReactNode;
+  text?: React.ReactNode;
   className?: string;
   isLoading?: boolean;
   href?: string;
@@ -135,9 +144,11 @@ export const Button: React.FC<AsButtonProps | AsLinkProps> = (props) => {
     <>
       {isLoading ? <Spinner className="absolute" /> : null}
       {!isLoading && svg && iconPosition === 'start' ? svg : null}
-      <span className={clsx('whitespace-nowrap', isLoading && 'invisible')}>
-        {text}
-      </span>
+      {text ? (
+        <span className={clsx('whitespace-nowrap', isLoading && 'invisible')}>
+          {text}
+        </span>
+      ) : null}
       {!isLoading && svg && iconPosition === 'end' ? svg : null}
     </>
   );

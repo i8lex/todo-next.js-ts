@@ -1,5 +1,4 @@
 import {
-  BaseQueryApi,
   createApi,
   fetchBaseQuery,
   TagDescription,
@@ -7,13 +6,7 @@ import {
 import { AddEvent, Event } from '@/types';
 import { getSession } from 'next-auth/react';
 
-const prepareHeaders = async (
-  headers: Headers,
-  {
-    getState,
-  }: Pick<BaseQueryApi, 'getState' | 'extra' | 'endpoint' | 'type' | 'forced'>,
-) => {
-  // const token = (getState() as AuthState).auth.token;
+const prepareHeaders = async (headers: Headers) => {
   const session = await getSession();
   // @ts-ignore
   const token = session?.user?.token;

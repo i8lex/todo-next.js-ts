@@ -6,7 +6,7 @@ export type LayoutProps = {
   page: string;
 };
 
-export type Page = 'events' | 'about' | 'contact';
+export type Page = 'events' | 'about' | 'contact' | 'my' | 'users';
 
 export type Image = {
   _id: string;
@@ -33,18 +33,18 @@ export type Event = {
   _id?: string;
   user?: string;
   title: string;
-  description: string;
+  description?: string;
   done?: boolean;
   created?: string;
   __v?: number;
-  deadline?: string;
+  deadline?: string | Date;
   images?: string[];
 };
 
 export type AddEvent = {
   title?: string;
   description?: string;
-  deadline?: string;
+  deadline?: string | Date;
   images?: string[];
 };
 export type EditModal = {
@@ -61,4 +61,21 @@ export type DeleteConfirmModalTypes = {
   isOpen: boolean;
   title: string;
   handleConfirm: () => void;
+};
+
+export type Message = {
+  _id: string;
+  user: string;
+  username: string;
+  message: string;
+  created: string;
+  readBy: string[];
+  // __v: number;
+};
+
+export type Chat = {
+  _id?: string;
+  user: string;
+  users: string[];
+  messages: Message[];
 };

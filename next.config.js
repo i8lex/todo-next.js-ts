@@ -26,8 +26,18 @@ const securityHeaders = [
 ];
 
 const nextConfig = {
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/my',
+        permanent: true,
+      },
+    ];
+  },
   reactStrictMode: true,
   swcMinify: true,
+
   images: {
     domains: ['localhost'],
   },
@@ -55,14 +65,6 @@ const nextConfig = {
 
     return config;
   },
-  // async headers() {
-  //   return [
-  //     {
-  //       source: '/:path*',
-  //       headers: securityHeaders,
-  //     },
-  //   ];
-  // },
 };
 
 module.exports = nextConfig;

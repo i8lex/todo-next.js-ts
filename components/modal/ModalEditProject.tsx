@@ -1,31 +1,60 @@
-import React, { FC, Fragment } from 'react';
-import Modal from 'react-modal';
+import React, { FC, Fragment, useEffect } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { Formik, Form } from 'formik';
 import { form } from '@/constants/form';
-import { Input } from '../Input';
-import { AddEvent, Event } from '@/types';
+import { Event } from '@/types';
 import { Button } from '@/components/ui/Button';
+import { useForm } from 'react-hook-form';
+import { Input } from '@/components/ui/Input';
+import { usePathEventMutation } from '@/redux/api/events.api';
 
-Modal.setAppElement('#__next');
+type FormRequiredFields = {
+  title: string;
+  description: string;
+  deadline: string | Date;
+};
 
 type ModalEditProjectProps = {
+  id: string;
   title: string;
   isOpen: boolean;
   handleClose: () => void;
-  handleConfirm:
-    | ((values: AddEvent) => void)
-    | ((values: AddEvent) => Promise<void>);
   data: Event;
 };
 
 export const ModalEditProject: FC<ModalEditProjectProps> = ({
+  id,
   title,
   isOpen,
   handleClose,
-  handleConfirm,
   data,
 }) => {
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm<FormRequiredFields>();
+  const [pathEvent] = usePathEventMutation();
+
+  useEffect(() => {
+    setValue('title', data.title);
+    if (data.description) {
+      setValue('description', data.description);
+    }
+    if (data.deadline) {
+      setValue('deadline', new Date(data.deadline));
+    }
+  }, []);
+  const handleError = (errors: object) => {
+    console.warn(errors);
+  };
+  const onSubmit = async (values: FormRequiredFields) => {
+    await pathEvent({ id: id, body: values });
+    reset();
+    handleClose();
+  };
   return (
     <>
       <Transition show={isOpen} as={Fragment}>
@@ -64,42 +93,76 @@ export const ModalEditProject: FC<ModalEditProjectProps> = ({
                   </Dialog.Title>
                 </div>
                 <div className="shadow-inner shadow-dark-60 h-[90vh] tablet:h-fit p-4 tablet:p-6">
-                  <Formik
-                    validationSchema={form.projectsValidationSchema}
-                    initialValues={{
-                      title: data.title,
-                      description: data.description,
-                      deadline: data.deadline,
-                    }}
-                    onSubmit={handleConfirm}
+                  <form
+                    onSubmit={handleSubmit(onSubmit, handleError)}
+                    noValidate
+                    method="post"
+                    className="flex flex-col  items-stretch  tablet:gap-8 gap-0 w-full h-full"
                   >
-                    <Form className="flex flex-col  items-stretch  tablet:gap-8 gap-0 w-full h-full">
-                      <div className="flex flex-col gap-6 items-center w-full h-full">
-                        <Input label="Title" required name="title" />
-                        <Input
-                          label="Description"
-                          as="textarea"
-                          name="description"
-                        />
-                        <Input
-                          label="Deadline"
-                          type="datetime-local"
-                          name="deadline"
-                        />
-                      </div>
+                    <div className="flex flex-col gap-6 items-center w-full h-full">
+                      <Input
+                        label={'Enter title'}
+                        isRequired={true}
+                        type="text"
+                        id="title"
+                        defaultValue={data.title}
+                        control={control}
+                        errorText={errors?.title?.message}
+                        {...register('title', {
+                          required: 'Title is required',
+                          minLength: {
+                            value: 3,
+                            message: 'Title must be at least 3 characters',
+                          },
+                          maxLength: {
+                            value: 20,
+                            message: 'Title must be at most 20 characters',
+                          },
+                        })}
+                      />
+                      <Input
+                        label={'Enter description'}
+                        isRequired={true}
+                        // defaultValue={data.description}
+                        type="text"
+                        as={'textarea'}
+                        id="description"
+                        control={control}
+                        errorText={errors?.description?.message}
+                        {...register('description', {
+                          minLength: {
+                            value: 3,
+                            message: 'Title must be at least 3 characters',
+                          },
+                          maxLength: {
+                            value: 2000,
+                            message: 'Title must be at most 2000 characters',
+                          },
+                        })}
+                      />
+                      <Input
+                        label={'Enter deadline'}
+                        isRequired={true}
+                        // defaultValue={data.deadline}
+                        type="datetime-local"
+                        id="deadline"
+                        control={control}
+                        errorText={errors?.deadline?.message}
+                        {...register('deadline')}
+                      />
+                    </div>
 
-                      <div className="flex gap-4 tablet:justify-end justify-between w-full">
-                        <Button
-                          text={'Cancel'}
-                          type="button"
-                          variant={'white'}
-                          className="w-full tablet:w-[140px]"
-                          onClick={handleClose}
-                        />
-                        <Button text="Confirm" type="submit" />
-                      </div>
-                    </Form>
-                  </Formik>
+                    <div className="flex gap-4 tablet:justify-end justify-between w-full">
+                      <Button
+                        text={'Cancel'}
+                        type="button"
+                        variant={'white'}
+                        className="w-full tablet:w-[140px]"
+                        onClick={handleClose}
+                      />
+                      <Button text="Confirm" type="submit" />
+                    </div>
+                  </form>
                 </div>
               </Dialog.Panel>
             </div>

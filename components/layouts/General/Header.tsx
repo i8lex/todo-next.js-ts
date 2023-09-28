@@ -16,22 +16,24 @@ export type GeneralHeaderProps = {
 export const GeneralHeader: FC<GeneralHeaderProps> = ({ currentPage }) => {
   const router = useRouter();
   const { data: sessionData } = useSession();
-  if (!sessionData) {
-    router.push('/login');
-  }
+  // if (!sessionData) {
+  //   router.push('/login');
+  // }
   const links: Array<{ id: Page; href: string; name: string }> = [
+    { id: 'my', href: '/my', name: 'My page' },
     { id: 'events', href: '/events', name: 'Events' },
+    { id: 'users', href: '/users', name: 'Users' },
   ];
   return (
     <header className="flex justify-center bg-softGreen px-4 py-2 tablet:px-6">
-      <nav className="flex w-full items-center p-0 tablet:gap-6 desktop:gap-8">
+      <nav className="flex w-full items-center p-0 gap-6 desktop:gap-16">
         <Link
           href={'/'}
           className="focus:border-green-80 focus:outline-none focus:ring-2 focus:ring-green-80"
         >
           {/*<Logo className="w-6 tablet:w-7" />*/}Logo here
         </Link>
-        <div className="hidden space-x-8 text-quot font-medium  tablet:flex desktop:text-parS">
+        <div className=" dasktop:space-x-8 space-x-4 text-quot font-medium flex desktop:text-parS">
           {links.map(({ id, name, href }) => {
             const isCurrent = id === currentPage;
             return (
