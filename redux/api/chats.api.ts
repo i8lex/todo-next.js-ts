@@ -69,7 +69,6 @@ export const chatsApi = createApi({
 
 export const {
   useCreateChatMutation,
-  useGetAllChatsQuery,
-  useLazyGetAllChatsQuery,
+
   useGetChatQuery,
 } = chatsApi;

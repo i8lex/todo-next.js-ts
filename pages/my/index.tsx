@@ -61,6 +61,7 @@ export const getServerSideProps: (
 
 const MyPage: FC<MyPageProps> = ({ session }) => {
   const dispatch = useAppDispatch();
+
   useEffect(() => {
     if (session && session.user) {
       dispatch(setSession(session.user));
