@@ -31,7 +31,7 @@ const nextConfig = {
       {
         source: '/',
         destination: '/my',
-        permanent: true, // Установите на true, если это постоянное перенаправление (301), или на false для временного (302)
+        permanent: true,
       },
     ];
   },
@@ -65,14 +65,6 @@ const nextConfig = {
 
     return config;
   },
-  // async headers() {
-  //   return [
-  //     {
-  //       source: '/:path*',
-  //       headers: securityHeaders,
-  //     },
-  //   ];
-  // },
 };
 
 module.exports = nextConfig;
