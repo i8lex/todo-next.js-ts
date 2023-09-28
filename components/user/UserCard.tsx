@@ -69,7 +69,7 @@ export const UserCard: FC<UserCardProps> = ({
           </div>
         ) : null}
       </div>
-      <div className="flex gap-4 justify-between tablet:flex-row flex-col">
+      <div className="flex gap-4 justify-between tablet:flex-row flex-col items-end">
         <div className="flex gap-4 tablet:flex-row flex-col">
           <div className="flex flex-col gap-2">
             {user.avatar && user.name ? (
@@ -193,7 +193,7 @@ export const UserCard: FC<UserCardProps> = ({
               }}
               variant="yellow"
               icon={{ svg: <MessagePlusIcon />, position: 'end' }}
-              className="text-dark-80 h-fit self-center"
+              className="text-dark-80 h-fit self-end"
             />
           </div>
         ) : null}

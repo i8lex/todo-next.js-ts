@@ -26,8 +26,18 @@ const securityHeaders = [
 ];
 
 const nextConfig = {
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/my',
+        permanent: true, // Установите на true, если это постоянное перенаправление (301), или на false для временного (302)
+      },
+    ];
+  },
   reactStrictMode: true,
   swcMinify: true,
+
   images: {
     domains: ['localhost'],
   },
