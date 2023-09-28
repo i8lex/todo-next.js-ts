@@ -3,13 +3,12 @@ import {
   useAddRequestConnectMutation,
   UserDTO,
   useDeleteRequestConnectMutation,
+  useLazyGetUsersQuery,
 } from '@/redux/api/user.api';
 import Image from 'next/image';
 import { Button } from '@/components/ui/Button';
 import GlobeIcon from '@/public/IconsSet/globe-06.svg';
 import WifiOffIcon from '@/public/IconsSet/wifi-off.svg';
-import { LazyQueryTrigger } from '@reduxjs/toolkit/src/query/react/buildHooks';
-import { QueryDefinition } from '@reduxjs/toolkit/query';
 import MessagePlusIcon from '@/public/IconsSet/message-plus-square.svg';
 import { addChatId } from '@/redux/slices/chat.slice';
 import { useAppDispatch } from '@/redux/hooks';
@@ -26,16 +25,13 @@ type UserCardProps = {
     connections: boolean;
     chats: boolean;
   }) => void;
-  lazyTrigger: LazyQueryTrigger<QueryDefinition<any, any, any, any>>;
 };
-export const UserCard: FC<UserCardProps> = ({
-  user,
-  lazyTrigger,
-  setIsVisible,
-}) => {
+export const UserCard: FC<UserCardProps> = ({ user, setIsVisible }) => {
   const [addRequestConnect] = useAddRequestConnectMutation();
   const [deleteRequestConnect] = useDeleteRequestConnectMutation();
   const [createChat] = useCreateChatMutation();
+  const [getUsersTrigger] = useLazyGetUsersQuery();
+
   const dispatch = useAppDispatch();
   return (
     <div className="flex flex-col gap-2 border border-stroke rounded-md p-3 shadow-sm shadow-dark-60 bg-softGreen">
@@ -49,7 +45,7 @@ export const UserCard: FC<UserCardProps> = ({
             <Button
               onClick={async () => {
                 await deleteRequestConnect(user?._id!);
-                await lazyTrigger(undefined, false);
+                await getUsersTrigger(undefined, false);
               }}
               variant="yellowRed"
               size={'xs'}
@@ -112,7 +108,7 @@ export const UserCard: FC<UserCardProps> = ({
           <Button
             onClick={async () => {
               await addRequestConnect(user?._id!);
-              await lazyTrigger(undefined, false);
+              await getUsersTrigger(undefined, false);
             }}
             variant="yellow"
             text={'Try connect'}
@@ -124,7 +120,7 @@ export const UserCard: FC<UserCardProps> = ({
           <Button
             onClick={async () => {
               await deleteRequestConnect(user?._id!);
-              await lazyTrigger(undefined, false);
+              await getUsersTrigger(undefined, false);
             }}
             variant="yellowRed"
             text={'Delete request'}
@@ -142,7 +138,7 @@ export const UserCard: FC<UserCardProps> = ({
                 <Button
                   onClick={async () => {
                     await addRequestConnect(user?._id!);
-                    await lazyTrigger(undefined, false);
+                    await getUsersTrigger(undefined, false);
                   }}
                   variant="yellow"
                   text={'Confirm'}
@@ -152,7 +148,7 @@ export const UserCard: FC<UserCardProps> = ({
                 <Button
                   onClick={async () => {
                     await deleteRequestConnect(user?._id!);
-                    await lazyTrigger(undefined, false);
+                    await getUsersTrigger(undefined, false);
                   }}
                   variant="yellowRed"
                   text={'Ignore'}

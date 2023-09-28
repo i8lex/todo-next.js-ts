@@ -3,7 +3,6 @@ import { GeneralLayout } from '@/components/layouts/General/Layout';
 import {
   useGetConnectedUsersQuery,
   useGetMyInfoQuery,
-  useLazyGetConnectedUsersQuery,
 } from '@/redux/api/user.api';
 import { Button } from '@/components/ui/Button';
 import React, { FC, useEffect, useState } from 'react';
@@ -75,7 +74,6 @@ const MyPage: FC<MyPageProps> = ({ session }) => {
     undefined,
     { refetchOnMountOrArgChange: true },
   );
-  const [getConnectedUsersTrigger] = useLazyGetConnectedUsersQuery();
   const [isVisible, setIsVisible] = useState({
     settings: false,
     connections: true,
@@ -171,7 +169,6 @@ const MyPage: FC<MyPageProps> = ({ session }) => {
             <div className="overflow-y-auto tablet:overflow-y-scroll">
               {users?.map((user) => (
                 <UserCard
-                  lazyTrigger={getConnectedUsersTrigger}
                   key={user._id}
                   user={user}
                   setIsVisible={setIsVisible}
