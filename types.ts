@@ -68,7 +68,7 @@ export type Message = {
   user: string;
   username: string;
   message: string;
-  created_at: string;
+  created: string;
   readBy: string[];
   // __v: number;
 };

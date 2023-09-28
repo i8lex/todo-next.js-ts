@@ -17,7 +17,7 @@ import { useCreateChatMutation } from '@/redux/api/chats.api';
 
 type UserCardProps = {
   user: UserDTO;
-  setIsVisible: ({
+  setIsVisible?: ({
     settings,
     connections,
     chats,
@@ -167,11 +167,12 @@ export const UserCard: FC<UserCardProps> = ({
           <div className="h-full flex flex-col items-end justify-end">
             <Button
               onClick={async () => {
-                setIsVisible({
-                  settings: false,
-                  connections: false,
-                  chats: true,
-                });
+                setIsVisible &&
+                  setIsVisible({
+                    settings: false,
+                    connections: false,
+                    chats: true,
+                  });
                 const response = await createChat({
                   users: [user?._id!],
                   messages: [],
@@ -182,11 +183,12 @@ export const UserCard: FC<UserCardProps> = ({
                     dispatch(addChatId(_id));
                   }
 
-                  await setIsVisible({
-                    settings: false,
-                    connections: false,
-                    chats: true,
-                  });
+                  setIsVisible &&
+                    setIsVisible({
+                      settings: false,
+                      connections: false,
+                      chats: true,
+                    });
                 }
               }}
               variant="yellow"
