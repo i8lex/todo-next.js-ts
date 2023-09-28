@@ -74,17 +74,19 @@ export const EventsList: FC<EventsListProps> = ({
                 <div>
                   <p className="text-dark-100 text-[10px] tablet:text-parM font-bold">
                     {event.deadline &&
-                      format(parseISO(event.deadline), 'd MMM yyyy')}
+                      format(parseISO(event.deadline.toString()), 'd MMM yyyy')}
                   </p>
                   <p className="text-dark-100 text-[10px] tablet:text-parS font-bold">
                     {event.deadline &&
-                      format(parseISO(event.deadline), 'HH:mm:ss')}
+                      format(parseISO(event.deadline.toString()), 'HH:mm:ss')}
                   </p>
                 </div>
               </div>
             ) : null}
 
-            {event.deadline ? <Timer deadline={event.deadline} /> : null}
+            {event.deadline ? (
+              <Timer deadline={event.deadline.toString()} />
+            ) : null}
           </div>
           <div className="flex items-center justify-between">
             <div className="flex gap-4 items-center">
