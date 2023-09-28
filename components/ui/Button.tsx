@@ -36,7 +36,10 @@ const button = cva(
           'bg-error-100 text-white hover:bg-error-80 focus-visible:bg-[#FF8383] border border-solid border-error-100',
         ],
         blue: [
-          'bg-blue-100 text-white hover:bg-blue-80 focus-visible:bg-[#FF8383] border border-solid border-blue-100',
+          'bg-blue-100 text-white hover:bg-blue-80 focus-visible:bg-[#FF8383] border border-solid border-blue-100 shadow-md shadow-dark-60 hover:shadow-sm hover:shadow-dark-60',
+        ],
+        green: [
+          'bg-green-60 text-white hover:bg-green-40 focus-visible:bg-[#FF8383] border border-solid border-green-80 shadow-md shadow-dark-60 hover:shadow-sm hover:shadow-dark-60',
         ],
       },
       size: {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import ArrowUpIcon from '@/public/IconsSet/chevron-up.svg';
 import ArrowDownIcon from '@/public/IconsSet/chevron-down.svg';
 
@@ -10,22 +10,43 @@ import { GeneralLayout } from '@/components/layouts/General/Layout';
 import { Button } from '@/components/ui/Button';
 import clsx from 'clsx';
 import { Spinner } from '@/components/ui/Spinner';
-import { useSession } from 'next-auth/react';
+import { getSession } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { Input } from '@/components/ui/Input';
-import { useRouter } from 'next/router';
+import { Session } from 'next-auth';
+import { GetServerSidePropsContext } from 'next';
 
 type FormRequiredFields = {
   title: string;
   description: string;
 };
-const EventsPage = () => {
-  // const session = useSession();
-  // const router = useRouter();
-  // if (!session.data) {
-  //   return router.push('/login');
-  // }
 
+type GetServerSideProps = Promise<
+  | { redirect: { permanent: boolean; destination: string } }
+  | {
+      props: { session: Session };
+    }
+>;
+
+export const getServerSideProps: (
+  ctx: GetServerSidePropsContext,
+) => GetServerSideProps = async (ctx) => {
+  const session = await getSession(ctx);
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: {
+      session,
+    },
+  };
+};
+const EventsPage = () => {
   const { data: events = [], isLoading } = useGetEventsQuery();
   const [addEvent] = useAddEventMutation();
   const [isCreateShowing, setCreateShowing] = useState(false);

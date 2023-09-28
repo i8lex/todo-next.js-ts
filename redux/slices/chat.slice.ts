@@ -23,6 +23,9 @@ const chatSlice = createSlice({
         return message;
       });
     },
+    setUsers: (state, action: PayloadAction<string[]>) => {
+      state.users = [...action.payload];
+    },
     setMessagesInitial: (state, action: PayloadAction<Message[]>) => {
       state.messages = [...action.payload];
     },
@@ -32,6 +35,11 @@ const chatSlice = createSlice({
   },
 });
 
-export const { addMessage, readMessage, setMessagesInitial, addChatId } =
-  chatSlice.actions;
+export const {
+  addMessage,
+  readMessage,
+  setUsers,
+  setMessagesInitial,
+  addChatId,
+} = chatSlice.actions;
 export default chatSlice.reducer;

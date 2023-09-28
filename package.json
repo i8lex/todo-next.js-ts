@@ -70,6 +70,7 @@
     "react-image-crop": "10.1.8",
     "react-modal": "^3.16.1",
     "react-query": "^3.39.3",
+    "react-scroll": "1.8.9",
     "redux": "^4.2.1",
     "redux-persist": "^6.0.0",
     "sharp": "0.32.6",
@@ -85,6 +86,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.2.5",
+    "@types/react-scroll": "1.8.8",
     "prettier": "^2.8.8",
     "typescript": "^5.0.4"
   }
