@@ -1,23 +1,11 @@
 import { Inter } from 'next/font/google';
-import { GetServerSidePropsContext } from 'next';
+import { useRouter } from 'next/router';
 
 const inter = Inter({ subsets: ['latin'] });
 
-type GetServerSideProps = Promise<{
-  redirect: { permanent: boolean; destination: string };
-}>;
-
-export const getServerSideProps: (
-  ctx: GetServerSidePropsContext,
-) => GetServerSideProps = async () => {
-  return {
-    redirect: {
-      destination: '/my',
-      permanent: false,
-    },
-  };
-};
-const Home = () => {
+export default function Home() {
+  const router = useRouter();
+  router.push('/my').then();
   return (
     <main
       className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
@@ -25,5 +13,4 @@ const Home = () => {
       Hello World!)
     </main>
   );
-};
-export default Home;
+}
