@@ -52,7 +52,6 @@ const RegistrationPage = () => {
         const data = response.data;
         if ('data' in response) {
           const { data } = response;
-          console.log(`${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/email`);
           fetch(`${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/email`, {
             method: 'POST',
             headers: {

@@ -11,9 +11,6 @@ export const confirmEmailSendHandler = async (
   const { email, token, name } = request.body;
 
   try {
-    console.log(
-      `${process.env.NEXT_PUBLIC_BASE_API_URL}/email/?confirm=${token}`,
-    );
     const url = `${process.env.NEXT_PUBLIC_BASE_API_URL}/email/?confirm=${token}`;
 
     const emailHtml = render(<ConfirmEmail url={url} name={name} />);
