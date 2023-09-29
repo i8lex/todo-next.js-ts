@@ -4,6 +4,10 @@ import { Dialog, Transition } from '@headlessui/react';
 import CloseIcon from '@/public/IconsSet/power-01.svg';
 import { Button } from '@/components/ui/Button';
 import AlertIcon from '@/public/IconsSet/exclamation.svg';
+import { render } from '@react-email/render';
+import { ConfirmEmail } from '@/components/ConfirmEmail';
+import { transporter } from '@/config';
+import * as process from 'process';
 
 type ModalAuthProps = {
   className?: string;
@@ -25,8 +29,23 @@ export const ModalAuth: FC<ModalAuthProps> = ({
   const repeatEmailHandler = async () => {
     try {
       if (email) {
-        await emailRepeat({ email });
-        handleClose();
+        const response = await emailRepeat({ email });
+        if ('data' in response) {
+          const { data } = response;
+          console.log(data);
+          console.log(`${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/email`);
+          fetch(`${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/email`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+          })
+            .then((response) => response.json())
+            .catch((error) => {
+              console.error('Error:', error);
+            });
+        }
       }
     } catch (err) {
       console.log('error repeat send email');

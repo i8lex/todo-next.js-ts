@@ -27,6 +27,8 @@ export type LoginResponse = SignInResponse & {
 
 type EmailRepeatBody = {
   email: string;
+  name?: string;
+  token?: string;
 };
 export const authApi = createApi({
   reducerPath: 'authApi',
@@ -49,7 +51,8 @@ export const authApi = createApi({
         body: JSON.stringify(body),
       }),
     }),
-    emailRepeat: build.mutation<void, EmailRepeatBody>({
+
+    emailRepeat: build.mutation<EmailRepeatBody, EmailRepeatBody>({
       query: (body) => ({
         url: '/auth/confirm/repeat',
         method: 'POST',

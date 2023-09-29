@@ -37,7 +37,6 @@ const RegistrationPage = () => {
   const handleClose = () => {
     setOpenModal(false);
   };
-
   const onSubmit = async (values: FormRequiredFields) => {
     try {
       const response = await registration(values);
@@ -51,6 +50,21 @@ const RegistrationPage = () => {
         return setTimeout(() => handleClose(), 3000);
       } else {
         const data = response.data;
+        if ('data' in response) {
+          const { data } = response;
+          console.log(`${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/email`);
+          fetch(`${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/email`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+          })
+            .then((response) => response.json())
+            .catch((error) => {
+              console.error('Error:', error);
+            });
+        }
         const successMessage = data.message;
         setEmail(data.email);
         setMessage(successMessage);

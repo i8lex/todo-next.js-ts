@@ -8,7 +8,7 @@ export default async function authHandlers(
 ) {
   const { method } = req;
 
-  await db();
+  // await db();
 
   switch (method) {
     case 'GET':

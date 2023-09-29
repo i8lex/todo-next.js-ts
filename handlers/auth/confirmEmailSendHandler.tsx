@@ -11,7 +11,10 @@ export const confirmEmailSendHandler = async (
   const { email, token, name } = request.body;
 
   try {
-    const url = `${process.env.BASE_URL}/email/?confirm=${token}`;
+    console.log(
+      `${process.env.NEXT_PUBLIC_BASE_API_URL}/email/?confirm=${token}`,
+    );
+    const url = `${process.env.NEXT_PUBLIC_BASE_API_URL}/email/?confirm=${token}`;
 
     const emailHtml = render(<ConfirmEmail url={url} name={name} />);
     await transporter.sendMail({
@@ -20,14 +23,7 @@ export const confirmEmailSendHandler = async (
       subject: 'Events, confirm registration email',
       html: emailHtml,
     });
-    const updateStatus = await User.updateOne(
-      { email: email },
-      { confirmationCode: token },
-    );
 
-    if (!updateStatus.modifiedCount) {
-      return reply.status(404).send('User not found');
-    }
     return reply.send({
       message: 'Successfully send',
       email,
