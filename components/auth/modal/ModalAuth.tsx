@@ -37,9 +37,7 @@ export const ModalAuth: FC<ModalAuthProps> = ({
             },
             body: JSON.stringify(data),
           })
-            .then((response) => {
-              console.log(response.json());
-            })
+            .then((response) => {})
             .catch((error) => {
               console.error('Error:', error);
             });
