@@ -29,7 +29,7 @@ const authOptions: NextAuthOptions = {
             }),
           );
         }
-        const url = `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/auth/login`;
+        const url = `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/login`;
         const response = await fetch(url, {
           method: 'POST',
           headers: {

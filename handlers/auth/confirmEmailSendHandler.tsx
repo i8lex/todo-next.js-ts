@@ -10,7 +10,7 @@ export const confirmEmailSendHandler = async (
   const { email, token, name } = request.body;
   console.log(email, token, name);
   try {
-    const url = `${process.env.NEXT_PUBLIC_BASE_API_URL}/email/?confirm=${token}`;
+    const url = `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/email/?confirm=${token}`;
 
     const emailHtml = render(<ConfirmEmail url={url} name={name} />);
     await transporter.sendMail({
