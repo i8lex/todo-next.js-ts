@@ -45,7 +45,7 @@ export const ModalAuth: FC<ModalAuthProps> = ({
     } catch (err) {
       console.log('error repeat send email');
     }
-    // await handleClose();
+    await handleClose();
   };
   return (
     <Transition show={open} as={Fragment}>
