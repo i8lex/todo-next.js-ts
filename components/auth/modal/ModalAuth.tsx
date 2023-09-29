@@ -29,7 +29,6 @@ export const ModalAuth: FC<ModalAuthProps> = ({
         const response = await emailRepeat({ email });
         if ('data' in response) {
           const { data } = response;
-          console.log(data);
           fetch(`${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/email`, {
             method: 'POST',
             headers: {
