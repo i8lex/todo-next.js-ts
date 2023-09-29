@@ -4,9 +4,6 @@ import { Dialog, Transition } from '@headlessui/react';
 import CloseIcon from '@/public/IconsSet/power-01.svg';
 import { Button } from '@/components/ui/Button';
 import AlertIcon from '@/public/IconsSet/exclamation.svg';
-import { render } from '@react-email/render';
-import { ConfirmEmail } from '@/components/ConfirmEmail';
-import { transporter } from '@/config';
 import * as process from 'process';
 
 type ModalAuthProps = {

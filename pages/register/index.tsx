@@ -28,7 +28,7 @@ const RegistrationPage = () => {
     handleSubmit,
     control,
     getValues,
-    formState: { errors, isDirty },
+    formState: { errors },
   } = useForm<FormRequiredFields>();
 
   const handleError = (errors: object) => {

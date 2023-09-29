@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import db from '../../../lib/db';
 import { confirmEmailSendHandler } from '@/handlers/auth/confirmEmailSendHandler';
 
 export default async function authHandlers(

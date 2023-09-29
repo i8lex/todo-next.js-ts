@@ -1,4 +1,3 @@
-import { User } from '@/lib/models/user.model';
 import { transporter } from '@/config';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { render } from '@react-email/render';
