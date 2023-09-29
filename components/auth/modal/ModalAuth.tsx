@@ -29,7 +29,7 @@ export const ModalAuth: FC<ModalAuthProps> = ({
         const response = await emailRepeat({ email });
         if ('data' in response) {
           const { data } = response;
-
+          console.log(data);
           fetch(`${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/email`, {
             method: 'POST',
             headers: {
@@ -37,7 +37,9 @@ export const ModalAuth: FC<ModalAuthProps> = ({
             },
             body: JSON.stringify(data),
           })
-            .then((response) => response.json())
+            .then((response) => {
+              console.log(response.json());
+            })
             .catch((error) => {
               console.error('Error:', error);
             });
@@ -46,7 +48,7 @@ export const ModalAuth: FC<ModalAuthProps> = ({
     } catch (err) {
       console.log('error repeat send email');
     }
-    await handleClose();
+    // await handleClose();
   };
   return (
     <Transition show={open} as={Fragment}>
