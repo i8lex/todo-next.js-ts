@@ -4,6 +4,7 @@ import { UserCard } from '@/components/user/UserCard';
 import { Session } from 'next-auth';
 import { GetServerSidePropsContext } from 'next';
 import { getSession } from 'next-auth/react';
+import { Spinner } from '@/components/ui/Spinner';
 
 type GetServerSideProps = Promise<
   | { redirect: { permanent: boolean; destination: string } }
@@ -31,18 +32,28 @@ export const getServerSideProps: (
   };
 };
 const UsersPage = () => {
-  const { data: users } = useGetUsersQuery(undefined, {
+  const { data: users, isSuccess } = useGetUsersQuery(undefined, {
     refetchOnMountOrArgChange: true,
   });
 
   return (
     <>
       <GeneralLayout currentPage={'users'}>
-        <div className="flex h-[89dvh] overflow-y-scroll flex-col gap-6 p-4 border border-stroke rounded-md bg-yellow-10 shadow-inner shadow-dark-60">
-          {users?.map((user) => {
-            return <UserCard key={user._id} user={user} />;
-          })}
-        </div>
+        {isSuccess ? (
+          <div className="flex h-[89dvh] overflow-y-scroll flex-col gap-6 p-4 border border-stroke rounded-md bg-yellow-10 shadow-inner shadow-dark-60">
+            {users?.map((user) => {
+              return <UserCard key={user._id} user={user} />;
+            })}
+          </div>
+        ) : (
+          <div className="flex items-center justify-center h-[80dvh]">
+            <Spinner
+              className={
+                'tablet:w-40 tablet:h-40 h-20 w-20 fill-green-20 text-green-60'
+              }
+            />
+          </div>
+        )}
       </GeneralLayout>
     </>
   );

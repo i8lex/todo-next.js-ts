@@ -1,6 +1,5 @@
 import React, { FC, Fragment, useEffect } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { form } from '@/constants/form';
 import { Event } from '@/types';
 import { Button } from '@/components/ui/Button';
 import { useForm } from 'react-hook-form';

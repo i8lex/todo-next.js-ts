@@ -3,7 +3,6 @@ import ArrowUpIcon from '@/public/IconsSet/chevron-up.svg';
 import ArrowDownIcon from '@/public/IconsSet/chevron-down.svg';
 
 import { useGetEventsQuery, useAddEventMutation } from '@/redux/api/events.api';
-import { form } from '@/constants/form';
 import { ModalEditProject } from '@/components/modal/ModalEditProject';
 import { EventsList } from '@/components/events/EventsList';
 import { GeneralLayout } from '@/components/layouts/General/Layout';

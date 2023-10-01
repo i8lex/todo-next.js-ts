@@ -15,10 +15,23 @@ const chatSlice = createSlice({
     addMessage: (state, action: PayloadAction<Message>) => {
       state.messages.push(action.payload);
     },
-    readMessage: (state, action: PayloadAction<string>) => {
+    deliverMessage: (state, action: PayloadAction<string>) => {
       state.messages = state.messages.map((message) => {
-        if (!message.readBy.includes(action.payload)) {
-          message.readBy.push(action.payload);
+        if (!message.deliveredTo.includes(action.payload)) {
+          message.deliveredTo.push(action.payload);
+        }
+        return message;
+      });
+    },
+    readMessage: (
+      state,
+      action: PayloadAction<{ userId: string; messageId: string }>,
+    ) => {
+      state.messages = state.messages.map((message) => {
+        if (message._id === action.payload.messageId) {
+          if (!message.readBy.includes(action.payload.userId)) {
+            message.readBy.push(action.payload.userId);
+          }
         }
         return message;
       });
@@ -38,6 +51,7 @@ const chatSlice = createSlice({
 export const {
   addMessage,
   readMessage,
+  deliverMessage,
   setUsers,
   setMessagesInitial,
   addChatId,

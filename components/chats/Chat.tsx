@@ -2,40 +2,29 @@ import React, { useEffect, useRef } from 'react';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { useGetChatQuery } from '@/redux/api/chats.api';
 import SendIcon from '@/public/IconsSet/send-01.svg';
-import clsx from 'clsx';
-import useSocket from '@/utils/socket.connection';
-import {
-  addMessage,
-  readMessage,
-  setMessagesInitial,
-  setUsers,
-} from '@/redux/slices/chat.slice';
+import { setUsers } from '@/redux/slices/chat.slice';
 import { useForm } from 'react-hook-form';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
-import { format, parseISO, isToday } from 'date-fns';
 import { scroller } from 'react-scroll';
-import CheckIcon from '@/public/IconsSet/check-square-broken.svg';
+import { MessageCard } from '@/components/chats/MessageCard';
+import { Spinner } from '@/components/ui/Spinner';
+import useSocket from '@/utils/socket.connection';
 type FormRequiredFields = {
   message: string;
 };
 export const Chat = () => {
-  const {
-    name,
-    token,
-    id: userId,
-  } = useAppSelector((state) => state.auth.session);
-
+  const { token, id: userId } = useAppSelector((state) => state.auth.session);
+  const id = useAppSelector((state) => state.auth.session.id);
   const chatId = useAppSelector((state) => state.chats._id);
-  const messages = useAppSelector((state) => state.chats.messages);
   const { data: chat, isSuccess } = useGetChatQuery(chatId!, {
     skip: !chatId,
     refetchOnMountOrArgChange: true,
   });
+
   const socket = useSocket(token, chatId);
   const dispatch = useAppDispatch();
   const scrollRef = useRef<HTMLDivElement | null>(null);
-  const users = useAppSelector((state) => state.chats.users);
   const {
     register,
     reset,
@@ -46,42 +35,9 @@ export const Chat = () => {
   } = useForm<FormRequiredFields>();
   useEffect(() => {
     if (isSuccess && 'messages' in chat) {
-      dispatch(setMessagesInitial(chat.messages));
       dispatch(setUsers(chat.users));
     }
   }, [chatId, isSuccess, chat]);
-
-  useEffect(() => {
-    if (socket && chatId) {
-      socket.on('chatMessage', (message) => {
-        dispatch(addMessage(message));
-        socket.emit('readMessage', { messageId: message._id, chatId });
-      });
-
-      return () => {
-        socket.off('chatMessage');
-      };
-    }
-  }, [socket, chatId]);
-
-  useEffect(() => {
-    scroller.scrollTo('bottomOfList', {
-      smooth: true,
-      duration: 500,
-      containerId: 'list',
-    });
-  }, [messages]);
-
-  useEffect(() => {
-    if (socket && chatId) {
-      socket.on('readMessage', (readBy) => {
-        dispatch(readMessage(readBy.userId));
-      });
-      return () => {
-        socket.off('readMessage');
-      };
-    }
-  }, [socket, chatId]);
 
   const sendMessage = () => {
     if (socket) {
@@ -94,64 +50,27 @@ export const Chat = () => {
     }
   };
 
-  return (
+  useEffect(() => {
+    if (chat?.messages) {
+      const message = chat?.messages.find((message) => {
+        return !message.readBy.includes(id);
+      });
+      scroller.scrollTo(message?._id ? message?._id : 'bottomOfList', {
+        smooth: true,
+        duration: 500,
+        containerId: 'list',
+      });
+    }
+  }, [chat?.messages.length]);
+  return isSuccess && chat ? (
     <div className="relative overflow-y-scroll py-4 border flex flex-col gap-4 justify-between border-stroke rounded-md bg-yellow-10 shadow-inner shadow-dark-60 h-full">
       <div
         id={'list'}
         ref={scrollRef}
         className="flex  flex-col gap-3 tablet:h-full h-[90dvh] overflow-hidden border-b border-stroke mb-4 pb-4 overflow-y-scroll"
       >
-        {messages.map((msg, index) => (
-          <div
-            key={index}
-            className={clsx(
-              msg.username === name
-                ? 'self-end bg-blue-10 shadow-blue-80 border-blue-80'
-                : 'self-start bg-green-10 shadow-green-60 border-green-60 ',
-              'relative flex break-words mx-4 flex-col gap-1 p-2 tablet:max-w-[320px] max-w-[27dvh] w-full shadow-inner  rounded-xl border ',
-            )}
-          >
-            <div
-              className={clsx(
-                msg.username === name ? 'text-blue-80' : 'text-green-60',
-                'text-[8px]   tablet:text-parS w-full flex items-center justify-between font-semibold ',
-              )}
-            >
-              <p className={'truncate'}>
-                {msg.username === name ? 'I am' : msg.username}
-              </p>
-              <p>
-                {isToday(parseISO(msg.created))
-                  ? 'Today'
-                  : format(parseISO(msg.created), 'd MMM yyyy')}{' '}
-                at {format(parseISO(msg.created), 'HH:mm')}
-              </p>
-            </div>
-            <div className="text-parS tablet:text-parL text-dark-100">
-              {msg.message}
-            </div>
-            <div className=" self-end w-4 h-4">
-              {msg.username === name ? (
-                <CheckIcon
-                  onClick={() => {
-                    console.log(
-                      'users',
-                      users,
-                      'msgReadBy',
-                      msg.readBy,
-                      users.every((user) => msg.readBy.includes(user)),
-                    );
-                  }}
-                  className={clsx(
-                    users.every((user) => msg.readBy.includes(user))
-                      ? 'text-green-100'
-                      : 'text-gray-80',
-                    'w-4 h-4',
-                  )}
-                />
-              ) : null}
-            </div>
-          </div>
+        {chat.messages.map((msg) => (
+          <MessageCard key={msg._id} message={msg} />
         ))}
         <div id="bottomOfList" />
       </div>
@@ -182,6 +101,10 @@ export const Chat = () => {
           icon={{ svg: <SendIcon /> }}
         />
       </form>
+    </div>
+  ) : (
+    <div className="flex flex-col justify-center items-center w-full h-full">
+      <Spinner className={'text-green-60 fill-softGreen w-44 h-44'} />
     </div>
   );
 };

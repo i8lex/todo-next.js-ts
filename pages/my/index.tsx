@@ -20,6 +20,7 @@ import { GetServerSidePropsContext } from 'next';
 import { Session } from 'next-auth';
 import { useAppDispatch } from '@/redux/hooks';
 import { setSession } from '@/redux/slices/auth.slice';
+import { Spinner } from '@/components/ui/Spinner';
 
 type MyPageProps = {
   session: SignInResponse & {
@@ -165,16 +166,22 @@ const MyPage: FC<MyPageProps> = ({ session }) => {
             </>
           ) : null}
 
-          {isVisible.connections && isUsersSuccess ? (
-            <div className="overflow-y-auto tablet:overflow-y-scroll">
-              {users?.map((user) => (
-                <UserCard
-                  key={user._id}
-                  user={user}
-                  setIsVisible={setIsVisible}
-                />
-              ))}
-            </div>
+          {isVisible.connections ? (
+            isUsersSuccess ? (
+              <div className="overflow-y-auto flex flex-col gap-4 tablet:overflow-y-scroll">
+                {users?.map((user) => (
+                  <UserCard
+                    key={user._id}
+                    user={user}
+                    setIsVisible={setIsVisible}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="flex items-center justify-center w-full h-full">
+                <Spinner className={'w-40 h-40 fill-green-20 text-green-60'} />
+              </div>
+            )
           ) : null}
           {isVisible.chats ? <Chat /> : null}
         </div>

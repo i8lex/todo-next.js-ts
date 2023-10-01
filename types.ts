@@ -70,6 +70,10 @@ export type Message = {
   message: string;
   created: string;
   readBy: string[];
+  deliveredTo: string[];
+  userId: string;
+  messageId: string;
+  type: string;
   // __v: number;
 };
 
