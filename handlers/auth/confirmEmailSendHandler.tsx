@@ -8,7 +8,6 @@ export const confirmEmailSendHandler = async (
   reply: NextApiResponse,
 ) => {
   const { email, token, name } = request.body;
-  console.log(email, token, name);
   try {
     const url = `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/email/?confirm=${token}`;
 

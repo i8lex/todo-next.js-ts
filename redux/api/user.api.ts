@@ -1,7 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import * as process from 'process';
 import { getSession } from 'next-auth/react';
-
 import { socket } from '@/utils/socket.connection';
 
 type PathInfoResponse = {
@@ -64,7 +63,6 @@ export const userApi = createApi({
           isOnline: boolean;
         }) => {
           updateCachedData((draft) => {
-            console.log('userState', userState);
             draft.map((user) => {
               if (user._id === userState.userId) {
                 user.isOnline = userState.isOnline;

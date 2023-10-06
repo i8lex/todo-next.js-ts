@@ -60,29 +60,9 @@ export const chatsApi = createApi({
       ) {
         const { data: chat } = await cacheDataLoaded;
 
-        // const session = await getSession();
-        // // @ts-ignore
-        // const { id: userId } = session?.user;
-        // console.log(chat);
-        // chat.messages.map((message) => {
-        //   console.log('deliver in first get', message.deliveredTo);
-        //
-        //   if (!message.deliveredTo.includes(userId)) {
-        //     console.log('test');
-        //     socket.emit('isDeliveredMessage', {
-        //       messageId: message._id,
-        //       chatId: message.chatId,
-        //     });
-        //   }
-        // });
-
         const messageListener = async (message: Message) => {
           updateCachedData((draft) => {
             draft.messages.push(message);
-            // socket.emit('isDeliveredMessage', {
-            //   messageId: message._id,
-            //   chatId: message.chatId,
-            // });
           });
         };
         const isDeliveredListener = async (deliveredTo: string) => {

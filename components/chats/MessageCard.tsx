@@ -13,10 +13,9 @@ type MessageCardProps = {
   message: Message;
 };
 export const MessageCard: FC<MessageCardProps> = ({ message }) => {
-  const { name, token } = useAppSelector((state) => state.auth.session);
+  const { name } = useAppSelector((state) => state.auth.session);
   const id = useAppSelector((state) => state.auth.session.id);
   const chatId = useAppSelector((state) => state.chats._id);
-
   const users = useAppSelector((state) => state.chats.users);
 
   return (
@@ -67,15 +66,6 @@ export const MessageCard: FC<MessageCardProps> = ({ message }) => {
             {message.username === name ? (
               users.every((user) => message.deliveredTo.includes(user)) ? (
                 <CheckIcon
-                  onClick={() => {
-                    console.log(
-                      'users',
-                      users,
-                      'deliver',
-                      message.readBy,
-                      users.every((user) => message.deliveredTo.includes(user)),
-                    );
-                  }}
                   className={clsx(
                     users.every((user) => message.readBy.includes(user))
                       ? 'text-green-100'

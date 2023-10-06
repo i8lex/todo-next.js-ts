@@ -7,7 +7,6 @@ import {
 import { useLazyGetEventsQuery } from '@/redux/api/events.api';
 import { setImage } from '@/redux/slices/images.slice';
 import AlertIcon from '@/public/IconsSet/exclamation.svg';
-import * as sharp from 'sharp';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import UploadIcon from '@/public/IconsSet/upload-cloud-02.svg';
 import { Spinner } from '@/components/ui/Spinner';

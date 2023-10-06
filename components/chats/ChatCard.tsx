@@ -8,9 +8,6 @@ type ChatCardProps = {
 };
 export const ChatCard: FC<ChatCardProps> = ({ chat }) => {
   const dispatch = useAppDispatch();
-  //
-  console.log(chat);
-  //@ts-ignore
 
   return (
     <div

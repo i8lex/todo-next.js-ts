@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { useGetChatQuery } from '@/redux/api/chats.api';
 import SendIcon from '@/public/IconsSet/send-01.svg';
