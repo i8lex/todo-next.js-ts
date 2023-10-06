@@ -6,6 +6,7 @@ export const Chats = () => {
   const { data: chats, isSuccess } = useGetAllChatsQuery(undefined, {
     refetchOnMountOrArgChange: true,
   });
+  console.log(chats);
   return (
     <div>
       {isSuccess && chats ? (

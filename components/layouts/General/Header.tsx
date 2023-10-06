@@ -37,7 +37,7 @@ export const GeneralHeader: FC<GeneralHeaderProps> = ({ currentPage }) => {
     }
     socket.timeout(3000).emit('userState', true);
     return () => {
-      socket.emit('userState', false);
+      // socket.emit('userState', false);
       socket.disconnect();
     };
   }, []);
