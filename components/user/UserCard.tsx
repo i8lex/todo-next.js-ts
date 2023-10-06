@@ -14,6 +14,7 @@ import { addChatId } from '@/redux/slices/chat.slice';
 import { useAppDispatch } from '@/redux/hooks';
 import { useCreateChatMutation } from '@/redux/api/chats.api';
 import { DeleteConfirmModal } from '@/components/modal/DeleteConfirmModal';
+import clsx from 'clsx';
 
 type UserCardProps = {
   user: UserDTO;
@@ -38,14 +39,14 @@ export const UserCard: FC<UserCardProps> = ({ user, setIsVisible }) => {
   const addRequestHandler = async () => {
     if (user._id) {
       await addRequestConnect(user?._id);
-      await getUsersTrigger(undefined, false);
+      await getUsersTrigger('', false);
     }
   };
 
   const deleteRequestHandler = async () => {
     if (user._id) {
       await deleteRequestConnect(user?._id!);
-      await getUsersTrigger(undefined, false);
+      await getUsersTrigger('', false);
     }
   };
 
@@ -67,9 +68,17 @@ export const UserCard: FC<UserCardProps> = ({ user, setIsVisible }) => {
       />
       <div className="flex flex-col gap-4 tablet:gap-2 border border-stroke rounded-md p-3 shadow-sm shadow-dark-60 bg-softGreen">
         <div className="flex tablet:flex-row flex-col gap-2 justify-between items-center">
-          <p className="text-dispS2 self-start tablet:self-center text-dark-80 font-semibold">
-            {user.name}
-          </p>
+          <div className="flex gap-2 ">
+            <p className="text-dispS2 self-start tablet:self-center text-dark-80 font-semibold">
+              {user.name}
+            </p>
+            <div
+              className={clsx(
+                user.isOnline ? 'bg-green-100' : 'bg-error-100',
+                'w-3 h-3 rounded-full',
+              )}
+            />
+          </div>
           {user.isConnect === 'true' ? (
             <div className="flex gap-4 items-center w-full tablet:w-fit">
               <p className="text-green-100 text-center text-parS py-1 px-4 border border-green-100 rounded-md">
@@ -173,7 +182,7 @@ export const UserCard: FC<UserCardProps> = ({ user, setIsVisible }) => {
                   <Button
                     onClick={async () => {
                       await deleteRequestConnect(user?._id!);
-                      await getUsersTrigger(undefined, false);
+                      await getUsersTrigger('', false);
                     }}
                     variant="yellowRed"
                     text={'Ignore'}

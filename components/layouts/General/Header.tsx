@@ -8,6 +8,11 @@ import LogOutIcon from '@/public/IconsSet/log-out-01.svg';
 
 import type { Page } from '@/types';
 import type { FC } from 'react';
+// import { useEffect } from 'react';
+// import { io } from 'socket.io-client';
+import { useAppSelector } from '@/redux/hooks';
+import { useEffect } from 'react';
+import { socket } from '@/utils/socket.connection';
 
 export type GeneralHeaderProps = {
   currentPage: Page;
@@ -16,14 +21,42 @@ export type GeneralHeaderProps = {
 export const GeneralHeader: FC<GeneralHeaderProps> = ({ currentPage }) => {
   const router = useRouter();
   const { data: sessionData } = useSession();
-  // if (!sessionData) {
-  //   router.push('/login');
-  // }
+  // const token = useAppSelector((state) => state.auth.session.token);
+  const user = { ...sessionData?.user };
+  //@ts-ignore
+  const { token, id } = user;
+  // console.log(sessionData);
+  // console.log(user);
   const links: Array<{ id: Page; href: string; name: string }> = [
     { id: 'my', href: '/my', name: 'My page' },
     { id: 'events', href: '/events', name: 'Events' },
     { id: 'users', href: '/users', name: 'Users' },
   ];
+  useEffect(() => {
+    // console.log(token);
+    socket.io.opts.extraHeaders = {
+      Authorization: `Bearer ${token}`,
+    };
+    socket.id = id;
+    if (!socket?.connected) {
+      console.log('connect in GeneralHeader');
+
+      socket.connect();
+    }
+    socket.timeout(3000).emit('userState', true);
+    return () => {
+      console.log('disconnect in GeneralHeader');
+      socket.emit('userState', false);
+      socket.disconnect();
+    };
+  }, []);
+  // useEffect(() => {
+  //   if (token) {
+  //     socket.emit('userState', true);
+  //   } else {
+  //     socket.emit('userState', false);
+  //   }
+  // }, [token]);
   return (
     <header className="flex justify-center bg-softGreen px-4 py-2 tablet:px-6">
       <nav className="flex w-full items-center p-0 gap-6 desktop:gap-16">
@@ -33,7 +66,7 @@ export const GeneralHeader: FC<GeneralHeaderProps> = ({ currentPage }) => {
         >
           {/*<Logo className="w-6 tablet:w-7" />*/}Logo here
         </Link>
-        <div className=" dasktop:space-x-8 space-x-4 text-quot font-medium flex desktop:text-parS">
+        <div className=" desktop:space-x-8 space-x-4 text-quot font-medium flex desktop:text-parS">
           {links.map(({ id, name, href }) => {
             const isCurrent = id === currentPage;
             return (
@@ -56,6 +89,7 @@ export const GeneralHeader: FC<GeneralHeaderProps> = ({ currentPage }) => {
       <div className="flex items-center gap-4">
         <button
           onClick={async () => {
+            socket.emit('userState', false);
             await signOut({
               redirect: false,
             });

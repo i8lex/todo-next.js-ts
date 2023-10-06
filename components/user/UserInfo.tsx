@@ -67,29 +67,35 @@ export const UserInfo: FC<UserInfoProps> = ({ userInfo, isSuccess }) => {
           )}
         </div>
         <div className="flex flex-col gap-1 w-full">
-          <p className="text-dispS1 hidden laptop:block text-dark-100 font-bold">
+          <p className="text-dispS3 hidden laptop:block text-dark-80 ">
             {userInfo?.name}
           </p>
-          <div className="text-dispS2 text-dark-100 flex flex-col">
+          <div className="text-dispS2 text-dark-100 flex flex-col font-bold">
             <p className="text-dispS2">{userInfo?.firstname}</p>
-            <p className="ml-6 self-start">{userInfo?.lastname}</p>
+            <p className=" self-start">{userInfo?.lastname}</p>
           </div>
           <div className="flex justify-between w-full text-parS text-dark-80">
-            <p>
-              Gender:{' '}
-              <span className="text-dark-100 font-semibold">
-                {userInfo?.gender}
-              </span>{' '}
-            </p>
-            <p className="text-dark-80">
-              Birthday:{' '}
-              <span className="text-dark-100 font-semibold">{birthday}</span>{' '}
-              y.o.
-            </p>
+            {userInfo?.gender ? (
+              <p>
+                Gender:{' '}
+                <span className="text-dark-100 font-semibold">
+                  {userInfo?.gender}
+                </span>{' '}
+              </p>
+            ) : null}
+
+            {birthday ? (
+              <p className="text-dark-80">
+                Birthday:{' '}
+                <span className="text-dark-100 font-semibold">{birthday}</span>{' '}
+                y.o.
+              </p>
+            ) : null}
           </div>
 
           <p className="text-parL text-dark-80 font-bold self-end">
-            {userInfo?.role} at {userInfo?.company}
+            {userInfo?.role} {userInfo?.role && userInfo?.company ? 'at' : ' '}{' '}
+            {userInfo?.company}
           </p>
         </div>
       </div>

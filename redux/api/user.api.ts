@@ -1,7 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import * as process from 'process';
 import { getSession } from 'next-auth/react';
-import { TagDescription } from '@reduxjs/toolkit/dist/query/react';
+
+import { socket } from '@/utils/socket.connection';
 
 type PathInfoResponse = {
   message: string;
@@ -31,9 +32,9 @@ export type UserDTO = {
     buffer: string;
     mimeType: string;
   };
+  isOnline?: boolean;
 };
 const prepareHeaders = async (headers: Headers) => {
-  // const token = (getState() as AuthState).auth.token;
   const session = await getSession();
   // @ts-ignore
   const token = session?.user?.token;
@@ -50,29 +51,43 @@ export const userApi = createApi({
     prepareHeaders,
   }),
   endpoints: (build) => ({
-    getUsers: build.query<UserDTO[], void>({
-      query: () => 'users',
-      providesTags: (
-        result: UserDTO[] | undefined,
-      ): (TagDescription<'Users'> | TagDescription<'User'>)[] =>
-        result
-          ? [
-              ...result.map(({ _id }) => ({ type: 'User' as const, _id })),
-              { type: 'Users' as const, id: 'LIST' },
-            ]
-          : [{ type: 'Users' as const, id: 'LIST' }],
-    }),
-    getConnectedUsers: build.query<UserDTO[], void>({
-      query: () => 'users/connected',
-      providesTags: (
-        result: UserDTO[] | undefined,
-      ): (TagDescription<'Users'> | TagDescription<'User'>)[] =>
-        result
-          ? [
-              ...result.map(({ _id }) => ({ type: 'User' as const, _id })),
-              { type: 'Users' as const, id: 'LIST' },
-            ]
-          : [{ type: 'Users' as const, id: 'LIST' }],
+    getUsers: build.query<UserDTO[], string>({
+      query: (id?) => `users/${id}`,
+      async onCacheEntryAdded(
+        arg,
+        { updateCachedData, cacheDataLoaded, cacheEntryRemoved },
+      ) {
+        await cacheDataLoaded;
+
+        const usersListener = (userState: {
+          userId: string;
+          isOnline: boolean;
+        }) => {
+          updateCachedData((draft) => {
+            console.log('userState', userState);
+            draft.map((user) => {
+              if (user._id === userState.userId) {
+                user.isOnline = userState.isOnline;
+              }
+              return user;
+            });
+          });
+        };
+
+        try {
+          socket.disconnect();
+          socket.on('userState', usersListener);
+          if (!socket?.connected) {
+            socket.connect();
+          }
+        } catch (err) {
+          console.log(err);
+        }
+        await cacheEntryRemoved;
+        socket.off('userState');
+
+        socket.disconnect();
+      },
     }),
     pathInfo: build.mutation<PathInfoResponse, UserDTO>({
       query: (body) => ({
@@ -107,8 +122,6 @@ export const {
   useGetMyInfoQuery,
   useLazyGetMyInfoQuery,
   useGetUsersQuery,
-  useGetConnectedUsersQuery,
-  useLazyGetConnectedUsersQuery,
   useLazyGetUsersQuery,
   useAddRequestConnectMutation,
   useDeleteRequestConnectMutation,

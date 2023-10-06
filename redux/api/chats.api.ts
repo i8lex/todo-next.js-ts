@@ -3,10 +3,11 @@ import * as process from 'process';
 import { getSession } from 'next-auth/react';
 import { Chat, Message } from '@/types';
 import { TagDescription } from '@reduxjs/toolkit/dist/query/react';
-import { io } from 'socket.io-client';
+import { socket } from '@/utils/socket.connection';
 
 export type ChatDTO = {
   _id?: string;
+  title?: string;
   user?: string;
   owner?: string;
   event?: string;
@@ -15,15 +16,7 @@ export type ChatDTO = {
   messages: Message[];
   microtask?: string;
   users: string[];
-};
-
-export const useSocket = (token: string, chatId?: string) => {
-  return io(process.env.NEXT_PUBLIC_BASE_API_URL || 'URL', {
-    query: { room: chatId },
-    extraHeaders: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  userNames?: string[];
 };
 
 const prepareHeaders = async (headers: Headers) => {
@@ -65,32 +58,48 @@ export const chatsApi = createApi({
         arg,
         { updateCachedData, cacheDataLoaded, cacheEntryRemoved },
       ) {
-        const session = await getSession();
-        // @ts-ignore
-        const token = session?.user?.token;
-        const data = await cacheDataLoaded;
-        const { _id: chatId } = data.data;
-        const socket = useSocket(token, chatId);
-        const messageListener = (message: Message) => {
+        const { data: chat } = await cacheDataLoaded;
+
+        // const session = await getSession();
+        // // @ts-ignore
+        // const { id: userId } = session?.user;
+        // console.log(chat);
+        // chat.messages.map((message) => {
+        //   console.log('deliver in first get', message.deliveredTo);
+        //
+        //   if (!message.deliveredTo.includes(userId)) {
+        //     console.log('test');
+        //     socket.emit('isDeliveredMessage', {
+        //       messageId: message._id,
+        //       chatId: message.chatId,
+        //     });
+        //   }
+        // });
+
+        const messageListener = async (message: Message) => {
           updateCachedData((draft) => {
             draft.messages.push(message);
-            socket.emit('isDeliveredMessage', {
-              messageId: message._id,
-              chatId,
-            });
+            // socket.emit('isDeliveredMessage', {
+            //   messageId: message._id,
+            //   chatId: message.chatId,
+            // });
           });
         };
-        const isDeliveredListener = (deliveredTo: string) => {
+        const isDeliveredListener = async (deliveredTo: string) => {
           updateCachedData((draft) => {
             draft.messages = draft.messages.map((message) => {
               if (!message.deliveredTo.includes(deliveredTo)) {
+                socket.emit('isDeliveredMessage', {
+                  messageId: message._id,
+                  chatId: message.chatId,
+                });
                 message.deliveredTo.push(deliveredTo);
               }
               return message;
             });
           });
         };
-        const isReadMessageListener = (body: {
+        const isReadMessageListener = async (body: {
           userId: string;
           messageId: string;
         }) => {
@@ -107,9 +116,15 @@ export const chatsApi = createApi({
         };
 
         try {
+          socket.disconnect();
+
           socket.on('chatMessage', messageListener);
           socket.on('isDeliveredMessage', isDeliveredListener);
           socket.on('readMessage', isReadMessageListener);
+          if (!socket?.connected) {
+            socket.connect();
+            socket.emit('join-room', chat._id);
+          }
         } catch (err) {
           console.log(err);
         }
@@ -136,8 +151,5 @@ export const chatsApi = createApi({
   }),
 });
 
-export const {
-  useCreateChatMutation,
-
-  useGetChatQuery,
-} = chatsApi;
+export const { useCreateChatMutation, useGetAllChatsQuery, useGetChatQuery } =
+  chatsApi;

@@ -72,6 +72,7 @@ export type Message = {
   readBy: string[];
   deliveredTo: string[];
   userId: string;
+  chatId: string;
   messageId: string;
   type: string;
   // __v: number;

@@ -7,7 +7,7 @@ import {
 import { useLazyGetEventsQuery } from '@/redux/api/events.api';
 import { setImage } from '@/redux/slices/images.slice';
 import AlertIcon from '@/public/IconsSet/exclamation.svg';
-
+import * as sharp from 'sharp';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import UploadIcon from '@/public/IconsSet/upload-cloud-02.svg';
 import { Spinner } from '@/components/ui/Spinner';
@@ -63,10 +63,10 @@ export const ImageUploader: FC<ImageUploaderProps> = ({
           const reader = new FileReader();
           const file = files[0];
           const compressedFile = await imageCompression(file, {
-            maxSizeMB: 1,
+            maxSizeMB: 0.4,
           });
 
-          await reader.addEventListener('load', () => {
+          await reader.addEventListener('load', async () => {
             dispatch(
               setImage({
                 filename: file.name,

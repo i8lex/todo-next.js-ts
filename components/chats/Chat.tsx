@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { useGetChatQuery } from '@/redux/api/chats.api';
 import SendIcon from '@/public/IconsSet/send-01.svg';
@@ -9,12 +9,12 @@ import { Button } from '@/components/ui/Button';
 import { scroller } from 'react-scroll';
 import { MessageCard } from '@/components/chats/MessageCard';
 import { Spinner } from '@/components/ui/Spinner';
-import useSocket from '@/utils/socket.connection';
+import { socket } from '@/utils/socket.connection';
 type FormRequiredFields = {
   message: string;
 };
 export const Chat = () => {
-  const { token, id: userId } = useAppSelector((state) => state.auth.session);
+  const { id: userId } = useAppSelector((state) => state.auth.session);
   const id = useAppSelector((state) => state.auth.session.id);
   const chatId = useAppSelector((state) => state.chats._id);
   const { data: chat, isSuccess } = useGetChatQuery(chatId!, {
@@ -22,7 +22,8 @@ export const Chat = () => {
     refetchOnMountOrArgChange: true,
   });
 
-  const socket = useSocket(token, chatId);
+  socket.io.opts.query = { room: chatId };
+
   const dispatch = useAppDispatch();
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const {
@@ -35,19 +36,33 @@ export const Chat = () => {
   } = useForm<FormRequiredFields>();
   useEffect(() => {
     if (isSuccess && 'messages' in chat) {
+      chat?.messages.forEach((message) => {
+        if (!message.readBy.includes(id)) {
+          socket.emit('isDeliveredMessage', {
+            messageId: message._id,
+            chatId: chat?._id,
+          });
+        }
+      });
+    }
+  }, [chat?.messages.length]);
+  useEffect(() => {
+    if (isSuccess && 'messages' in chat) {
       dispatch(setUsers(chat.users));
     }
   }, [chatId, isSuccess, chat]);
 
   const sendMessage = () => {
-    if (socket) {
-      socket.emit('chatMessage', {
-        message: getValues('message'),
-        userId,
-        chatId: chatId,
-      });
-      reset();
+    if (!socket?.connected) {
+      socket?.connect();
     }
+
+    socket?.emit('chatMessage', {
+      message: getValues('message'),
+      userId,
+      chatId: chatId,
+    });
+    reset();
   };
 
   useEffect(() => {
@@ -62,6 +77,20 @@ export const Chat = () => {
       });
     }
   }, [chat?.messages.length]);
+
+  useEffect(() => {
+    if (!socket?.connected) {
+      socket?.connect();
+
+      socket.emit('join-room', chatId);
+    }
+
+    return () => {
+      socket.emit('leave-room', chatId);
+      socket.disconnect();
+    };
+  }, []);
+
   return isSuccess && chat ? (
     <div className="relative overflow-y-scroll py-4 border flex flex-col gap-4 justify-between border-stroke rounded-md bg-yellow-10 shadow-inner shadow-dark-60 h-full">
       <div

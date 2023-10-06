@@ -19,6 +19,10 @@ export const DeleteConfirmModal: FC<DeleteConfirmModalProps> = ({
   messageText,
   buttonText,
 }) => {
+  const handleAction = () => {
+    Action();
+    setShowDeleteConfirmModal(false);
+  };
   return (
     <>
       <Transition show={showDeleteConfirmModal} as={Fragment}>
@@ -90,7 +94,7 @@ export const DeleteConfirmModal: FC<DeleteConfirmModalProps> = ({
                         <button
                           type="button"
                           className="font-medium text-errorText py-2 px-4 shadow-md shadow-dark-60 hover:shadow-sm hover:shadow-dark-60 bg-white border border-error-40 hover:border-error-100 rounded-md w-full tablet:w-[150px]"
-                          onClick={Action}
+                          onClick={handleAction}
                         >
                           {buttonText}
                         </button>

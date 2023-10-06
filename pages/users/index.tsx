@@ -32,10 +32,9 @@ export const getServerSideProps: (
   };
 };
 const UsersPage = () => {
-  const { data: users, isSuccess } = useGetUsersQuery(undefined, {
+  const { data: users, isSuccess } = useGetUsersQuery('', {
     refetchOnMountOrArgChange: true,
   });
-
   return (
     <>
       <GeneralLayout currentPage={'users'}>

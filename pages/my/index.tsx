@@ -1,9 +1,6 @@
 import { GeneralLayout } from '@/components/layouts/General/Layout';
 
-import {
-  useGetConnectedUsersQuery,
-  useGetMyInfoQuery,
-} from '@/redux/api/user.api';
+import { useGetUsersQuery, useGetMyInfoQuery } from '@/redux/api/user.api';
 import { Button } from '@/components/ui/Button';
 import React, { FC, useEffect, useState } from 'react';
 
@@ -18,9 +15,11 @@ import { Chat } from '@/components/chats/Chat';
 import { getSession, SignInResponse } from 'next-auth/react';
 import { GetServerSidePropsContext } from 'next';
 import { Session } from 'next-auth';
-import { useAppDispatch } from '@/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setSession } from '@/redux/slices/auth.slice';
 import { Spinner } from '@/components/ui/Spinner';
+import { addChatId } from '@/redux/slices/chat.slice';
+import { Chats } from '@/components/chats/Chats';
 
 type MyPageProps = {
   session: SignInResponse & {
@@ -71,10 +70,11 @@ const MyPage: FC<MyPageProps> = ({ session }) => {
     undefined,
     { refetchOnMountOrArgChange: true },
   );
-  const { data: users, isSuccess: isUsersSuccess } = useGetConnectedUsersQuery(
-    undefined,
+  const { data: users, isSuccess: isUsersSuccess } = useGetUsersQuery(
+    'connected',
     { refetchOnMountOrArgChange: true },
   );
+  const chatId = useAppSelector((state) => state.chats._id);
   const [isVisible, setIsVisible] = useState({
     settings: false,
     connections: true,
@@ -104,6 +104,7 @@ const MyPage: FC<MyPageProps> = ({ session }) => {
                 text={''}
                 size={'iconbase'}
                 onClick={() => {
+                  dispatch(addChatId(''));
                   setIsVisible({
                     settings: false,
                     connections: false,
@@ -183,7 +184,11 @@ const MyPage: FC<MyPageProps> = ({ session }) => {
               </div>
             )
           ) : null}
-          {isVisible.chats ? <Chat /> : null}
+          {isVisible.chats && chatId ? (
+            <Chat />
+          ) : isVisible.chats ? (
+            <Chats />
+          ) : null}
         </div>
       </div>
     </GeneralLayout>

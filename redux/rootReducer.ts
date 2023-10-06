@@ -8,7 +8,6 @@ import { imageApi } from '@/redux/api/images.api';
 import { userApi } from '@/redux/api/user.api';
 import { chatsApi } from '@/redux/api/chats.api';
 import authSlice from '@/redux/slices/auth.slice';
-import socketSlice from '@/redux/slices/socket.slice';
 
 const createNoopStorage = () => {
   return {
@@ -29,7 +28,6 @@ const combinedReducer = combineReducers({
   events: eventsSlice,
   image: imagesSlice,
   chats: chatsSlice,
-  webSocket: socketSlice,
   [userApi.reducerPath]: userApi.reducer,
   [chatsApi.reducerPath]: chatsApi.reducer,
   [authApi.reducerPath]: authApi.reducer,

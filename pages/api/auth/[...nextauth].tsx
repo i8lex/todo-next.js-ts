@@ -3,6 +3,7 @@ import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import type { NextAuthOptions } from 'next-auth';
 import * as process from 'process';
+import { socket } from '@/utils/socket.connection';
 
 const authOptions: NextAuthOptions = {
   session: {
