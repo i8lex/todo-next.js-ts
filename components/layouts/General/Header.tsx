@@ -10,6 +10,9 @@ import type { Page } from '@/types';
 import type { FC } from 'react';
 import { useEffect } from 'react';
 import { socket } from '@/utils/socket.connection';
+import { useGetAllChatsQuery } from '@/redux/api/chats.api';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { setChats } from '@/redux/slices/chat.slice';
 
 export type GeneralHeaderProps = {
   currentPage: Page;
@@ -17,37 +20,44 @@ export type GeneralHeaderProps = {
 
 export const GeneralHeader: FC<GeneralHeaderProps> = ({ currentPage }) => {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const { data: sessionData } = useSession();
-  // const token = useAppSelector((state) => state.auth.session.token);
+  const { data: chats, isSuccess } = useGetAllChatsQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
+  const chatsFromStore = useAppSelector((state) => state.chat.chats);
   const user = { ...sessionData?.user };
   //@ts-ignore
-  const { token, id } = user;
+  const { token } = user;
   const links: Array<{ id: Page; href: string; name: string }> = [
     { id: 'my', href: '/my', name: 'My page' },
     { id: 'events', href: '/events', name: 'Events' },
     { id: 'users', href: '/users', name: 'Users' },
   ];
   useEffect(() => {
-    socket.io.opts.extraHeaders = {
-      Authorization: `Bearer ${token}`,
-    };
-    socket.id = id;
     if (!socket?.connected) {
+      socket.io.opts.extraHeaders = {
+        Authorization: `Bearer ${token}`,
+      };
       socket.connect();
     }
-    socket.timeout(3000).emit('userState', true);
     return () => {
-      // socket.emit('userState', false);
       socket.disconnect();
     };
   }, []);
-  // useEffect(() => {
-  //   if (token) {
-  //     socket.emit('userState', true);
-  //   } else {
-  //     socket.emit('userState', false);
-  //   }
-  // }, [token]);
+
+  useEffect(() => {
+    if (chats && isSuccess) {
+      dispatch(setChats(chats));
+    }
+  }, [chats, isSuccess]);
+
+  const getUnreadMessagesQuantity = () => {
+    return chatsFromStore.reduce((acc, chat) => {
+      return acc + chat.messages.length;
+    }, 0);
+  };
+
   return (
     <header className="flex justify-center bg-softGreen px-4 py-2 tablet:px-6">
       <nav className="flex w-full items-center p-0 gap-6 desktop:gap-16">
@@ -64,14 +74,20 @@ export const GeneralHeader: FC<GeneralHeaderProps> = ({ currentPage }) => {
               <Link
                 key={id}
                 className={clsx(
-                  'rounded-md py-1 px-2 focus:border-green-80 focus:outline-none focus:ring-2 focus:ring-green-80',
+                  'relative rounded-md py-1 px-2 focus:border-green-80 focus:outline-none focus:ring-2 focus:ring-green-80',
                   isCurrent
                     ? 'bg-white shadow-sm shadow-dark-60 text-darkSkyBlue-90 '
-                    : 'bg-softGreen shadow-md shadow-dark-60 text-darkSkyBlue-60 hover:bg-darkSkyBlue-20',
+                    : 'bg-softGreen shadow-md shadow-dark-60 text-darkSkyBlue-60 hover:shadow-sm hover:shadow-dark-60 hover:bg-darkSkyBlue-20',
                 )}
                 href={href}
               >
-                {name}
+                <div>{name}</div>
+                {id === 'my' && getUnreadMessagesQuantity() > 0 ? (
+                  <div className="absolute -right-1 -top-1 text-errorText text-[10px]  p-1 w-4 h-4 flex justify-center items-center text-darkSkyBlue-60 shadow-inner shadow-dark-60 bg-white  rounded-full">
+                    {/*<div className="bg-error-100 w-1 h-1 rounded-full animate-ping  " />*/}
+                    {getUnreadMessagesQuantity()}
+                  </div>
+                ) : null}
               </Link>
             );
           })}

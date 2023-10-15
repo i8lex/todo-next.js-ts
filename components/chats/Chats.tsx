@@ -1,15 +1,20 @@
-import { useGetAllChatsQuery } from '@/redux/api/chats.api';
+import { useLazyGetAllChatsQuery } from '@/redux/api/chats.api';
 import { Spinner } from '@/components/ui/Spinner';
 import { ChatCard } from '@/components/chats/ChatCard';
+import { useEffect } from 'react';
+import { useAppSelector } from '@/redux/hooks';
 
 export const Chats = () => {
-  const { data: chats, isSuccess } = useGetAllChatsQuery(undefined, {
-    refetchOnMountOrArgChange: true,
-  });
-  console.log(chats);
+  const [getAllChatsTrigger] = useLazyGetAllChatsQuery();
+  const chats = useAppSelector((state) => state.chat.chats);
+
+  useEffect(() => {
+    getAllChatsTrigger(undefined, false);
+  }, []);
+
   return (
-    <div>
-      {isSuccess && chats ? (
+    <div className="flex flex-col gap-4">
+      {chats ? (
         chats.map((chat) => <ChatCard key={chat._id} chat={chat} />)
       ) : (
         <div className={'flex items-center justify-center w-full h-full'}>

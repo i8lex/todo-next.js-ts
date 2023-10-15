@@ -1,11 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Chat, Message } from '@/types';
+import { Message } from '@/types';
+import { ChatDTO, chatsApi } from '@/redux/api/chats.api';
 
-const initialState: Chat = {
+const initialState = {
   _id: '',
   user: '',
-  users: [],
+  users: [] as string[],
   messages: [] as Message[],
+  chats: [] as ChatDTO[],
 };
 
 const chatSlice = createSlice({
@@ -45,15 +47,50 @@ const chatSlice = createSlice({
     addChatId: (state, action: PayloadAction<string>) => {
       state._id = action.payload;
     },
+    setChats: (state, action: PayloadAction<ChatDTO[]>) => {
+      state.chats = action.payload;
+    },
+    addUnreadMessage: (
+      state,
+      action: PayloadAction<{
+        users: string[];
+        chatId: string;
+        _id: string;
+      }>,
+    ) => {
+      state.chats.map((chat) => {
+        if (chat._id === action.payload.chatId) {
+          chat.messages.push(action.payload);
+        }
+        return chat;
+      });
+    },
+    readMessages: (
+      state,
+      action: PayloadAction<{
+        userId: string;
+        messageId: string;
+        chatId: string;
+      }>,
+    ) => {
+      state.chats = state.chats.map((chat) => {
+        if (chat._id === action.payload.chatId) {
+          chat.messages = chat.messages.filter((message) => {
+            return message._id !== action.payload.messageId;
+          });
+        }
+        return chat;
+      });
+    },
   },
 });
 
 export const {
-  addMessage,
+  setChats,
+  readMessages,
+  addUnreadMessage,
   readMessage,
-  deliverMessage,
   setUsers,
-  setMessagesInitial,
   addChatId,
 } = chatSlice.actions;
 export default chatSlice.reducer;

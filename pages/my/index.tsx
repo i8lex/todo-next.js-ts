@@ -20,6 +20,7 @@ import { setSession } from '@/redux/slices/auth.slice';
 import { Spinner } from '@/components/ui/Spinner';
 import { addChatId } from '@/redux/slices/chat.slice';
 import { Chats } from '@/components/chats/Chats';
+import { socket } from '@/utils/socket.connection';
 
 type MyPageProps = {
   session: SignInResponse & {
@@ -43,7 +44,9 @@ export const getServerSideProps: (
   ctx: GetServerSidePropsContext,
 ) => GetServerSideProps = async (ctx) => {
   const session = await getSession(ctx);
-  if (!session) {
+  const currentDate = new Date();
+
+  if (!session || new Date(session.expires) < currentDate) {
     return {
       redirect: {
         destination: '/login',
@@ -51,6 +54,7 @@ export const getServerSideProps: (
       },
     };
   }
+
   return {
     props: {
       session,
@@ -74,7 +78,7 @@ const MyPage: FC<MyPageProps> = ({ session }) => {
     'connected',
     { refetchOnMountOrArgChange: true },
   );
-  const chatId = useAppSelector((state) => state.chats._id);
+  const chatId = useAppSelector((state) => state.chat._id);
   const [isVisible, setIsVisible] = useState({
     settings: false,
     connections: true,
@@ -91,7 +95,8 @@ const MyPage: FC<MyPageProps> = ({ session }) => {
             <p className="tablet:text-dispS1 hidden tablet:block text-dark-100 font-bold">
               {isVisible.settings ? 'Settings and info' : ''}
               {isVisible.connections ? 'My connections' : ''}
-              {isVisible.chats ? 'My discussions' : ''}
+              {isVisible.chats && !chatId ? 'My discussions' : ''}
+              {isVisible.chats && chatId ? 'Chat' : ''}
             </p>
             <div className="flex items-center gap-4 px-4 py-2 border border-stroke rounded-md bg-softGreen shadow-inner shadow-dark-60 w-fit self-end">
               <Button
