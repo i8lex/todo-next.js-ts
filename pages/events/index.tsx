@@ -14,7 +14,6 @@ import { useForm } from 'react-hook-form';
 import { Input } from '@/components/ui/Input';
 import { Session } from 'next-auth';
 import { GetServerSidePropsContext } from 'next';
-import { socket } from '@/utils/socket.connection';
 
 type FormRequiredFields = {
   title: string;

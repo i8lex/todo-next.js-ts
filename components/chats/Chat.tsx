@@ -21,9 +21,6 @@ export const Chat = () => {
     skip: !chatId,
     refetchOnMountOrArgChange: true,
   });
-  const getUsersForDelivery = () => {
-    return chat?.users.filter((user) => user !== userId);
-  };
 
   socket.io.opts.query = { room: chatId };
 

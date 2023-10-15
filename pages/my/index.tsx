@@ -20,7 +20,6 @@ import { setSession } from '@/redux/slices/auth.slice';
 import { Spinner } from '@/components/ui/Spinner';
 import { addChatId } from '@/redux/slices/chat.slice';
 import { Chats } from '@/components/chats/Chats';
-import { socket } from '@/utils/socket.connection';
 
 type MyPageProps = {
   session: SignInResponse & {

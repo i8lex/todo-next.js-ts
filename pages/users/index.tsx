@@ -5,7 +5,6 @@ import { Session } from 'next-auth';
 import { GetServerSidePropsContext } from 'next';
 import { getSession } from 'next-auth/react';
 import { Spinner } from '@/components/ui/Spinner';
-import { socket } from '@/utils/socket.connection';
 
 type GetServerSideProps = Promise<
   | { redirect: { permanent: boolean; destination: string } }

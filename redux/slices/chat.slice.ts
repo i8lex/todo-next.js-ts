@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Message } from '@/types';
-import { ChatDTO, chatsApi } from '@/redux/api/chats.api';
+import { ChatDTO } from '@/redux/api/chats.api';
 
 const initialState = {
   _id: '',

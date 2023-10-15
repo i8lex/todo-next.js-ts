@@ -3,7 +3,6 @@ import * as process from 'process';
 import { getSession } from 'next-auth/react';
 import { Chat, Message } from '@/types';
 import { socket } from '@/utils/socket.connection';
-import { setChats } from '@/redux/slices/chat.slice';
 import { TagDescription } from '@reduxjs/toolkit/dist/query/react';
 
 export type ChatDTO = {
