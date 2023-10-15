@@ -75,6 +75,7 @@ export type Message = {
   chatId: string;
   messageId: string;
   type: string;
+  event?: 'deliver' | 'read';
   // __v: number;
 };
 

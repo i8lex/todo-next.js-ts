@@ -25,6 +25,7 @@ export const getServerSideProps: (
       },
     };
   }
+
   return {
     props: {
       session,

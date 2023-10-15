@@ -73,18 +73,18 @@ export const userApi = createApi({
         };
 
         try {
-          socket.disconnect();
+          // socket.disconnect();
           socket.on('userState', usersListener);
-          if (!socket?.connected) {
-            socket.connect();
-          }
+          // if (!socket?.connected) {
+          //   socket.connect();
+          // }
         } catch (err) {
           console.log(err);
         }
         await cacheEntryRemoved;
         socket.off('userState');
 
-        socket.disconnect();
+        // socket.disconnect();
       },
     }),
     pathInfo: build.mutation<PathInfoResponse, UserDTO>({

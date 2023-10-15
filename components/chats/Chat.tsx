@@ -16,7 +16,7 @@ type FormRequiredFields = {
 export const Chat = () => {
   const { id: userId } = useAppSelector((state) => state.auth.session);
   const id = useAppSelector((state) => state.auth.session.id);
-  const chatId = useAppSelector((state) => state.chats._id);
+  const chatId = useAppSelector((state) => state.chat._id);
   const { data: chat, isSuccess } = useGetChatQuery(chatId!, {
     skip: !chatId,
     refetchOnMountOrArgChange: true,
@@ -34,18 +34,7 @@ export const Chat = () => {
     control,
     formState: { errors },
   } = useForm<FormRequiredFields>();
-  useEffect(() => {
-    if (isSuccess && 'messages' in chat) {
-      chat?.messages.forEach((message) => {
-        if (!message.readBy.includes(id)) {
-          socket.emit('isDeliveredMessage', {
-            messageId: message._id,
-            chatId: chat?._id,
-          });
-        }
-      });
-    }
-  }, [chat?.messages.length]);
+
   useEffect(() => {
     if (isSuccess && 'messages' in chat) {
       dispatch(setUsers(chat.users));
@@ -53,13 +42,11 @@ export const Chat = () => {
   }, [chatId, isSuccess, chat]);
 
   const sendMessage = () => {
-    if (!socket?.connected) {
-      socket?.connect();
-    }
-
     socket?.emit('chatMessage', {
       message: getValues('message'),
       userId,
+      // users: getUsersForDelivery(),
+      users: chat?.users,
       chatId: chatId,
     });
     reset();
@@ -68,7 +55,7 @@ export const Chat = () => {
   useEffect(() => {
     if (chat?.messages) {
       const message = chat?.messages.find((message) => {
-        return !message.readBy.includes(id);
+        return !message?.readBy?.includes(id);
       });
       scroller.scrollTo(message?._id ? message?._id : 'bottomOfList', {
         smooth: true,
@@ -78,18 +65,12 @@ export const Chat = () => {
     }
   }, [chat?.messages.length]);
 
-  useEffect(() => {
-    if (!socket?.connected) {
-      socket?.connect();
-
-      socket.emit('join-room', chatId);
-    }
-
-    return () => {
-      socket.emit('leave-room', chatId);
-      socket.disconnect();
-    };
-  }, []);
+  // useEffect(() => {
+  //   socket.emit('join-room', chatId);
+  //   return () => {
+  //     socket.emit('leave-room', chatId);
+  //   };
+  // }, [chatId]);
 
   return isSuccess && chat ? (
     <div className="relative overflow-y-scroll py-4 border flex flex-col gap-4 justify-between border-stroke rounded-md bg-yellow-10 shadow-inner shadow-dark-60 h-full">

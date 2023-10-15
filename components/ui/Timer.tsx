@@ -82,7 +82,7 @@ export const Timer: FC<TimerProps> = ({ deadline }) => {
               TIME IS UP
             </p>
           ) : (
-            <div className="relative text-quot tablet:text-[20px] truncate leading-none text-center font-digital bg-[#CEE7CE] border border-stroke shadow-sm shadow-dark-60 rounded-[3px]">
+            <div className="relative text-quot tablet:text-[20px] truncate leading-none text-center font-digital bg-[#1C8D0444] border border-stroke shadow-sm shadow-dark-60 rounded-[3px]">
               <p className="py-0.5 px-1 tablet:py-2 tablet:px-4 text-gray-60">
                 88:88:88
               </p>
