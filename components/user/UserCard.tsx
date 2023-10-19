@@ -132,7 +132,7 @@ export const UserCard: FC<UserCardProps> = ({ user, setIsVisible }) => {
                 <p>{user.firstname}</p>
                 <p>{user.lastname}</p>
               </div>
-              <p>{user.birthday}y.o.</p>
+              {user.birthday ? <p>{user.birthday}y.o.</p> : null}
               <p className="text-parM text-dark-80 font-normal">
                 {user.company && user.role
                   ? `${user.role} at ${user.company}`
