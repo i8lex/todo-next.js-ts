@@ -94,5 +94,5 @@ $ npm run lint
 
 - Author - Oleksii Medvediev
 - Linkedin - https://www.linkedin.com/in/link-oleksii-medvediev/
-
+- telegram - @ilex8d
 #
