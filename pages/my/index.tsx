@@ -89,7 +89,7 @@ const MyPage: FC<MyPageProps> = ({ session }) => {
         <div className="p-4 border border-stroke rounded-md bg-yellow-10 shadow-inner shadow-dark-60 flex-1">
           <UserInfo userInfo={infoData} isSuccess={isInfoSuccess} />
         </div>
-        <div className="flex tablet:h-[89dvh] h-full laptop:min-w-[572px] tablet:min-w-[400px] flex-col gap-6 justify-between tablet:justify-start bg-softGreen w-full shadow-inner shadow-dark-60 tablet:w-fit border border-stroke rounded-md p-4">
+        <div className="flex tablet:h-[89dvh] h-full laptop:min-w-143 tablet:min-w-100 flex-col gap-6 justify-between tablet:justify-start bg-softGreen w-full shadow-inner shadow-dark-60 tablet:w-fit border border-stroke rounded-md p-4">
           <div className="flex gap-4 items-center  justify-between self-end w-fit tablet:w-full">
             <p className="tablet:text-dispS1 hidden tablet:block text-dark-100 font-bold">
               {isVisible.settings ? 'Settings and info' : ''}

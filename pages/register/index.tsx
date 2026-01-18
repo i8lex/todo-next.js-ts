@@ -130,7 +130,7 @@ const RegistrationPage = () => {
               })}
             />
 
-            <div className="relative tablet:w-[390px]">
+            <div className="relative tablet:w-97.5">
               <Input
                 label={'Enter your password'}
                 isRequired={true}
@@ -154,7 +154,7 @@ const RegistrationPage = () => {
                 {!showPassword ? <EyeIcon /> : <EyeOffIcon />}
               </div>
             </div>
-            <div className="relative tablet:w-[390px]">
+            <div className="relative tablet:w-97.5">
               <Input
                 label={'Confirm your password'}
                 isRequired={true}
@@ -190,7 +190,7 @@ const RegistrationPage = () => {
           variant={'primary'}
           size={'base'}
           type={'submit'}
-          className="w-full tablet:w-[180px] mb-6"
+          className="w-full tablet:w-45 mb-6"
         />
       </form>
     </AuthorizationLayout>
