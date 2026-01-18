@@ -67,8 +67,8 @@ export const Timer: FC<TimerProps> = ({ deadline }) => {
   const days = Math.floor((remainingTimeClock ?? 0) / (1000 * 60 * 60 * 24));
 
   return deadline !== '1970-01-01T00:00:00.000Z' ? (
-    <div className="w-[50px] tablet:w-[85px] flex flex-col items-center gap-1">
-      <p className="text-dark-60 tablet:text-parS text-[8px] font-normal text-center !leading-none">
+    <div className="w-12.5 tablet:w-21.25 flex flex-col items-center gap-1">
+      <p className="text-dark-60 tablet:text-parS text-[8px] font-normal text-center leading-none!">
         Remaining time:
       </p>
       {days >= 1 ? (

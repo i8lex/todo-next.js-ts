@@ -26,6 +26,9 @@ const securityHeaders = [
 ];
 
 const nextConfig = {
+  experimental: {
+    optimizePackageImports: ['@svgr/webpack'],
+  },
   async redirects() {
     return [
       {
@@ -36,14 +39,24 @@ const nextConfig = {
     ];
   },
   reactStrictMode: true,
-  swcMinify: true,
 
   images: {
-    domains: ['localhost'],
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '3000',
+        pathname: '/**',
+      },
+    ],
+    formats: ['image/webp', 'image/avif'],
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'attachment',
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 
   distDir: process.env.BUILD_DIR || '.next',
-  webpack(config) {
+  webpack(config, { isServer }) {
     config.module.rules.push({
       test: /\.svg$/i,
       issuer: /\.[jt]sx?$/,

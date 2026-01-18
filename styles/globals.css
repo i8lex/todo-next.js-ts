@@ -1,6 +1,94 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  --color-white: #ffffff;
+  --color-softGreen: #f3faf9;
+  --color-errorText: #e33232;
+  --color-stroke: #cbd0d5;
+
+  --color-green-100: #0d8f78;
+  --color-green-90: #269d87;
+  --color-green-80: #3EA895;
+  --color-green-60: #6cbbac;
+  --color-green-40: #9cd0c7;
+  --color-green-20: #cde7e2;
+  --color-green-10: #e9f5f3;
+
+  --color-orange-100: #f86302;
+  --color-orange-90: #fa7119;
+  --color-orange-80: #ff8233;
+  --color-orange-60: #ffa366;
+  --color-orange-40: #fcbf98;
+  --color-orange-20: #fddfcb;
+  --color-orange-10: #fdeee4;
+
+  --color-yellow-100: #fcbb3e;
+  --color-yellow-90: #fdc251;
+  --color-yellow-80: #fdca65;
+  --color-yellow-60: #fcd68c;
+  --color-yellow-40: #fde3b0;
+  --color-yellow-20: #fdf1d8;
+  --color-yellow-10: #fff8ed;
+
+  --color-purple-100: #7151fd;
+  --color-purple-90: #7f63fc;
+  --color-purple-80: #8d72fc;
+  --color-purple-60: #A995FB;
+  --color-purple-40: #c6bafd;
+  --color-purple-20: #dfd9fc;
+  --color-purple-10: '#ede9fa';
+
+  --color-blue-100: #04a1e3;
+  --color-blue-90: #1face8;
+  --color-blue-80: '#36b3e8';
+  --color-blue-60: #6ac8ef;
+  --color-blue-40: '#9BDAF5';
+  --color-blue-20: #cfeffc;
+  --color-blue-10: #e9f9ff;
+
+  --color-gray-100: #565859;
+  --color-gray-90: #777a7c;
+  --color-gray-80: #b2b6b7;
+  --color-gray-60: #d2d5d9;
+  --color-gray-40: #f1f4f5;
+  --color-gray-20: #f9fbfb;
+  --color-gray-10: #fcfdfc;
+
+  --color-dark-100: #1f3952;
+  --color-dark-90: #364f65;
+  --color-dark-80: #4d6277;
+  --color-dark-60: #7a8b9a;
+  --color-dark-40: #a8b4be;
+  --color-dark-20: #d2d8dc;
+  --color-dark-10: #e7e9ec;
+
+  --color-error-100: #ee3636;
+  --color-error-90: #f85858;
+  --color-error-80: #fa6d6d;
+  --color-error-60: #fa8181;
+  --color-error-40: #f89595;
+  --color-error-20: #facdcd;
+  --color-error-10: #fdeaea;
+
+  --font-family-digital: 'DS-Digital', mono;
+
+  --font-size-dispXL: 64px;
+  --font-size-dispL: 48px;
+  --font-size-dispM: 36px;
+  --font-size-dispS1: 28px;
+  --font-size-dispS2: 24px;
+  --font-size-dispS3: 20px;
+  --font-size-parL: 18px;
+  --font-size-parM: 16px;
+  --font-size-parS: 14px;
+  --font-size-quot: 12px;
+
+  --breakpoint-tablet: 768px;
+  --breakpoint-laptop: 1140px;
+  --breakpoint-desktop: 1440px;
+}
 
 @font-face {
   font-family: DS-Digital;
@@ -33,6 +121,11 @@
   height: 100%;
   object-fit: cover;
 }
+
+.font-digital {
+  font-family: 'DS-Digital', monospace;
+}
+
 /*@media (prefers-color-scheme: dark) {*/
 /*  :root {*/
 /*    --foreground-rgb: 255, 255, 255;*/
